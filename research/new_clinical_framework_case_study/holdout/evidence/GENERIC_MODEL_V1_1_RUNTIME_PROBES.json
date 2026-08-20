@@ -1,0 +1,194 @@
+{
+  "case_blind": true,
+  "model_id": "adult-icu-acute-hemodynamic-collapse-generic-v1",
+  "model_pack_sha256": "0e5efd52be6911244d2653a865032cfe351d038790df7853f8feef8f78203bb1",
+  "model_version": "generic-model/1.1.0",
+  "passed": 11,
+  "primary_holdout_inspected": false,
+  "probes": [
+    {
+      "evidence": {
+        "max_process_marginal_delta": 0.000816095840636813,
+        "trace_rows": 13
+      },
+      "probe_id": "GM11-DYNAMIC-ACTIVATION-NATURAL",
+      "status": "PASS"
+    },
+    {
+      "evidence": {
+        "joint_pair_mass_with_coupling": 0.09304690649777202,
+        "joint_pair_mass_without_coupling": 0.09070336560152198,
+        "target_marginal_with_coupling": 0.1488682499944824,
+        "target_marginal_without_coupling": 0.14645792528059473
+      },
+      "probe_id": "GM11-ACTIVATION-COUPLING-ABLATION",
+      "status": "PASS"
+    },
+    {
+      "evidence": {
+        "no_new_action_toxicologic_marginal": 0.5789610414197832,
+        "rollout_status": "UNIDENTIFIABLE",
+        "source_control_toxicologic_marginal": 0.4837096235790509
+      },
+      "probe_id": "GM11-RESOLVING-ACTION-ACTIVATION-EFFECT",
+      "status": "PASS"
+    },
+    {
+      "evidence": {
+        "coordinates_equal": true,
+        "joint_equal": true,
+        "planned_instances": [
+          {
+            "action_id": "ACTION_TOXICOLOGIC_SOURCE_CONTROL",
+            "action_instance_id": "planned:tox-plan",
+            "completed_cursor": null,
+            "cumulative_exposure": {
+              "unit": "none",
+              "value": 0.0
+            },
+            "dose_history": [],
+            "held_cursor": null,
+            "planned_cursor": 2,
+            "response_summaries": [],
+            "source_event_ids": [
+              "tox-plan"
+            ],
+            "started_cursor": null,
+            "status": "planned",
+            "stopped_cursor": null,
+            "washout": {
+              "estimated_remaining_fraction": 0.0,
+              "residual_effect_probability": 0.0
+            }
+          }
+        ]
+      },
+      "probe_id": "GM11-PLANNED-ACTION-RECORD-ONLY",
+      "status": "PASS"
+    },
+    {
+      "evidence": {
+        "local_state_exact_equal": true,
+        "max_activation_marginal_abs_diff": 6.661338147750939e-16
+      },
+      "probe_id": "GM11-FACTUAL-ADVANCE-EQUALS-NO-NEW-FORECAST",
+      "status": "PASS"
+    },
+    {
+      "evidence": {
+        "max_joint_probability_abs_diff_from_manual_one_factor_update": 6.938893903907228e-18,
+        "target_process_count": 7
+      },
+      "probe_id": "GM11-COMMON-SOURCE-SINGLE-FACTOR-RUNTIME",
+      "status": "PASS"
+    },
+    {
+      "evidence": {
+        "prior": 0.08234822785233956,
+        "reliability_0_01": 0.08456975058719354,
+        "reliability_1": 0.6209564890225442
+      },
+      "probe_id": "GM11-RELIABILITY-OPERATIVE",
+      "status": "PASS"
+    },
+    {
+      "evidence": {
+        "factor_message_count": 1,
+        "factor_messages": [
+          {
+            "factor_id": "DISPOSITION:tox-support-masked",
+            "factor_type": "measurement",
+            "log_likelihood_by_hypothesis": {
+              "disposition:record_only_nonrankable": 0.0,
+              "provenance:event:tox-support-masked:ca1acedc9d72885fd6a6ddbed2190f74f55f2ae2db6a3da2390ca7489025422c": 0.0,
+              "provenance:inference_member:f8b3730e58cab038b004497b93afc3e0e80843bd6e614e3d1817db24ba28a8f6": 0.0,
+              "provenance:member:confirmed_toxic_exposure_presence:378bf7fcdf2684b23b4126c48ec3197167b3f9bd5c8dbcbc03b025b5139d353d": 0.0,
+              "provenance:source_payload:bd0b291bbbf68f1c5773800b673b5065e4c147ef785392e2e6e634d0497397a1": 0.0,
+              "provenance:temporal:sample=0.0,0.0;result=0.0;recorded=0.0;available=0.0": 0.0
+            },
+            "reliability": 0.0,
+            "source_result_ids": [
+              "source:tox-support-masked"
+            ],
+            "variable_ids": [
+              "DISPOSITION:record_only_nonrankable"
+            ]
+          }
+        ],
+        "max_activation_marginal_abs_diff": 0.0,
+        "unexplained_observations": [
+          {
+            "candidate_process_ids": [
+              "P_TOXICOLOGIC_DRIVER"
+            ],
+            "reason": "unknown_measurement_condition",
+            "result_id": "source:tox-support-masked",
+            "surprisal": null
+          }
+        ]
+      },
+      "probe_id": "GM11-SUPPORT-MASKED-FAIL-CLOSED",
+      "status": "PASS"
+    },
+    {
+      "evidence": {
+        "full_exit": {
+          "entry_policy": "RESET_TO_PRIOR",
+          "exit_policy": "SURVIVOR_CARRY_REENTRY_RESET",
+          "local_state_semantics": "q(x,m|process_active)",
+          "prior_blend_fraction": 1.0
+        },
+        "partial_exit": {
+          "entry_policy": "RESET_TO_PRIOR",
+          "exit_policy": "SURVIVOR_CARRY_REENTRY_RESET",
+          "local_state_semantics": "q(x,m|process_active)",
+          "prior_blend_fraction": 0.0
+        },
+        "reentry": {
+          "entry_policy": "RESET_TO_PRIOR",
+          "exit_policy": "SURVIVOR_CARRY_REENTRY_RESET",
+          "local_state_semantics": "q(x,m|process_active)",
+          "prior_blend_fraction": 1.0
+        }
+      },
+      "probe_id": "GM11-CONDITIONAL-ACTIVE-ENTRY-EXIT",
+      "status": "PASS"
+    },
+    {
+      "evidence": {
+        "forecast_marginal_max_abs_diff": 0.0,
+        "initial_marginal_max_abs_diff": 0.0,
+        "tolerance": 1e-12
+      },
+      "probe_id": "GM11-PROCESS-ID-ALPHA-RENAME-INVARIANCE",
+      "status": "PASS"
+    },
+    {
+      "evidence": {
+        "factorization_limitation": "Activation configurations are propagated jointly, but each process-local coordinate/mode posterior is represented only as q(x,m|process active). Activation-local and cross-process local-state correlations excluded by the declared assumptions are OUT_OF_SCOPE.",
+        "inference_kind": "exact_factorial_activation_plus_conditional_active_mean_field_local_state",
+        "posterior_factorization": {
+          "assumption_ids": [
+            "active-process-joint-is-not-full-state-joint",
+            "shared-local-conditional-across-active-configurations",
+            "no-dormant-local-state-posterior",
+            "entry-resets-to-declared-prior",
+            "partial-exit-preserves-survivor-active-conditional"
+          ],
+          "error_tolerance": {
+            "epsilon": 0.0,
+            "reference": "scope.tolerance"
+          },
+          "local_state_semantics": "q(x,m|process_active)",
+          "representation": "conditional_active_mean_field_over_process_local_state",
+          "unsupported_correlations_policy": "OUT_OF_SCOPE"
+        }
+      },
+      "probe_id": "GM11-FACTORIZATION-LIMITATION-EXPOSED",
+      "status": "PASS"
+    }
+  ],
+  "schema_version": "ncf.generic-model-runtime-probes.v1",
+  "status": "PASS",
+  "total": 11
+}

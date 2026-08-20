@@ -1,0 +1,121 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "ncf.opaque-concurrent-process-candidate-packet.v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "packet_id",
+    "canonical_case_id",
+    "input_claims_ref",
+    "model_blind",
+    "disease_name_used",
+    "terminal_verification_epoch_index",
+    "target_count",
+    "minimum_required_target_count",
+    "qualifies",
+    "process_candidates",
+    "pairwise_distinctness_witnesses",
+    "coactive_preterminal_epoch_indices",
+    "source_artifact_refs",
+    "produced_by"
+  ],
+  "properties": {
+    "schema_version": {"const": "NCF-OPAQUE-CONCURRENT-PROCESS-CANDIDATE-PACKET-1.0.0"},
+    "packet_id": {"type": "string", "pattern": "^OCP-[0-9a-f]{24}$"},
+    "canonical_case_id": {"type": "string", "minLength": 1},
+    "input_claims_ref": {"$ref": "#/$defs/artifactRef"},
+    "model_blind": {"const": true},
+    "disease_name_used": {"const": false},
+    "terminal_verification_epoch_index": {"type": "integer", "minimum": 1},
+    "target_count": {"type": "integer", "minimum": 0},
+    "minimum_required_target_count": {"const": 2},
+    "qualifies": {"type": "boolean"},
+    "process_candidates": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/processCandidate"}
+    },
+    "pairwise_distinctness_witnesses": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/distinctnessWitness"}
+    },
+    "coactive_preterminal_epoch_indices": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"type": "integer", "minimum": 0}
+    },
+    "source_artifact_refs": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/artifactRef"}
+    },
+    "produced_by": {"const": "holdout/tools/compile_opaque_concurrent_process_candidates.py"}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "artifactRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256", "bytes"],
+      "properties": {
+        "path": {"type": "string", "minLength": 1},
+        "sha256": {"$ref": "#/$defs/sha256"},
+        "bytes": {"type": "integer", "minimum": 1}
+      }
+    },
+    "sourceAssertionRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["assertion_id", "epoch_index", "source_artifact_ref", "byte_start", "byte_end", "excerpt_sha256"],
+      "properties": {
+        "assertion_id": {"type": "string", "pattern": "^SA-[0-9a-f]{24}$"},
+        "epoch_index": {"type": "integer", "minimum": 0},
+        "source_artifact_ref": {"$ref": "#/$defs/artifactRef"},
+        "byte_start": {"type": "integer", "minimum": 0},
+        "byte_end": {"type": "integer", "minimum": 1},
+        "excerpt_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "processCandidate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["opaque_process_candidate_id", "active_epoch_indices", "trajectory_assertion_refs"],
+      "properties": {
+        "opaque_process_candidate_id": {"type": "string", "pattern": "^PC-[0-9a-f]{24}$"},
+        "active_epoch_indices": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"type": "integer", "minimum": 0}
+        },
+        "trajectory_assertion_refs": {
+          "type": "array",
+          "minItems": 2,
+          "items": {"$ref": "#/$defs/sourceAssertionRef"}
+        }
+      }
+    },
+    "distinctnessWitness": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["opaque_process_candidate_ids", "basis", "source_assertion_ref"],
+      "properties": {
+        "opaque_process_candidate_ids": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 2,
+          "uniqueItems": true,
+          "items": {"type": "string", "pattern": "^PC-[0-9a-f]{24}$"}
+        },
+        "basis": {
+          "enum": [
+            "DISTINCT_LOCAL_DOMAIN",
+            "INDEPENDENT_ACTION_RESPONSE",
+            "INDEPENDENT_TRAJECTORY"
+          ]
+        },
+        "source_assertion_ref": {"$ref": "#/$defs/sourceAssertionRef"}
+      }
+    }
+  }
+}

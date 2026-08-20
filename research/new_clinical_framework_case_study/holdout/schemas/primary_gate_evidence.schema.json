@@ -1,0 +1,142 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "ncf.primary-gate-evidence.v3",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "subject_kind",
+    "subject_id",
+    "claimed_result",
+    "producer",
+    "source_artifact_refs",
+    "assertions"
+  ],
+  "properties": {
+    "schema_version": {"const": "ncf.primary-gate-evidence.v3"},
+    "subject_kind": {"enum": ["GATE", "COMPLEX_COVERAGE"]},
+    "subject_id": {"type": "string", "minLength": 1},
+    "claimed_result": {"enum": ["PASS", "FAIL"]},
+    "producer": {
+      "oneOf": [
+        {"$ref": "#/$defs/automatedProducer"},
+        {"$ref": "#/$defs/manualAuditorProducer"}
+      ]
+    },
+    "source_artifact_refs": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/namedContentRef"}
+    },
+    "assertions": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/deterministicAssertion"}
+    }
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "contentRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256", "bytes"],
+      "properties": {
+        "path": {"type": "string", "minLength": 1},
+        "sha256": {"$ref": "#/$defs/sha256"},
+        "bytes": {"type": "integer", "minimum": 1}
+      }
+    },
+    "namedContentRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["ref_id", "path", "sha256", "bytes"],
+      "properties": {
+        "ref_id": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$"},
+        "path": {"type": "string", "minLength": 1},
+        "sha256": {"$ref": "#/$defs/sha256"},
+        "bytes": {"type": "integer", "minimum": 1}
+      }
+    },
+    "automatedProducer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["policy", "producer_id", "tool_ref", "artifact_ref_id", "replay"],
+      "properties": {
+        "policy": {"const": "SEALED_AUTOMATED_GENERATOR"},
+        "producer_id": {"type": "string", "minLength": 1},
+        "tool_ref": {"$ref": "#/$defs/contentRef"},
+        "artifact_ref_id": {"type": "string", "minLength": 1},
+        "replay": {"$ref": "#/$defs/producerReplay"}
+      }
+    },
+    "producerReplay": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["adapter_id", "input_ref_ids", "check_args", "invocation_sha256"],
+      "properties": {
+        "adapter_id": {"const": "CONFIGURED_CLI_EXACT_JSON_V1"},
+        "input_ref_ids": {
+          "type": "object",
+          "propertyNames": {"pattern": "^[A-Za-z][A-Za-z0-9_]*$"},
+          "additionalProperties": {"type": "string", "minLength": 1}
+        },
+        "check_args": {
+          "type": "object",
+          "propertyNames": {"pattern": "^[A-Za-z][A-Za-z0-9_]*$"},
+          "additionalProperties": {"type": "string"}
+        },
+        "invocation_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "manualAuditorProducer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "policy",
+        "policy_id",
+        "auditor_role_manifest_ref_id",
+        "audit_record_ref_id"
+      ],
+      "properties": {
+        "policy": {"const": "MANUAL_INDEPENDENT_AUDITOR"},
+        "policy_id": {"type": "string", "minLength": 1},
+        "auditor_role_manifest_ref_id": {"type": "string", "minLength": 1},
+        "audit_record_ref_id": {"type": "string", "minLength": 1}
+      }
+    },
+    "deterministicAssertion": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "assertion_id",
+        "source_ref_id",
+        "observed_json_pointer",
+        "observed",
+        "expected",
+        "operator"
+      ],
+      "properties": {
+        "assertion_id": {"type": "string", "minLength": 1},
+        "source_ref_id": {"type": "string", "minLength": 1},
+        "observed_json_pointer": {"type": "string"},
+        "observed": {},
+        "expected": {},
+        "operator": {
+          "enum": [
+            "EQ",
+            "NE",
+            "GT",
+            "GTE",
+            "LT",
+            "LTE",
+            "CONTAINS",
+            "NOT_CONTAINS",
+            "SET_EQUALS",
+            "LENGTH_EQ"
+          ]
+        },
+        "notes": {"type": "string"}
+      }
+    }
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "ncf.primary-runtime-replay-input-manifest.v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "execution_role", "inputs"],
+  "properties": {
+    "schema_version": {"const": "NCF-PRIMARY-RUNTIME-REPLAY-INPUT-MANIFEST-1.0.0"},
+    "execution_role": {"const": "evaluator"},
+    "inputs": {
+      "type": "array",
+      "minItems": 9,
+      "maxItems": 9,
+      "items": {"$ref": "#/$defs/ref"}
+    }
+  },
+  "$defs": {
+    "ref": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["ref_id", "role", "path", "sha256", "bytes", "schema_id"],
+      "properties": {
+        "ref_id": {"type": "string", "pattern": "^REF-[0-9a-f]{16,64}$"},
+        "role": {
+          "enum": [
+            "evaluator_sanitized_runtime_ledger",
+            "sealed_concept_map",
+            "model_pack",
+            "runtime",
+            "scoring_contract",
+            "protocol",
+            "combined_preprimary_seal",
+            "oracle_seal_hash_only",
+            "sanitized_id_type_unit_registry"
+          ]
+        },
+        "path": {"type": "string", "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))[A-Za-z0-9._/-]+$"},
+        "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "bytes": {"type": "integer", "minimum": 1},
+        "schema_id": {"type": "string", "minLength": 1}
+      }
+    }
+  }
+}

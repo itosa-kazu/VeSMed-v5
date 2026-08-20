@@ -1,0 +1,516 @@
+{
+  "audit_id": "NCF-RUNTIME-V2.1-GATE-AUDIT-CASE-BLIND-DELTA-2",
+  "audit_kind": "case-independent runtime gate executability audit",
+  "generated_at": "2026-07-20T19:08:25+09:00",
+  "boundary": {
+    "primary_holdout_inspected": false,
+    "holdout_case_selection_opened": false,
+    "real_case_content_opened": false,
+    "holdout_or_generic_model_opened": false,
+    "allowed_inputs": [
+      "ARCHITECTURE_FINAL_v1.md",
+      "architecture_final_v1.schema.json",
+      "holdout/PERFECT_LANDING_GATES.*",
+      "runtime_v2 source/tests",
+      "runtime_v2 neutral PROCESS_A/B/C fixtures"
+    ],
+    "auditor_role": "not_primary_final_case_auditor",
+    "note": "A formally discarded pre-gate candidate identity was exposed by agent-status metadata; it was not used. Primary holdout has not been selected."
+  },
+  "bindings": {
+    "architecture_document_sha256": "d83b910f3cd32c777f126b245c2652e88fccb31aaa125b455f4c5af90cc4575c",
+    "wire_schema_sha256": "9804d21e8032f571b6cfd414c08b31891eab8856bc0502e0000df4b7d53f80d1",
+    "gate_json_sha256": "a00b963fd090d4accb304b343075661a5bfd6ecf2fc8371843a0a974e9fe3798",
+    "gate_markdown_sha256": "8d32096bd12b5e11b850776cff152d0acd54304e430a4dfd258eda6aeea84935",
+    "runtime_source_tree_sha256": "496548b9d0401978917978030f8710dd195e814ab0968a278b8e05c1444d8c79",
+    "runtime_source_tree_hash_algorithm": "sha256(canonical compact sorted JSON map of relative source path to file sha256)",
+    "refinement_py_sha256": "33639d1fbc12e1872651c45e2789c9979c09000fc68f3f60f7b6aaef9e539eec",
+    "runtime_test_sha256": "d3d077a32e012367c8b1df3463a70b8a4c6b21175bd76e0ef6122b60b6b202d3",
+    "engine_py_sha256": "ad8a8116e3ee2d81c66c7c7a76a7b0cbd1fb6cad6d0a5b010743aa6d07f70a1c",
+    "schema_py_sha256": "b2a1aeb5942edb9cb03ac97baa89deb7ebe4b68099f20bc07391a2aa18694de6",
+    "architecture_wire_py_sha256": "71f760f56a5a9f8f49f0f695601c991e4ccd61de40b4cfcaa1e434fa071fb29e",
+    "event_schema_sha256": "fed62dd4ac5a3cb3d633ed529d56c884ce7b51f82546e2a6d5895ae251791624"
+  },
+  "commands": [
+    {
+      "command": "python -m unittest discover -s runtime_v2/tests -v",
+      "result": "PASS",
+      "detail": "40/40; 1.592 s"
+    },
+    {
+      "command": "independent PL-LED-001 malformed-event matrix",
+      "result": "PASS",
+      "detail": "missing provenance/occurred/sample/result/recorded/available, invalid time order, unknown event type, and planned action without action_id all rejected"
+    },
+    {
+      "command": "independent PL-STATE-001 runtime-switch binding probe",
+      "result": "PASS",
+      "detail": "three option profiles produced three model digests; topology/guard cross-switch state queries rejected"
+    },
+    {
+      "command": "independent PL-PRED-002 support/scorer coverage probe",
+      "result": "PASS",
+      "detail": "full 12/12 supported; empty 0/12 and partial 1/12 typed ZERO_OR_UNDEFINED_SUPPORT with missing IDs; out-of-bounds coordinate typed zero support"
+    },
+    {
+      "command": "independent PL-OOD-001 conflict probes",
+      "result": "PASS",
+      "detail": "same-batch and sequential opposite independent measurements raised model_misfit 0.05 -> 0.523684 and conflicting_measurements residual"
+    },
+    {
+      "command": "independent PL-CASE-001 disposition probe",
+      "result": "PASS",
+      "detail": "rankable=false and RecordOnly each emitted neutral DISPOSITION:record_only_nonrankable measurement and were recognized"
+    },
+    {
+      "command": "independent fresh-process parent+delta replay with content-addressed ledger proof",
+      "result": "PASS",
+      "detail": "canonical bytes and query JSON identical (prior audit, unchanged ledger path)"
+    },
+    {
+      "command": "independent 12-process exact-factorial benchmark",
+      "result": "PASS",
+      "detail": "8192 joint hypotheses (prior audit, unchanged factorial path)"
+    },
+    {
+      "command": "independent refinement non-regression fail-closed perturbation",
+      "result": "PASS",
+      "detail": "full-query corpus passes; injected 1e-6 target forecast drift raises AssertionError"
+    }
+  ],
+  "summary": {
+    "total_gates": 30,
+    "PASS": 22,
+    "FAIL": 1,
+    "EVIDENCE_MISSING": 6,
+    "NOT_EXECUTED": 1,
+    "NOT_APPLICABLE": 0,
+    "runtime_readiness": "RUNTIME_SOURCE_READY_CONTRACT_BLOCKED",
+    "contract_aggregation_if_used_now": "HARNESS_INCOMPLETE",
+    "reason": "The five runtime-owned gaps are closed. PL-ACT-002 remains a frozen gate-contract enum mismatch; primary blind/case evidence, including realized PL-PRED-002 scoring and baseline comparison, is absent.",
+    "runtime_owned_delta": "5/5 PASS; no remaining runtime-source hard blocker in the audited delta"
+  },
+  "gate_results": [
+    {
+      "gate_id": "PL-IND-001",
+      "title": "Independent runtime and evidence tree",
+      "facet": "structure",
+      "status": "EVIDENCE_MISSING",
+      "owner": "harness",
+      "runtime_executable": false,
+      "gap_id": "GAP-HARNESS-EVIDENCE",
+      "summary": "Static AST scan found only stdlib/local runtime imports, but no approved_asset_manifest plus full primary replay runtime trace exists.",
+      "code_evidence": []
+    },
+    {
+      "gate_id": "PL-BLIND-001",
+      "title": "Gate seal precedes holdout inspection",
+      "facet": "harness_integrity",
+      "status": "EVIDENCE_MISSING",
+      "owner": "harness",
+      "runtime_executable": false,
+      "gap_id": "GAP-HARNESS-EVIDENCE",
+      "summary": "Gate/architecture hashes match the seal, but primary holdout access lineage does not yet exist; this auditor is explicitly not the primary final-case auditor.",
+      "code_evidence": []
+    },
+    {
+      "gate_id": "PL-LED-001",
+      "title": "Typed public event ledger",
+      "facet": "case_representation",
+      "status": "PASS",
+      "owner": "runtime",
+      "runtime_executable": true,
+      "gap_id": null,
+      "summary": "PublicEvent now requires source provenance and explicit occurred/recorded/available timing; observations additionally require sample/result timing and enforce order. Unknown types and untyped planned actions fail closed.",
+      "code_evidence": [
+        "runtime_v2/schema.py:104-176",
+        "runtime_v2/schemas/event_v2.schema.json",
+        "probe: malformed-event matrix 9/9 rejected"
+      ]
+    },
+    {
+      "gate_id": "PL-LED-002",
+      "title": "Exact-once recursive replay",
+      "facet": "structure",
+      "status": "PASS",
+      "owner": "runtime",
+      "runtime_executable": true,
+      "gap_id": null,
+      "summary": "36-test suite plus independent two-process replay verified exact canonical child bytes and query outputs with the content-addressed ledger proof; same-source alternate event IDs are byte-identical no-ops.",
+      "code_evidence": [
+        "runtime_v2/ledger.py:21-99",
+        "runtime_v2/engine.py:272-324",
+        "runtime_v2/tests/test_runtime_v2.py",
+        "probe: fresh_bytes_equal=true, fresh_queries_equal=true"
+      ]
+    },
+    {
+      "gate_id": "PL-STATE-001",
+      "title": "One canonical shared state",
+      "facet": "structure",
+      "status": "PASS",
+      "owner": "runtime",
+      "runtime_executable": true,
+      "gap_id": null,
+      "summary": "Execution switches are part of model_digest. Topology-off, guard-off and fully enabled runtimes have distinct digests and reject each other's canonical states.",
+      "code_evidence": [
+        "runtime_v2/engine.py:94-111",
+        "runtime_v2/tests/test_runtime_v2.py:720-740",
+        "probe: unique_digest_count=3; both cross-switch queries rejected"
+      ]
+    },
+    {
+      "gate_id": "PL-STATE-002",
+      "title": "Frozen wire-state completeness",
+      "facet": "structure",
+      "status": "PASS",
+      "owner": "runtime",
+      "runtime_executable": true,
+      "gap_id": null,
+      "summary": "Neutral states pass the frozen architecture schema; rehashed cross_coupling/geometry edits fail closed, while history/factor/action/epistemic fields are reconstructed and consumed by updates or heads.",
+      "code_evidence": [
+        "runtime_v2/schema.py:186-207",
+        "runtime_v2/architecture_wire.py:636-912",
+        "test_canonical_wire_conforms_to_frozen_architecture_schema",
+        "test_rehashed_control_plane_edit_is_rejected_semantically"
+      ]
+    },
+    {
+      "gate_id": "PL-TIME-001",
+      "title": "No future-information leakage",
+      "facet": "time_integrity",
+      "status": "PASS",
+      "owner": "runtime",
+      "runtime_executable": true,
+      "gap_id": null,
+      "summary": "Availability filtering is applied before consumption and the future-event invariant test passes.",
+      "code_evidence": []
+    },
+    {
+      "gate_id": "PL-TIME-002",
+      "title": "Planned/performed/result availability separation",
+      "facet": "time_integrity",
+      "status": "PASS",
+      "owner": "runtime",
+      "runtime_executable": true,
+      "gap_id": null,
+      "summary": "Plan-only, performed, hold/resume/complete, stop, dose and washout paths are distinct and availability filtered.",
+      "code_evidence": []
+    },
+    {
+      "gate_id": "PL-FACT-001",
+      "title": "Typed positive and negative factor likelihood",
+      "facet": "factor_graph",
+      "status": "PASS",
+      "owner": "runtime",
+      "runtime_executable": true,
+      "gap_id": null,
+      "summary": "Registered emissions have typed active/inactive likelihoods; reliable negative evidence produces signed refutation.",
+      "code_evidence": []
+    },
+    {
+      "gate_id": "PL-FACT-002",
+      "title": "Shared-source and clone invariance",
+      "facet": "factor_graph",
+      "status": "PASS",
+      "owner": "runtime",
+      "runtime_executable": true,
+      "gap_id": null,
+      "summary": "Same source is the common-parent evidence unit; exact clones and different child factors with the same source do not change bytes or certainty.",
+      "code_evidence": []
+    },
+    {
+      "gate_id": "PL-CONC-001",
+      "title": "Factorial concurrent-process posterior",
+      "facet": "concurrent_processes",
+      "status": "PASS",
+      "owner": "runtime",
+      "runtime_executable": true,
+      "gap_id": null,
+      "summary": "Exact factorial joint supports simultaneous high nonexclusive process marginals; 12-process boundary produces 8192 hypotheses.",
+      "code_evidence": []
+    },
+    {
+      "gate_id": "PL-CONC-002",
+      "title": "Independent process persistence",
+      "facet": "concurrent_processes",
+      "status": "PASS",
+      "owner": "runtime",
+      "runtime_executable": true,
+      "gap_id": null,
+      "summary": "Process marginals persist independently under process-local evidence; no disease simplex renormalization is applied.",
+      "code_evidence": []
+    },
+    {
+      "gate_id": "PL-MODE-001",
+      "title": "Branch/organ-local modes and coupling",
+      "facet": "local_modes",
+      "status": "PASS",
+      "owner": "runtime",
+      "runtime_executable": true,
+      "gap_id": null,
+      "summary": "Per-process local modes and declared process/mode couplings affect forward dynamics.",
+      "code_evidence": []
+    },
+    {
+      "gate_id": "PL-MODE-002",
+      "title": "Mode-specific drift, guard and hysteresis",
+      "facet": "local_modes",
+      "status": "PASS",
+      "owner": "runtime",
+      "runtime_executable": true,
+      "gap_id": null,
+      "summary": "Same-coordinate mode drift, explicit guards, separated enter/exit thresholds and hysteresis ablation are executable.",
+      "code_evidence": []
+    },
+    {
+      "gate_id": "PL-SUPPORT-001",
+      "title": "Support masking and action memory",
+      "facet": "action_counterfactual",
+      "status": "PASS",
+      "owner": "runtime",
+      "runtime_executable": true,
+      "gap_id": null,
+      "summary": "Action memory/support dependence and lifecycle-specific rollout distinguish supported from unsupported twins.",
+      "code_evidence": []
+    },
+    {
+      "gate_id": "PL-GEOM-001",
+      "title": "Runtime-connected branch geometry",
+      "facet": "structure",
+      "status": "PASS",
+      "owner": "runtime",
+      "runtime_executable": true,
+      "gap_id": null,
+      "summary": "Topology changes inference and planning in registered ablations and emits effect traces.",
+      "code_evidence": []
+    },
+    {
+      "gate_id": "PL-DX-001",
+      "title": "Stagewise evidence-responsive diagnosis",
+      "facet": "diagnosis",
+      "status": "EVIDENCE_MISSING",
+      "owner": "holdout_evaluator",
+      "runtime_executable": false,
+      "gap_id": "GAP-HARNESS-EVIDENCE",
+      "summary": "Neutral directional likelihood behavior exists, but no primary holdout cut trace, sealed assertions or label-leak evidence exists yet.",
+      "code_evidence": []
+    },
+    {
+      "gate_id": "PL-DX-002",
+      "title": "Evidence-based clinical localization",
+      "facet": "diagnosis",
+      "status": "EVIDENCE_MISSING",
+      "owner": "holdout_evaluator",
+      "runtime_executable": false,
+      "gap_id": "GAP-HARNESS-EVIDENCE",
+      "summary": "Requires decisive-cut clinical localization on the future primary holdout; intentionally not executed.",
+      "code_evidence": []
+    },
+    {
+      "gate_id": "PL-PRED-001",
+      "title": "Prospective cut-by-cut forecast",
+      "facet": "prediction",
+      "status": "EVIDENCE_MISSING",
+      "owner": "holdout_evaluator",
+      "runtime_executable": false,
+      "gap_id": "GAP-HARNESS-EVIDENCE",
+      "summary": "Runtime forecast uses the shared rollout core, but no primary cut-by-cut pre-next-cut forecast seals exist.",
+      "code_evidence": []
+    },
+    {
+      "gate_id": "PL-PRED-002",
+      "title": "Realized trajectory case consistency",
+      "facet": "prediction",
+      "status": "EVIDENCE_MISSING",
+      "owner": "holdout_evaluator",
+      "runtime_executable": true,
+      "gap_id": "GAP-HARNESS-EVIDENCE",
+      "summary": "Runtime capability now passes: forecast emits continuous and categorical predictive support, and the frozen scorer fails closed on missing, partial and out-of-bounds realizations. The actual case gate remains unevaluated until primary realized cuts and the frozen baseline comparison exist.",
+      "code_evidence": [
+        "runtime_v2/engine.py:1442-1608",
+        "runtime_v2/tests/test_runtime_v2.py:638-687",
+        "probe: full 12/12 SUPPORTED; empty 0/12 and partial 1/12 ZERO_OR_UNDEFINED_SUPPORT"
+      ]
+    },
+    {
+      "gate_id": "PL-ACT-001",
+      "title": "Lifecycle-distinct controlled transitions",
+      "facet": "action_counterfactual",
+      "status": "PASS",
+      "owner": "runtime",
+      "runtime_executable": true,
+      "gap_id": null,
+      "summary": "Lifecycle policies and factual updates are distinct; counterfactual calls are pure.",
+      "code_evidence": []
+    },
+    {
+      "gate_id": "PL-ACT-002",
+      "title": "Counterfactual identification honesty",
+      "facet": "action_counterfactual",
+      "status": "FAIL",
+      "owner": "gate_contract",
+      "runtime_executable": false,
+      "gap_id": "GAP-IDENTIFIABILITY-ENUM",
+      "summary": "Runtime follows architecture enum IDENTIFIED_WITHIN_SCOPE/PARTIALLY_IDENTIFIED/UNIDENTIFIABLE/OUT_OF_SCOPE and excludes unresolved-collision policies, but frozen gate JSON enumerates IDENTIFIED and omits IDENTIFIED_WITHIN_SCOPE/OUT_OF_SCOPE. Exact machine conformance is impossible.",
+      "code_evidence": [
+        "architecture_final_v1.schema.json:1542-1545",
+        "holdout/PERFECT_LANDING_GATES.json:49-53",
+        "runtime_v2/architecture_wire.py:593-630",
+        "runtime_v2/engine.py:1127-1169"
+      ]
+    },
+    {
+      "gate_id": "PL-OOD-001",
+      "title": "Dynamic epistemic residual",
+      "facet": "open_world_refinement",
+      "status": "PASS",
+      "owner": "runtime",
+      "runtime_executable": true,
+      "gap_id": null,
+      "summary": "Independent opposite signed likelihoods for one factor now create conflicting_measurements, increase model_misfit and enter unexplained observations in both same-batch and sequential updates.",
+      "code_evidence": [
+        "runtime_v2/engine.py:590-650",
+        "runtime_v2/tests/test_runtime_v2.py:410-431",
+        "probe: model_misfit 0.05 -> 0.523684 in batch and sequential paths"
+      ]
+    },
+    {
+      "gate_id": "PL-OOD-002",
+      "title": "Closed-world forced-choice rejection",
+      "facet": "open_world_refinement",
+      "status": "PASS",
+      "owner": "runtime",
+      "runtime_executable": true,
+      "gap_id": null,
+      "summary": "Unknown-process perturbation raises unmodeled/mapping residuals and exposes partial-answer abstention instead of a single forced class.",
+      "code_evidence": []
+    },
+    {
+      "gate_id": "PL-REF-001",
+      "title": "Dangerous state-collision detection",
+      "facet": "open_world_refinement",
+      "status": "PASS",
+      "owner": "runtime",
+      "runtime_executable": true,
+      "gap_id": null,
+      "summary": "Production collision detector finds opposite-response same-state worlds; supplying the witness to plan blocks an otherwise selectable identified action.",
+      "code_evidence": [
+        "runtime_v2/refinement.py:111-166",
+        "runtime_v2/engine.py:1113-1169",
+        "probe: collision-aware plan selected=null"
+      ]
+    },
+    {
+      "gate_id": "PL-REF-002",
+      "title": "Unobservable split abstention",
+      "facet": "open_world_refinement",
+      "status": "PASS",
+      "owner": "runtime",
+      "runtime_executable": true,
+      "gap_id": null,
+      "summary": "No-separator path returns typed UNIDENTIFIABLE and collision-aware plan excludes the action.",
+      "code_evidence": [
+        "runtime_v2/refinement.py:260-290",
+        "runtime_v2/engine.py:1127-1169"
+      ]
+    },
+    {
+      "gate_id": "PL-REF-003",
+      "title": "Local split, availability and migration",
+      "facet": "open_world_refinement",
+      "status": "PASS",
+      "owner": "runtime",
+      "runtime_executable": true,
+      "gap_id": null,
+      "summary": "Separating event creates a local stratum split, applies only after availability, and migrates with explicit lineage.",
+      "code_evidence": [
+        "runtime_v2/refinement.py:169-257,260-400",
+        "runtime_v2/migration.py:50-178"
+      ]
+    },
+    {
+      "gate_id": "PL-REF-004",
+      "title": "Old-scope non-regression after refinement",
+      "facet": "open_world_refinement",
+      "status": "PASS",
+      "owner": "runtime",
+      "runtime_executable": true,
+      "gap_id": null,
+      "summary": "execute_local_refinement freezes and reruns diagnosis, natural forecast, every unaffected action rollout and restricted plan at abs_tol=1e-12; it reports per-query before/after hashes and fails closed on injected drift.",
+      "code_evidence": [
+        "runtime_v2/refinement.py:20-100",
+        "runtime_v2/refinement.py:326-400",
+        "runtime_v2/tests/test_runtime_v2.py:737-773",
+        "probe: injected 1e-6 forecast drift -> AssertionError"
+      ]
+    },
+    {
+      "gate_id": "PL-CASE-001",
+      "title": "No clinically consequential silent drop",
+      "facet": "case_representation",
+      "status": "PASS",
+      "owner": "runtime",
+      "runtime_executable": true,
+      "gap_id": null,
+      "summary": "rankable=false ObservationAvailable and RecordOnly events now emit explicit neutral record_only_nonrankable disposition factors with provenance and appear in recognized results. Clinical consequentiality remains a primary-case review responsibility.",
+      "code_evidence": [
+        "runtime_v2/engine.py:391-404,447-460",
+        "runtime_v2/architecture_wire.py:113-129",
+        "probe: two events -> two DISPOSITION factors, reliability=0, both recognized"
+      ]
+    },
+    {
+      "gate_id": "PL-REPORT-001",
+      "title": "Facet-complete non-overclaiming report",
+      "facet": "reporting",
+      "status": "NOT_EXECUTED",
+      "owner": "holdout_evaluator",
+      "runtime_executable": false,
+      "gap_id": "GAP-REPORT-NOT-EXECUTED",
+      "summary": "No primary perfect_landing_results/report exists; this case-blind runtime audit must not substitute for it.",
+      "code_evidence": []
+    }
+  ],
+  "gaps": [
+    {
+      "gap_id": "GAP-IDENTIFIABILITY-ENUM",
+      "severity": "decisive",
+      "owner": "gate_contract",
+      "blocks": [
+        "PL-ACT-002"
+      ],
+      "required_fix": "Before primary holdout selection, version/reseal gate enum to architecture values IDENTIFIED_WITHIN_SCOPE, PARTIALLY_IDENTIFIED, UNIDENTIFIABLE, OUT_OF_SCOPE."
+    },
+    {
+      "gap_id": "GAP-HARNESS-EVIDENCE",
+      "severity": "expected_pre_holdout",
+      "owner": "primary holdout evaluator",
+      "blocks": [
+        "PL-IND-001",
+        "PL-BLIND-001",
+        "PL-DX-001",
+        "PL-DX-002",
+        "PL-PRED-001",
+        "PL-PRED-002"
+      ],
+      "required_fix": "After runtime/model/gates freeze and primary holdout selection, produce the required sealed lineage, dependency trace, cut-by-cut evidence, realized predictive-support scores, baseline comparison, and clinical review."
+    },
+    {
+      "gap_id": "GAP-REPORT-NOT-EXECUTED",
+      "severity": "expected_pre_holdout",
+      "owner": "primary holdout evaluator",
+      "blocks": [
+        "PL-REPORT-001"
+      ],
+      "required_fix": "Generate machine and Markdown perfect-landing results only after every earlier gate is evaluated."
+    }
+  ],
+  "limitations": [
+    "No primary holdout, real case, expected diagnosis, article, event ledger or holdout/generic model was inspected.",
+    "holdout/tools was outside the audit read allowlist; no claim from that path was inspected or credited.",
+    "PL-PRED-002 runtime support/scoring capability passed, but the case-consistency gate remains EVIDENCE_MISSING until realized primary cuts and baseline comparison exist.",
+    "This is not a clinical validity, calibration or perfect-landing verdict.",
+    "Neutral fixtures establish mechanical executability only."
+  ]
+}

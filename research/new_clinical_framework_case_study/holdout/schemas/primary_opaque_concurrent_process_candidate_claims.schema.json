@@ -1,0 +1,104 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "ncf.opaque-concurrent-process-candidate-claims.v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "canonical_case_id",
+    "terminal_verification_epoch_index",
+    "model_blind",
+    "disease_name_used",
+    "process_candidates",
+    "pairwise_distinctness_witnesses"
+  ],
+  "properties": {
+    "schema_version": {"const": "NCF-OPAQUE-CONCURRENT-PROCESS-CANDIDATE-CLAIMS-1.0.0"},
+    "canonical_case_id": {"type": "string", "minLength": 1},
+    "terminal_verification_epoch_index": {"type": "integer", "minimum": 1},
+    "model_blind": {"const": true},
+    "disease_name_used": {"const": false},
+    "process_candidates": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/processCandidate"}
+    },
+    "pairwise_distinctness_witnesses": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/distinctnessWitness"}
+    }
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "artifactRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256", "bytes"],
+      "properties": {
+        "path": {"type": "string", "minLength": 1},
+        "sha256": {"$ref": "#/$defs/sha256"},
+        "bytes": {"type": "integer", "minimum": 1}
+      }
+    },
+    "locator": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["byte_start", "byte_end", "excerpt_sha256"],
+      "properties": {
+        "byte_start": {"type": "integer", "minimum": 0},
+        "byte_end": {"type": "integer", "minimum": 1},
+        "excerpt_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "trajectoryWitness": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["epoch_index", "source_artifact_ref", "locator"],
+      "properties": {
+        "epoch_index": {"type": "integer", "minimum": 0},
+        "source_artifact_ref": {"$ref": "#/$defs/artifactRef"},
+        "locator": {"$ref": "#/$defs/locator"}
+      }
+    },
+    "processCandidate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["active_epoch_indices", "trajectory_witnesses"],
+      "properties": {
+        "active_epoch_indices": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"type": "integer", "minimum": 0}
+        },
+        "trajectory_witnesses": {
+          "type": "array",
+          "minItems": 2,
+          "items": {"$ref": "#/$defs/trajectoryWitness"}
+        }
+      }
+    },
+    "distinctnessWitness": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["candidate_indices", "basis", "source_artifact_ref", "locator"],
+      "properties": {
+        "candidate_indices": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 2,
+          "uniqueItems": true,
+          "items": {"type": "integer", "minimum": 0}
+        },
+        "basis": {
+          "enum": [
+            "DISTINCT_LOCAL_DOMAIN",
+            "INDEPENDENT_ACTION_RESPONSE",
+            "INDEPENDENT_TRAJECTORY"
+          ]
+        },
+        "source_artifact_ref": {"$ref": "#/$defs/artifactRef"},
+        "locator": {"$ref": "#/$defs/locator"}
+      }
+    }
+  }
+}

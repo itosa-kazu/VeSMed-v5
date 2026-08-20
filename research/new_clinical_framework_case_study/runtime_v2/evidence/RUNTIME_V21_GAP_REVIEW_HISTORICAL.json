@@ -1,0 +1,250 @@
+{
+  "review_id": "NCF-RUNTIME-V2.1-CASE-BLIND-GAP-REVIEW-2026-07-20",
+  "review_status": "COMPLETE_CASE_BLIND_RUNTIME_REVIEW",
+  "runtime_gap_verdict": "EVIDENCE_INCOMPLETE_NOT_READY_FOR_FINAL_SEAL",
+  "perfect_landing_contract_verdict_if_aggregated_now": "HARNESS_INCOMPLETE",
+  "hard_failure_present": false,
+  "hard_failure_gate_ids": [],
+  "blindness": {
+    "clinical_case_files_read": false,
+    "case_selection_files_read": false,
+    "clinical_calibration_judged": false,
+    "scope": "runtime_v2 source, abstract neutral fixture, frozen architecture, frozen perfect-landing gates, and case-blind structural evidence only"
+  },
+  "contract_bindings": {
+    "architecture_document": "ARCHITECTURE_FINAL_v1.md",
+    "architecture_document_sha256": "d83b910f3cd32c777f126b245c2652e88fccb31aaa125b455f4c5af90cc4575c",
+    "wire_schema": "architecture_final_v1.schema.json",
+    "wire_schema_sha256": "9804d21e8032f571b6cfd414c08b31891eab8856bc0502e0000df4b7d53f80d1",
+    "perfect_landing_contract": "holdout/PERFECT_LANDING_GATES.json",
+    "perfect_landing_contract_sha256": "a00b963fd090d4accb304b343075661a5bfd6ecf2fc8371843a0a974e9fe3798"
+  },
+  "runtime_snapshot": {
+    "root": "runtime_v2",
+    "hash_algorithm": "sha256(path\\0file_sha256\\0byte_count joined by newline)",
+    "runtime_source_sha256": "62a8338252de29e36d3d3c112f852e57b490e99e9cc985f376ea11e45deac7f4",
+    "file_count": 20,
+    "excluded": [
+      "runtime_v2/evidence/**",
+      "runtime_v2/**/__pycache__/**",
+      "runtime_v2/RUNTIME_V21_GAP_REVIEW.md",
+      "runtime_v2/RUNTIME_V21_GAP_REVIEW.json"
+    ],
+    "key_file_sha256": {
+      "runtime_v2/engine.py": "056349cc6a1762eeed38cfd86c338134f48a85339d82884f15d15e893e991414",
+      "runtime_v2/architecture_wire.py": "d91a0e476905301f1e87d4e5102dc5b82142d3ae96b1698157dd3aa13d38af2d",
+      "runtime_v2/schema.py": "9898e8299bac06848980a24cbaac8e2468b1bd0ee884d8808cc18a828f2b136c",
+      "runtime_v2/refinement.py": "7a218cf230e27a88501d9e233da09f3a75d8368789693cbbe7271d3b07ceb465",
+      "runtime_v2/tests/test_runtime_v2.py": "1b2311540ff8c16f7a259b9d11e30355416c08f5021759c7c1980dd07f9a4ada",
+      "runtime_v2/examples/neutral_factorial_model.json": "7b0e2b4322b6af10d33f6fa09f87c77c4b1abd2ee583c0b589a154818be71510"
+    }
+  },
+  "verification": {
+    "commands": [
+      {
+        "command": "python -m unittest -v runtime_v2.tests.test_runtime_v2",
+        "cwd": "research/new_clinical_framework_case_study",
+        "result": "PASS",
+        "tests": "36/36"
+      },
+      {
+        "command": "python -m unittest -v test_event_ledger_replay",
+        "cwd": "research/new_clinical_framework_case_study/holdout/tools",
+        "result": "PASS",
+        "tests": "6/6"
+      },
+      {
+        "command": "independent abstract probes: cache poisoning, common-source children, equivalent-source rendering, lifecycle, collision-planner, OOD, refinement-action, 12-process capacity",
+        "cwd": "research/new_clinical_framework_case_study",
+        "result": "MIXED"
+      }
+    ],
+    "capacity_benchmark": {
+      "processes": 12,
+      "joint_hypotheses": 8192,
+      "elapsed_seconds": 1.5739733999944292,
+      "canonical_state_bytes": 2001540,
+      "tracemalloc_peak_bytes": 12952334,
+      "thirteen_processes": "REJECTED_BY_DECLARED_EXACT_BOUNDARY"
+    }
+  },
+  "decisive_probes": [
+    {
+      "probe_id": "canonical_wire_authority",
+      "result": "PASS",
+      "evidence": {
+        "private_cache_poisoned": true,
+        "canonical_bytes_unchanged": true,
+        "forecast_output_unchanged": true
+      },
+      "interpretation": "The current query path reconstructs from canonical wire state and ignores the poisoned private cache."
+    },
+    {
+      "probe_id": "common_source_cross_factor_invariance",
+      "result": "PASS",
+      "evidence": {
+        "distinct_factor_ids": true,
+        "same_source_result_id": true,
+        "posterior_unchanged": true
+      },
+      "interpretation": "Two child factors registered to one source group do not multiply posterior support."
+    },
+    {
+      "probe_id": "equivalent_source_rendering_byte_invariance",
+      "result": "PASS",
+      "evidence": {
+        "same_factor_id": true,
+        "same_source_result_id": true,
+        "different_event_ids": true,
+        "sequential_reingestion_canonical_state_bytes_unchanged": true,
+        "processed_event_ids_before": ["one"],
+        "processed_event_ids_after": ["one"]
+      },
+      "interpretation": "Re-ingesting an equivalent same-source rendering under a new event_id is an exact canonical no-op, as required by PL-LED-002."
+    },
+    {
+      "probe_id": "no_new_action_vs_explicit_continue",
+      "result": "PASS_WITH_SEMANTIC_NOTE",
+      "evidence": {
+        "physiologic_trajectory_equal_for_already_active_exposure": true,
+        "policy_lifecycle_trace_equal": false,
+        "no_new_action_trace": [],
+        "explicit_continue_trace_operation": "continue"
+      },
+      "interpretation": "ARCHITECTURE_FINAL_v1.md defines natural forecast as no_new_action/continue_current. Equality of physiology is therefore expected; the explicit policy operation remains distinguishable in trace."
+    },
+    {
+      "probe_id": "collision_to_planner",
+      "result": "PASS",
+      "evidence": {
+        "collision_status": "COLLISION_WITNESS",
+        "selected_without_collision_witness": "ACT",
+        "selected_with_collision_witness": "NO_NEW_ACTION",
+        "excluded_with_collision_witness": ["ACT"]
+      },
+      "interpretation": "When the production planner is invoked with the production collision witness, it blocks the otherwise selectable unsafe action."
+    },
+    {
+      "probe_id": "refined_stratum_modulates_action_dynamics",
+      "result": "PASS",
+      "evidence": {
+        "opposite_separator_events_create_opposite_stratum_posteriors": true,
+        "action_effect_directions_opposite": true,
+        "action_stratum_modifier_trace_differs": true
+      },
+      "interpretation": "The local refinement is now behaviorally connected to action dynamics rather than being label-only."
+    },
+    {
+      "probe_id": "observed_action_response_memory",
+      "result": "PASS",
+      "evidence": {
+        "action_response_window_populated": true,
+        "response_summary_populated": true,
+        "attribution_status": "descriptive_only"
+      },
+      "interpretation": "Observed post-action coordinate change enters canonical action memory without claiming a unique causal effect."
+    },
+    {
+      "probe_id": "dynamic_ood_and_abstention",
+      "result": "PASS",
+      "evidence": {
+        "unmapped_observation_increases_unmodeled_process": true,
+        "unmapped_observation_increases_mapping_gap": true,
+        "scope_gap_is_dynamic": true,
+        "diagnosis_abstention_status": "partial_answer_only"
+      },
+      "interpretation": "Unknown evidence is not forced into the known-process posterior."
+    }
+  ],
+  "architecture_gates": [
+    {"gate_id":"G01","result":"PASS","evidence":["runtime_v2/tests/test_runtime_v2.py::test_future_event_cannot_change_earlier_state","holdout/evidence/structural_gate_harness/future_leak_probe_by_cut.json"],"gap":null},
+    {"gate_id":"G02","result":"PASS","evidence":["planned action record-only test","performed lifecycle tests","response availability test"],"gap":null},
+    {"gate_id":"G03","result":"PASS","evidence":["36/36 runtime tests pass exact event-id and equivalent-source replay","6/6 fresh/cold ledger tests pass","independent sequential equivalent-source-rendering probe is byte exact"],"gap":null},
+    {"gate_id":"G04","result":"PASS","evidence":["shared hash query test","independent poisoned private-cache probe"],"gap":null},
+    {"gate_id":"G05","result":"PASS","evidence":["query permutation/purity tests","wire-only authority test","rehashed control-plane tamper rejection test"],"gap":null},
+    {"gate_id":"G06","result":"PASS","evidence":["negative evidence test","same-source clone invariance","cross-factor common-source invariance"],"gap":"No separate general common-cause latent-parent language beyond registered source grouping was demonstrated."},
+    {"gate_id":"G07","result":"PASS","evidence":["factorial joint posterior tests","12-process 8192-hypothesis benchmark","independent process persistence witness"],"gap":null},
+    {"gate_id":"G08","result":"PASS","evidence":["same-coordinate/different-mode direction witness","mode guard and hysteresis test","mode ablation"],"gap":null},
+    {"gate_id":"G09","result":"PASS","evidence":["support masking twin","action memory and lifecycle tests"],"gap":null},
+    {"gate_id":"G10","result":"PASS","evidence":["topology inference ablation","topology planning selection ablation","control-plane semantic tamper rejection"],"gap":null},
+    {"gate_id":"G11","result":"PASS","evidence":["start/dose/continue/hold/stop/complete/washout tests","policy lifecycle trace"],"gap":"No-new-action and explicit continue have equal physiology for an already-active exposure by the architecture's no_new_action/continue_current definition; their policy traces remain distinct."},
+    {"gate_id":"G12","result":"PASS","evidence":["dynamic OOD residual test","explicit partial_answer_only output","dynamic scope_gap"],"gap":null},
+    {"gate_id":"G13","result":"PASS","evidence":["observed post-action response populates response window and summary","all queries consume the updated canonical state"],"gap":null},
+    {"gate_id":"G14","result":"PASS","evidence":["production collision evaluator","planner collision_witnesses exclusion probe","typed UNIDENTIFIABLE without separator"],"gap":"Collision evidence must be supplied to plan by orchestration; automatic discovery from ordinary event history was not demonstrated."},
+    {"gate_id":"G15","result":"EVIDENCE_MISSING","evidence":["local stratum split","availability-gated separator","explicit migration","refined stratum changes action dynamics"],"gap":"The frozen old-scope corpus evidence covers process marginals and a limited forecast scalar, not every unaffected diagnosis/forecast/action/plan query required by PL-REF-004."},
+    {"gate_id":"G16","result":"FAIL","evidence":["explicit model-digest migration tests pass","current old manifests have 11 and 10 hash mismatches","FREEZE_SEAL.json still binds the superseded 19/19 runtime","WIRE_CHECKPOINT_SEAL_v2.1.json is explicitly nonfinal"],"gap":"No manifest and final runtime_v2.1 seal bind the audited 36/36 source snapshot."},
+    {"gate_id":"G17","result":"PASS","evidence":["per-action identification status/assumptions/scope","planner excludes UNIDENTIFIABLE/OUT_OF_SCOPE","collision witness excludes unsafe action"],"gap":null},
+    {"gate_id":"G18","result":"NOT_EXECUTED","evidence":[],"gap":"This reviewer intentionally did not read any clinical case or CASE_SELECTION artifact."}
+  ],
+  "perfect_landing_gate_counts": {
+    "PASS": 20,
+    "FAIL": 0,
+    "EVIDENCE_MISSING": 5,
+    "NOT_EXECUTED": 5,
+    "NOT_APPLICABLE": 0
+  },
+  "perfect_landing_gates": [
+    {"gate_id":"PL-IND-001","result":"PASS","evidence":["holdout/evidence/structural_gate_harness/static_dependency_scan.json","holdout/evidence/structural_gate_harness/runtime_dependency_trace.json","holdout/evidence/structural_gate_harness/approved_asset_manifest.json"],"missing":[]},
+    {"gate_id":"PL-BLIND-001","result":"EVIDENCE_MISSING","evidence":["holdout/PERFECT_LANDING_GATES.seal.json"],"missing":["case_access_lineage.json","final pre-primary combined seal for this runtime snapshot"]},
+    {"gate_id":"PL-LED-001","result":"EVIDENCE_MISSING","evidence":["runtime_v2/schemas/event_v2.schema.json preserves additional properties"],"missing":["source_inventory.json","case event_ledger.json","event_ledger_audit.json"],"note":"Runtime schema does not require provenance or occurred-time/interval fields; a case ledger could still supply them, but no case was inspected."},
+    {"gate_id":"PL-LED-002","result":"PASS","evidence":["exact duplicate event-id is byte exact","equivalent same-source new-event-id sequential re-ingestion is byte exact","6/6 fresh/cold replay tests pass"],"missing":[]},
+    {"gate_id":"PL-STATE-001","result":"PASS","evidence":["query hash/purity tests","poisoned private-cache probe"],"missing":[]},
+    {"gate_id":"PL-STATE-002","result":"EVIDENCE_MISSING","evidence":["schema conformance passes","control-plane tamper fails closed","response/OOD fields are dynamic","holdout/evidence/structural_gate_harness/structural_gate_results.json"],"missing":["complete current-snapshot field_consumption_trace proving every required wire field is behaviorally consumed"]},
+    {"gate_id":"PL-TIME-001","result":"PASS","evidence":["future event all-head probe","availability watermark tests"],"missing":[]},
+    {"gate_id":"PL-TIME-002","result":"PASS","evidence":["planned action record-only","performed action lifecycle","response result only at availability cut"],"missing":[]},
+    {"gate_id":"PL-FACT-001","result":"PASS","evidence":["signed reliable-negative likelihood trace","typed factor messages"],"missing":[]},
+    {"gate_id":"PL-FACT-002","result":"PASS","evidence":["same-source same-factor posterior invariance","same-source cross-factor posterior invariance"],"missing":[],"note":"Canonical byte invariance for an equivalent rendering fails separately under PL-LED-002."},
+    {"gate_id":"PL-CONC-001","result":"PASS","evidence":["factorial concurrent-process witness","12-process exact benchmark"],"missing":[]},
+    {"gate_id":"PL-CONC-002","result":"PASS","evidence":["independent process persistence witness"],"missing":[]},
+    {"gate_id":"PL-MODE-001","result":"PASS","evidence":["branch-local mode posteriors and couplings"],"missing":[]},
+    {"gate_id":"PL-MODE-002","result":"PASS","evidence":["same-coordinate/different-mode direction","guard/hysteresis","mode ablation"],"missing":[]},
+    {"gate_id":"PL-SUPPORT-001","result":"PASS","evidence":["support masking twin","support lifecycle rollouts"],"missing":[]},
+    {"gate_id":"PL-GEOM-001","result":"PASS","evidence":["geometry inference/planning witness and ablation"],"missing":[]},
+    {"gate_id":"PL-DX-001","result":"NOT_EXECUTED","evidence":[],"missing":["case-cut diagnostic assertions and traces"]},
+    {"gate_id":"PL-DX-002","result":"NOT_EXECUTED","evidence":[],"missing":["decisive-cut localization and alternative-factor audit"]},
+    {"gate_id":"PL-PRED-001","result":"NOT_EXECUTED","evidence":[],"missing":["case-cut prospective forecast seals"]},
+    {"gate_id":"PL-PRED-002","result":"NOT_EXECUTED","evidence":[],"missing":["realized-trajectory scoring and baseline comparison"]},
+    {"gate_id":"PL-ACT-001","result":"PASS","evidence":["lifecycle matrix tests","counterfactual purity tests"],"missing":[]},
+    {"gate_id":"PL-ACT-002","result":"PASS","evidence":["response memory test","identifiability claim audit","planner exclusion and collision probes"],"missing":[]},
+    {"gate_id":"PL-OOD-001","result":"PASS","evidence":["dynamic residual perturbation"],"missing":[]},
+    {"gate_id":"PL-OOD-002","result":"PASS","evidence":["partial_answer_only unknown-process perturbation"],"missing":[]},
+    {"gate_id":"PL-REF-001","result":"PASS","evidence":["production collision witness and planner exclusion"],"missing":[]},
+    {"gate_id":"PL-REF-002","result":"PASS","evidence":["typed UNIDENTIFIABLE without separator","planner exclusion"],"missing":[]},
+    {"gate_id":"PL-REF-003","result":"PASS","evidence":["local split","separator availability","explicit migration lineage"],"missing":[]},
+    {"gate_id":"PL-REF-004","result":"EVIDENCE_MISSING","evidence":["holdout/evidence/structural_gate_harness/old_scope_query_manifest.json","holdout/evidence/structural_gate_harness/refinement_non_regression.json"],"missing":["frozen corpus of every unaffected diagnosis/forecast/action/plan query","full post-migration corpus comparison"],"note":"Current evidence seals process marginals and checks a limited old-scope output, not every unaffected query."},
+    {"gate_id":"PL-CASE-001","result":"NOT_EXECUTED","evidence":[],"missing":["case fact disposition and independent consequential-item review"]},
+    {"gate_id":"PL-REPORT-001","result":"EVIDENCE_MISSING","evidence":["this gap review is not the final perfect-landing result"],"missing":["perfect_landing_results.json","perfect_landing_report.md","report_consistency_check.json"]}
+  ],
+  "manifest_and_seal_drift": {
+    "runtime_v2/evidence/manifest.json": {
+      "status": "STALE",
+      "hash_mismatch_count": 11,
+      "bound_test_claim": "19/19"
+    },
+    "runtime_v2/evidence/WIRE_CHECKPOINT_MANIFEST_v2.1.json": {
+      "status": "STALE",
+      "hash_mismatch_count": 10,
+      "bound_test_claim": "21/21"
+    },
+    "runtime_v2/evidence/FREEZE_SEAL.json": {
+      "status": "SUPERSEDED_NOT_CURRENT",
+      "note": "Still binds the old 19/19 manifest and is byte-identical to FREEZE_SEAL_v2.0_SUPERSEDED.json."
+    },
+    "runtime_v2/evidence/WIRE_CHECKPOINT_SEAL_v2.1.json": {
+      "status": "NONFINAL_CHECKPOINT_NOT_FINAL_RUNTIME_FREEZE"
+    }
+  },
+  "minimum_next_steps": [
+    "Generate a complete field-consumption trace for every required wire field on the audited snapshot, including explicit fail-closed authority where mutation is invalid.",
+    "Expand refinement non-regression from process marginals/one scalar to a frozen corpus of every unaffected diagnosis, forecast, action rollout, and plan query.",
+    "After the remaining evidence work, rerun 36 runtime tests, 6 ledger tests, all structural gates, and the independent equivalent-rendering probe.",
+    "Only then generate a new source manifest and final runtime_v2.1 seal; never reuse the superseded 19/19 seal.",
+    "Keep clinical case replay separate: this review provides no evidence that complex real cases can be localized, dynamically updated, predicted, or treated correctly."
+  ],
+  "limitations": [
+    "No clinical case, CASE_SELECTION file, article, expected diagnosis, or case model pack was read.",
+    "The neutral fixture proves structural executability, not clinical validity, calibration, or individual causal identification.",
+    "The exact 12-process benchmark is a structural capacity measurement on the neutral fixture only.",
+    "The overall perfect-landing contract would currently aggregate to HARNESS_INCOMPLETE because blind/case/report artifacts are absent. No independent structural hard failure remains in the audited neutral-runtime probes."
+  ]
+}

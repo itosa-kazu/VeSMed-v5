@@ -1,0 +1,203 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "ncf.primary-case-gate-evaluation.v1",
+  "title": "NCF deterministic primary-case gate evaluation",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "produced_by",
+    "execution_context",
+    "evaluation_kind",
+    "input_manifest_digest",
+    "input_refs",
+    "gate_results",
+    "coverage_results",
+    "integrity"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "ncf.primary-case-gate-evaluation.v1"
+    },
+    "produced_by": {
+      "const": "holdout/tools/primary_case_gate_evaluator.py"
+    },
+    "evaluation_kind": {
+      "enum": [
+        "CASE_AND_COVERAGE",
+        "REPORT_CONSISTENCY"
+      ]
+    },
+    "input_manifest_digest": {
+      "$ref": "#/$defs/contentDigest"
+    },
+    "input_refs": {
+      "type": "array",
+      "minItems": 4,
+      "maxItems": 20,
+      "items": {
+        "$ref": "#/$defs/inputContentRef"
+      }
+    },
+    "gate_results": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 6,
+      "items": {
+        "$ref": "#/$defs/result"
+      }
+    },
+    "coverage_results": {
+      "type": "array",
+      "maxItems": 6,
+      "items": {
+        "$ref": "#/$defs/result"
+      }
+    },
+    "integrity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "all_input_refs_verified",
+        "thresholds_loaded_from_frozen_scoring_contract",
+        "screening_claims_used_as_oracle_truth",
+        "final_diagnosis_or_terminal_outcome_consumed",
+        "deterministic"
+      ],
+      "properties": {
+        "all_input_refs_verified": {
+          "const": true
+        },
+        "thresholds_loaded_from_frozen_scoring_contract": {
+          "const": true
+        },
+        "screening_claims_used_as_oracle_truth": {
+          "const": false
+        },
+        "final_diagnosis_or_terminal_outcome_consumed": {
+          "const": false
+        },
+        "deterministic": {
+          "const": true
+        }
+      }
+    },
+    "execution_context": {
+      "const": "POST_ROLE_DAG_EXTERNAL_DETERMINISTIC_EVALUATOR"
+    }
+  },
+  "$defs": {
+    "contentDigest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "sha256",
+        "bytes"
+      ],
+      "properties": {
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "bytes": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "inputContentRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ref_id",
+        "role",
+        "path",
+        "sha256",
+        "bytes"
+      ],
+      "properties": {
+        "ref_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "role": {
+          "type": "string",
+          "minLength": 1
+        },
+        "path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "bytes": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "check": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "check_id",
+        "observed",
+        "expected",
+        "operator",
+        "passed"
+      ],
+      "properties": {
+        "check_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "observed": {},
+        "expected": {},
+        "operator": {
+          "type": "string",
+          "minLength": 1
+        },
+        "passed": {
+          "type": "boolean"
+        }
+      }
+    },
+    "result": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "subject_kind",
+        "subject_id",
+        "computed_result",
+        "checks"
+      ],
+      "properties": {
+        "subject_kind": {
+          "enum": [
+            "GATE",
+            "COMPLEX_COVERAGE"
+          ]
+        },
+        "subject_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "computed_result": {
+          "enum": [
+            "PASS",
+            "FAIL"
+          ]
+        },
+        "checks": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/check"
+          }
+        }
+      }
+    }
+  }
+}

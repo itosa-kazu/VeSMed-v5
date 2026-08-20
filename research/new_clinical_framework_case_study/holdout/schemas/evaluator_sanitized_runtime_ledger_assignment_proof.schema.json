@@ -1,0 +1,269 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "ncf.evaluator-sanitized-runtime-ledger-assignment-proof.v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "producer_id",
+    "status",
+    "input_manifest",
+    "inputs",
+    "output_ledger",
+    "frozen_assets",
+    "combined_preprimary_seal_payload_sha256",
+    "opaque_run_id",
+    "assignment_algorithm",
+    "assignment_counts",
+    "assignment_digest"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "NCF-EVALUATOR-SANITIZED-RUNTIME-LEDGER-ASSIGNMENT-PROOF-1.0.0"
+    },
+    "producer_id": {
+      "const": "evaluator-sanitized-runtime-ledger-compiler-v1"
+    },
+    "status": {
+      "const": "PASS"
+    },
+    "input_manifest": {
+      "$ref": "#/$defs/contentRef"
+    },
+    "inputs": {
+      "type": "array",
+      "minItems": 5,
+      "maxItems": 5,
+      "items": {
+        "$ref": "#/$defs/inputRef"
+      }
+    },
+    "output_ledger": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/outputRef"
+        },
+        {
+          "properties": {
+            "data_class": {
+              "const": "evaluator_sanitized_runtime_ledger"
+            },
+            "schema_id": {
+              "const": "ncf.evaluator-sanitized-runtime-ledger.v1"
+            }
+          }
+        }
+      ]
+    },
+    "frozen_assets": {
+      "type": "array",
+      "minItems": 5,
+      "maxItems": 5,
+      "items": {
+        "$ref": "#/$defs/assetRef"
+      }
+    },
+    "combined_preprimary_seal_payload_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "opaque_run_id": {
+      "type": "string",
+      "pattern": "^RUN-[0-9a-f]{64}$"
+    },
+    "assignment_algorithm": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "run_id",
+        "event_id",
+        "source_concept_id",
+        "action_id",
+        "alternative_group_id"
+      ],
+      "properties": {
+        "run_id": {
+          "const": "RUN_PREFIX_PLUS_FULL_COMBINED_PREPRIMARY_PAYLOAD_SHA256"
+        },
+        "event_id": {
+          "const": "CANONICAL_LEDGER_ROW_ORDER_DECIMAL8_START1"
+        },
+        "source_concept_id": {
+          "const": "CANONICAL_LEDGER_FIRST_OCCURRENCE_DECIMAL8_START1"
+        },
+        "action_id": {
+          "const": "CANONICAL_LEDGER_FIRST_OCCURRENCE_DECIMAL8_START1"
+        },
+        "alternative_group_id": {
+          "const": "CANONICAL_LEDGER_FIRST_OCCURRENCE_DECIMAL8_START1"
+        }
+      }
+    },
+    "assignment_counts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "events",
+        "source_concepts",
+        "actions",
+        "alternative_groups"
+      ],
+      "properties": {
+        "events": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "source_concepts": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "actions": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "alternative_groups": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "assignment_digest": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    }
+  },
+  "$defs": {
+    "contentRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "path",
+        "sha256",
+        "bytes"
+      ],
+      "properties": {
+        "path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "bytes": {
+          "type": "integer",
+          "minimum": 1
+        }
+      }
+    },
+    "inputRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "slot",
+        "path",
+        "sha256",
+        "bytes",
+        "data_class",
+        "schema_id"
+      ],
+      "properties": {
+        "slot": {
+          "enum": [
+            "sealed_event_ledger",
+            "sealed_availability_ledger",
+            "sealed_concept_map",
+            "sanitized_id_type_unit_registry",
+            "combined_preprimary_seal"
+          ]
+        },
+        "path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "bytes": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "data_class": {
+          "type": "string",
+          "minLength": 1
+        },
+        "schema_id": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "outputRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "path",
+        "sha256",
+        "bytes",
+        "data_class",
+        "schema_id"
+      ],
+      "properties": {
+        "path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "bytes": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "data_class": {
+          "type": "string",
+          "minLength": 1
+        },
+        "schema_id": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "assetRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "asset_role",
+        "path",
+        "sha256",
+        "bytes"
+      ],
+      "properties": {
+        "asset_role": {
+          "enum": [
+            "compiler",
+            "compiler_test",
+            "compiler_input_schema",
+            "ledger_output_schema",
+            "assignment_proof_schema"
+          ]
+        },
+        "path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "bytes": {
+          "type": "integer",
+          "minimum": 1
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,2465 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "ncf.primary-holdout-final-result.v1",
+  "title": "Fail-closed final result for the frozen NCF 30-gate primary holdout",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "generated_at",
+    "contract_binding",
+    "gate_coverage",
+    "gate_results",
+    "complex_case_coverage",
+    "evidence_integrity",
+    "diagnosis_override",
+    "verdict",
+    "reason_codes",
+    "result_sha256"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "ncf.primary-holdout-final-result.v1"
+    },
+    "generated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "contract_binding": {
+      "type": "object",
+      "required": [
+        "gate_contract_id",
+        "gate_contract_version",
+        "gate_contract_sha256",
+        "scoring_contract_id",
+        "scoring_contract_version",
+        "scoring_contract_sha256"
+      ],
+      "properties": {
+        "gate_contract_id": {
+          "const": "NCF-PERFECT-LANDING-GATES"
+        },
+        "gate_contract_version": {
+          "const": "1.1.0"
+        },
+        "gate_contract_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "scoring_contract_id": {
+          "const": "NCF-PRIMARY-HOLDOUT-SCORING"
+        },
+        "scoring_contract_version": {
+          "const": "1.0.0"
+        },
+        "scoring_contract_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      },
+      "additionalProperties": false
+    },
+    "gate_coverage": {
+      "type": "object",
+      "required": [
+        "exact",
+        "supplied_count",
+        "expected_count",
+        "missing_ids",
+        "duplicate_ids",
+        "unknown_ids",
+        "malformed_row_count",
+        "invalid_result_ids",
+        "missing_evidence_ids",
+        "header_valid"
+      ],
+      "properties": {
+        "exact": {
+          "type": "boolean"
+        },
+        "supplied_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "expected_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "missing_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        },
+        "duplicate_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        },
+        "unknown_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        },
+        "malformed_row_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "invalid_result_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        },
+        "missing_evidence_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        },
+        "header_valid": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": false
+    },
+    "gate_results": {
+      "type": "array",
+      "minItems": 30,
+      "maxItems": 30,
+      "prefixItems": [
+        {
+          "type": "object",
+          "required": [
+            "gate_id",
+            "result",
+            "evidence_refs",
+            "failure_class",
+            "source_presence"
+          ],
+          "properties": {
+            "gate_id": {
+              "const": "PL-IND-001"
+            },
+            "result": {
+              "enum": [
+                "PASS",
+                "FAIL",
+                "EVIDENCE_MISSING",
+                "NOT_EXECUTED",
+                "NOT_APPLICABLE"
+              ]
+            },
+            "evidence_refs": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "object",
+                "required": [
+                  "path",
+                  "sha256"
+                ],
+                "properties": {
+                  "path": {
+                    "type": "string",
+                    "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))[A-Za-z0-9._/-]+$"
+                  },
+                  "sha256": {
+                    "type": "string",
+                    "pattern": "^[0-9a-f]{64}$"
+                  }
+                },
+                "additionalProperties": false
+              },
+              "uniqueItems": true
+            },
+            "failure_class": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "source_presence": {
+              "type": "boolean"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "gate_id",
+            "result",
+            "evidence_refs",
+            "failure_class",
+            "source_presence"
+          ],
+          "properties": {
+            "gate_id": {
+              "const": "PL-BLIND-001"
+            },
+            "result": {
+              "enum": [
+                "PASS",
+                "FAIL",
+                "EVIDENCE_MISSING",
+                "NOT_EXECUTED",
+                "NOT_APPLICABLE"
+              ]
+            },
+            "evidence_refs": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "object",
+                "required": [
+                  "path",
+                  "sha256"
+                ],
+                "properties": {
+                  "path": {
+                    "type": "string",
+                    "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))[A-Za-z0-9._/-]+$"
+                  },
+                  "sha256": {
+                    "type": "string",
+                    "pattern": "^[0-9a-f]{64}$"
+                  }
+                },
+                "additionalProperties": false
+              },
+              "uniqueItems": true
+            },
+            "failure_class": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "source_presence": {
+              "type": "boolean"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "gate_id",
+            "result",
+            "evidence_refs",
+            "failure_class",
+            "source_presence"
+          ],
+          "properties": {
+            "gate_id": {
+              "const": "PL-LED-001"
+            },
+            "result": {
+              "enum": [
+                "PASS",
+                "FAIL",
+                "EVIDENCE_MISSING",
+                "NOT_EXECUTED",
+                "NOT_APPLICABLE"
+              ]
+            },
+            "evidence_refs": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "object",
+                "required": [
+                  "path",
+                  "sha256"
+                ],
+                "properties": {
+                  "path": {
+                    "type": "string",
+                    "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))[A-Za-z0-9._/-]+$"
+                  },
+                  "sha256": {
+                    "type": "string",
+                    "pattern": "^[0-9a-f]{64}$"
+                  }
+                },
+                "additionalProperties": false
+              },
+              "uniqueItems": true
+            },
+            "failure_class": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "source_presence": {
+              "type": "boolean"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "gate_id",
+            "result",
+            "evidence_refs",
+            "failure_class",
+            "source_presence"
+          ],
+          "properties": {
+            "gate_id": {
+              "const": "PL-LED-002"
+            },
+            "result": {
+              "enum": [
+                "PASS",
+                "FAIL",
+                "EVIDENCE_MISSING",
+                "NOT_EXECUTED",
+                "NOT_APPLICABLE"
+              ]
+            },
+            "evidence_refs": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "object",
+                "required": [
+                  "path",
+                  "sha256"
+                ],
+                "properties": {
+                  "path": {
+                    "type": "string",
+                    "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))[A-Za-z0-9._/-]+$"
+                  },
+                  "sha256": {
+                    "type": "string",
+                    "pattern": "^[0-9a-f]{64}$"
+                  }
+                },
+                "additionalProperties": false
+              },
+              "uniqueItems": true
+            },
+            "failure_class": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "source_presence": {
+              "type": "boolean"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "gate_id",
+            "result",
+            "evidence_refs",
+            "failure_class",
+            "source_presence"
+          ],
+          "properties": {
+            "gate_id": {
+              "const": "PL-STATE-001"
+            },
+            "result": {
+              "enum": [
+                "PASS",
+                "FAIL",
+                "EVIDENCE_MISSING",
+                "NOT_EXECUTED",
+                "NOT_APPLICABLE"
+              ]
+            },
+            "evidence_refs": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "object",
+                "required": [
+                  "path",
+                  "sha256"
+                ],
+                "properties": {
+                  "path": {
+                    "type": "string",
+                    "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))[A-Za-z0-9._/-]+$"
+                  },
+                  "sha256": {
+                    "type": "string",
+                    "pattern": "^[0-9a-f]{64}$"
+                  }
+                },
+                "additionalProperties": false
+              },
+              "uniqueItems": true
+            },
+            "failure_class": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "source_presence": {
+              "type": "boolean"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "gate_id",
+            "result",
+            "evidence_refs",
+            "failure_class",
+            "source_presence"
+          ],
+          "properties": {
+            "gate_id": {
+              "const": "PL-STATE-002"
+            },
+            "result": {
+              "enum": [
+                "PASS",
+                "FAIL",
+                "EVIDENCE_MISSING",
+                "NOT_EXECUTED",
+                "NOT_APPLICABLE"
+              ]
+            },
+            "evidence_refs": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "object",
+                "required": [
+                  "path",
+                  "sha256"
+                ],
+                "properties": {
+                  "path": {
+                    "type": "string",
+                    "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))[A-Za-z0-9._/-]+$"
+                  },
+                  "sha256": {
+                    "type": "string",
+                    "pattern": "^[0-9a-f]{64}$"
+                  }
+                },
+                "additionalProperties": false
+              },
+              "uniqueItems": true
+            },
+            "failure_class": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "source_presence": {
+              "type": "boolean"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "gate_id",
+            "result",
+            "evidence_refs",
+            "failure_class",
+            "source_presence"
+          ],
+          "properties": {
+            "gate_id": {
+              "const": "PL-TIME-001"
+            },
+            "result": {
+              "enum": [
+                "PASS",
+                "FAIL",
+                "EVIDENCE_MISSING",
+                "NOT_EXECUTED",
+                "NOT_APPLICABLE"
+              ]
+            },
+            "evidence_refs": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "object",
+                "required": [
+                  "path",
+                  "sha256"
+                ],
+                "properties": {
+                  "path": {
+                    "type": "string",
+                    "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))[A-Za-z0-9._/-]+$"
+                  },
+                  "sha256": {
+                    "type": "string",
+                    "pattern": "^[0-9a-f]{64}$"
+                  }
+                },
+                "additionalProperties": false
+              },
+              "uniqueItems": true
+            },
+            "failure_class": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "source_presence": {
+              "type": "boolean"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "gate_id",
+            "result",
+            "evidence_refs",
+            "failure_class",
+            "source_presence"
+          ],
+          "properties": {
+            "gate_id": {
+              "const": "PL-TIME-002"
+            },
+            "result": {
+              "enum": [
+                "PASS",
+                "FAIL",
+                "EVIDENCE_MISSING",
+                "NOT_EXECUTED",
+                "NOT_APPLICABLE"
+              ]
+            },
+            "evidence_refs": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "object",
+                "required": [
+                  "path",
+                  "sha256"
+                ],
+                "properties": {
+                  "path": {
+                    "type": "string",
+                    "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))[A-Za-z0-9._/-]+$"
+                  },
+                  "sha256": {
+                    "type": "string",
+                    "pattern": "^[0-9a-f]{64}$"
+                  }
+                },
+                "additionalProperties": false
+              },
+              "uniqueItems": true
+            },
+            "failure_class": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "source_presence": {
+              "type": "boolean"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "gate_id",
+            "result",
+            "evidence_refs",
+            "failure_class",
+            "source_presence"
+          ],
+          "properties": {
+            "gate_id": {
+              "const": "PL-FACT-001"
+            },
+            "result": {
+              "enum": [
+                "PASS",
+                "FAIL",
+                "EVIDENCE_MISSING",
+                "NOT_EXECUTED",
+                "NOT_APPLICABLE"
+              ]
+            },
+            "evidence_refs": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "object",
+                "required": [
+                  "path",
+                  "sha256"
+                ],
+                "properties": {
+                  "path": {
+                    "type": "string",
+                    "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))[A-Za-z0-9._/-]+$"
+                  },
+                  "sha256": {
+                    "type": "string",
+                    "pattern": "^[0-9a-f]{64}$"
+                  }
+                },
+                "additionalProperties": false
+              },
+              "uniqueItems": true
+            },
+            "failure_class": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "source_presence": {
+              "type": "boolean"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "gate_id",
+            "result",
+            "evidence_refs",
+            "failure_class",
+            "source_presence"
+          ],
+          "properties": {
+            "gate_id": {
+              "const": "PL-FACT-002"
+            },
+            "result": {
+              "enum": [
+                "PASS",
+                "FAIL",
+                "EVIDENCE_MISSING",
+                "NOT_EXECUTED",
+                "NOT_APPLICABLE"
+              ]
+            },
+            "evidence_refs": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "object",
+                "required": [
+                  "path",
+                  "sha256"
+                ],
+                "properties": {
+                  "path": {
+                    "type": "string",
+                    "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))[A-Za-z0-9._/-]+$"
+                  },
+                  "sha256": {
+                    "type": "string",
+                    "pattern": "^[0-9a-f]{64}$"
+                  }
+                },
+                "additionalProperties": false
+              },
+              "uniqueItems": true
+            },
+            "failure_class": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "source_presence": {
+              "type": "boolean"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "gate_id",
+            "result",
+            "evidence_refs",
+            "failure_class",
+            "source_presence"
+          ],
+          "properties": {
+            "gate_id": {
+              "const": "PL-CONC-001"
+            },
+            "result": {
+              "enum": [
+                "PASS",
+                "FAIL",
+                "EVIDENCE_MISSING",
+                "NOT_EXECUTED",
+                "NOT_APPLICABLE"
+              ]
+            },
+            "evidence_refs": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "object",
+                "required": [
+                  "path",
+                  "sha256"
+                ],
+                "properties": {
+                  "path": {
+                    "type": "string",
+                    "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))[A-Za-z0-9._/-]+$"
+                  },
+                  "sha256": {
+                    "type": "string",
+                    "pattern": "^[0-9a-f]{64}$"
+                  }
+                },
+                "additionalProperties": false
+              },
+              "uniqueItems": true
+            },
+            "failure_class": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "source_presence": {
+              "type": "boolean"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "gate_id",
+            "result",
+            "evidence_refs",
+            "failure_class",
+            "source_presence"
+          ],
+          "properties": {
+            "gate_id": {
+              "const": "PL-CONC-002"
+            },
+            "result": {
+              "enum": [
+                "PASS",
+                "FAIL",
+                "EVIDENCE_MISSING",
+                "NOT_EXECUTED",
+                "NOT_APPLICABLE"
+              ]
+            },
+            "evidence_refs": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "object",
+                "required": [
+                  "path",
+                  "sha256"
+                ],
+                "properties": {
+                  "path": {
+                    "type": "string",
+                    "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))[A-Za-z0-9._/-]+$"
+                  },
+                  "sha256": {
+                    "type": "string",
+                    "pattern": "^[0-9a-f]{64}$"
+                  }
+                },
+                "additionalProperties": false
+              },
+              "uniqueItems": true
+            },
+            "failure_class": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "source_presence": {
+              "type": "boolean"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "gate_id",
+            "result",
+            "evidence_refs",
+            "failure_class",
+            "source_presence"
+          ],
+          "properties": {
+            "gate_id": {
+              "const": "PL-MODE-001"
+            },
+            "result": {
+              "enum": [
+                "PASS",
+                "FAIL",
+                "EVIDENCE_MISSING",
+                "NOT_EXECUTED",
+                "NOT_APPLICABLE"
+              ]
+            },
+            "evidence_refs": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "object",
+                "required": [
+                  "path",
+                  "sha256"
+                ],
+                "properties": {
+                  "path": {
+                    "type": "string",
+                    "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))[A-Za-z0-9._/-]+$"
+                  },
+                  "sha256": {
+                    "type": "string",
+                    "pattern": "^[0-9a-f]{64}$"
+                  }
+                },
+                "additionalProperties": false
+              },
+              "uniqueItems": true
+            },
+            "failure_class": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "source_presence": {
+              "type": "boolean"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "gate_id",
+            "result",
+            "evidence_refs",
+            "failure_class",
+            "source_presence"
+          ],
+          "properties": {
+            "gate_id": {
+              "const": "PL-MODE-002"
+            },
+            "result": {
+              "enum": [
+                "PASS",
+                "FAIL",
+                "EVIDENCE_MISSING",
+                "NOT_EXECUTED",
+                "NOT_APPLICABLE"
+              ]
+            },
+            "evidence_refs": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "object",
+                "required": [
+                  "path",
+                  "sha256"
+                ],
+                "properties": {
+                  "path": {
+                    "type": "string",
+                    "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))[A-Za-z0-9._/-]+$"
+                  },
+                  "sha256": {
+                    "type": "string",
+                    "pattern": "^[0-9a-f]{64}$"
+                  }
+                },
+                "additionalProperties": false
+              },
+              "uniqueItems": true
+            },
+            "failure_class": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "source_presence": {
+              "type": "boolean"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "gate_id",
+            "result",
+            "evidence_refs",
+            "failure_class",
+            "source_presence"
+          ],
+          "properties": {
+            "gate_id": {
+              "const": "PL-SUPPORT-001"
+            },
+            "result": {
+              "enum": [
+                "PASS",
+                "FAIL",
+                "EVIDENCE_MISSING",
+                "NOT_EXECUTED",
+                "NOT_APPLICABLE"
+              ]
+            },
+            "evidence_refs": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "object",
+                "required": [
+                  "path",
+                  "sha256"
+                ],
+                "properties": {
+                  "path": {
+                    "type": "string",
+                    "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))[A-Za-z0-9._/-]+$"
+                  },
+                  "sha256": {
+                    "type": "string",
+                    "pattern": "^[0-9a-f]{64}$"
+                  }
+                },
+                "additionalProperties": false
+              },
+              "uniqueItems": true
+            },
+            "failure_class": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "source_presence": {
+              "type": "boolean"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "gate_id",
+            "result",
+            "evidence_refs",
+            "failure_class",
+            "source_presence"
+          ],
+          "properties": {
+            "gate_id": {
+              "const": "PL-GEOM-001"
+            },
+            "result": {
+              "enum": [
+                "PASS",
+                "FAIL",
+                "EVIDENCE_MISSING",
+                "NOT_EXECUTED",
+                "NOT_APPLICABLE"
+              ]
+            },
+            "evidence_refs": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "object",
+                "required": [
+                  "path",
+                  "sha256"
+                ],
+                "properties": {
+                  "path": {
+                    "type": "string",
+                    "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))[A-Za-z0-9._/-]+$"
+                  },
+                  "sha256": {
+                    "type": "string",
+                    "pattern": "^[0-9a-f]{64}$"
+                  }
+                },
+                "additionalProperties": false
+              },
+              "uniqueItems": true
+            },
+            "failure_class": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "source_presence": {
+              "type": "boolean"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "gate_id",
+            "result",
+            "evidence_refs",
+            "failure_class",
+            "source_presence"
+          ],
+          "properties": {
+            "gate_id": {
+              "const": "PL-DX-001"
+            },
+            "result": {
+              "enum": [
+                "PASS",
+                "FAIL",
+                "EVIDENCE_MISSING",
+                "NOT_EXECUTED",
+                "NOT_APPLICABLE"
+              ]
+            },
+            "evidence_refs": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "object",
+                "required": [
+                  "path",
+                  "sha256"
+                ],
+                "properties": {
+                  "path": {
+                    "type": "string",
+                    "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))[A-Za-z0-9._/-]+$"
+                  },
+                  "sha256": {
+                    "type": "string",
+                    "pattern": "^[0-9a-f]{64}$"
+                  }
+                },
+                "additionalProperties": false
+              },
+              "uniqueItems": true
+            },
+            "failure_class": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "source_presence": {
+              "type": "boolean"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "gate_id",
+            "result",
+            "evidence_refs",
+            "failure_class",
+            "source_presence"
+          ],
+          "properties": {
+            "gate_id": {
+              "const": "PL-DX-002"
+            },
+            "result": {
+              "enum": [
+                "PASS",
+                "FAIL",
+                "EVIDENCE_MISSING",
+                "NOT_EXECUTED",
+                "NOT_APPLICABLE"
+              ]
+            },
+            "evidence_refs": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "object",
+                "required": [
+                  "path",
+                  "sha256"
+                ],
+                "properties": {
+                  "path": {
+                    "type": "string",
+                    "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))[A-Za-z0-9._/-]+$"
+                  },
+                  "sha256": {
+                    "type": "string",
+                    "pattern": "^[0-9a-f]{64}$"
+                  }
+                },
+                "additionalProperties": false
+              },
+              "uniqueItems": true
+            },
+            "failure_class": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "source_presence": {
+              "type": "boolean"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "gate_id",
+            "result",
+            "evidence_refs",
+            "failure_class",
+            "source_presence"
+          ],
+          "properties": {
+            "gate_id": {
+              "const": "PL-PRED-001"
+            },
+            "result": {
+              "enum": [
+                "PASS",
+                "FAIL",
+                "EVIDENCE_MISSING",
+                "NOT_EXECUTED",
+                "NOT_APPLICABLE"
+              ]
+            },
+            "evidence_refs": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "object",
+                "required": [
+                  "path",
+                  "sha256"
+                ],
+                "properties": {
+                  "path": {
+                    "type": "string",
+                    "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))[A-Za-z0-9._/-]+$"
+                  },
+                  "sha256": {
+                    "type": "string",
+                    "pattern": "^[0-9a-f]{64}$"
+                  }
+                },
+                "additionalProperties": false
+              },
+              "uniqueItems": true
+            },
+            "failure_class": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "source_presence": {
+              "type": "boolean"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "gate_id",
+            "result",
+            "evidence_refs",
+            "failure_class",
+            "source_presence"
+          ],
+          "properties": {
+            "gate_id": {
+              "const": "PL-PRED-002"
+            },
+            "result": {
+              "enum": [
+                "PASS",
+                "FAIL",
+                "EVIDENCE_MISSING",
+                "NOT_EXECUTED",
+                "NOT_APPLICABLE"
+              ]
+            },
+            "evidence_refs": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "object",
+                "required": [
+                  "path",
+                  "sha256"
+                ],
+                "properties": {
+                  "path": {
+                    "type": "string",
+                    "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))[A-Za-z0-9._/-]+$"
+                  },
+                  "sha256": {
+                    "type": "string",
+                    "pattern": "^[0-9a-f]{64}$"
+                  }
+                },
+                "additionalProperties": false
+              },
+              "uniqueItems": true
+            },
+            "failure_class": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "source_presence": {
+              "type": "boolean"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "gate_id",
+            "result",
+            "evidence_refs",
+            "failure_class",
+            "source_presence"
+          ],
+          "properties": {
+            "gate_id": {
+              "const": "PL-ACT-001"
+            },
+            "result": {
+              "enum": [
+                "PASS",
+                "FAIL",
+                "EVIDENCE_MISSING",
+                "NOT_EXECUTED",
+                "NOT_APPLICABLE"
+              ]
+            },
+            "evidence_refs": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "object",
+                "required": [
+                  "path",
+                  "sha256"
+                ],
+                "properties": {
+                  "path": {
+                    "type": "string",
+                    "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))[A-Za-z0-9._/-]+$"
+                  },
+                  "sha256": {
+                    "type": "string",
+                    "pattern": "^[0-9a-f]{64}$"
+                  }
+                },
+                "additionalProperties": false
+              },
+              "uniqueItems": true
+            },
+            "failure_class": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "source_presence": {
+              "type": "boolean"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "gate_id",
+            "result",
+            "evidence_refs",
+            "failure_class",
+            "source_presence"
+          ],
+          "properties": {
+            "gate_id": {
+              "const": "PL-ACT-002"
+            },
+            "result": {
+              "enum": [
+                "PASS",
+                "FAIL",
+                "EVIDENCE_MISSING",
+                "NOT_EXECUTED",
+                "NOT_APPLICABLE"
+              ]
+            },
+            "evidence_refs": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "object",
+                "required": [
+                  "path",
+                  "sha256"
+                ],
+                "properties": {
+                  "path": {
+                    "type": "string",
+                    "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))[A-Za-z0-9._/-]+$"
+                  },
+                  "sha256": {
+                    "type": "string",
+                    "pattern": "^[0-9a-f]{64}$"
+                  }
+                },
+                "additionalProperties": false
+              },
+              "uniqueItems": true
+            },
+            "failure_class": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "source_presence": {
+              "type": "boolean"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "gate_id",
+            "result",
+            "evidence_refs",
+            "failure_class",
+            "source_presence"
+          ],
+          "properties": {
+            "gate_id": {
+              "const": "PL-OOD-001"
+            },
+            "result": {
+              "enum": [
+                "PASS",
+                "FAIL",
+                "EVIDENCE_MISSING",
+                "NOT_EXECUTED",
+                "NOT_APPLICABLE"
+              ]
+            },
+            "evidence_refs": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "object",
+                "required": [
+                  "path",
+                  "sha256"
+                ],
+                "properties": {
+                  "path": {
+                    "type": "string",
+                    "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))[A-Za-z0-9._/-]+$"
+                  },
+                  "sha256": {
+                    "type": "string",
+                    "pattern": "^[0-9a-f]{64}$"
+                  }
+                },
+                "additionalProperties": false
+              },
+              "uniqueItems": true
+            },
+            "failure_class": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "source_presence": {
+              "type": "boolean"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "gate_id",
+            "result",
+            "evidence_refs",
+            "failure_class",
+            "source_presence"
+          ],
+          "properties": {
+            "gate_id": {
+              "const": "PL-OOD-002"
+            },
+            "result": {
+              "enum": [
+                "PASS",
+                "FAIL",
+                "EVIDENCE_MISSING",
+                "NOT_EXECUTED",
+                "NOT_APPLICABLE"
+              ]
+            },
+            "evidence_refs": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "object",
+                "required": [
+                  "path",
+                  "sha256"
+                ],
+                "properties": {
+                  "path": {
+                    "type": "string",
+                    "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))[A-Za-z0-9._/-]+$"
+                  },
+                  "sha256": {
+                    "type": "string",
+                    "pattern": "^[0-9a-f]{64}$"
+                  }
+                },
+                "additionalProperties": false
+              },
+              "uniqueItems": true
+            },
+            "failure_class": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "source_presence": {
+              "type": "boolean"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "gate_id",
+            "result",
+            "evidence_refs",
+            "failure_class",
+            "source_presence"
+          ],
+          "properties": {
+            "gate_id": {
+              "const": "PL-REF-001"
+            },
+            "result": {
+              "enum": [
+                "PASS",
+                "FAIL",
+                "EVIDENCE_MISSING",
+                "NOT_EXECUTED",
+                "NOT_APPLICABLE"
+              ]
+            },
+            "evidence_refs": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "object",
+                "required": [
+                  "path",
+                  "sha256"
+                ],
+                "properties": {
+                  "path": {
+                    "type": "string",
+                    "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))[A-Za-z0-9._/-]+$"
+                  },
+                  "sha256": {
+                    "type": "string",
+                    "pattern": "^[0-9a-f]{64}$"
+                  }
+                },
+                "additionalProperties": false
+              },
+              "uniqueItems": true
+            },
+            "failure_class": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "source_presence": {
+              "type": "boolean"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "gate_id",
+            "result",
+            "evidence_refs",
+            "failure_class",
+            "source_presence"
+          ],
+          "properties": {
+            "gate_id": {
+              "const": "PL-REF-002"
+            },
+            "result": {
+              "enum": [
+                "PASS",
+                "FAIL",
+                "EVIDENCE_MISSING",
+                "NOT_EXECUTED",
+                "NOT_APPLICABLE"
+              ]
+            },
+            "evidence_refs": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "object",
+                "required": [
+                  "path",
+                  "sha256"
+                ],
+                "properties": {
+                  "path": {
+                    "type": "string",
+                    "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))[A-Za-z0-9._/-]+$"
+                  },
+                  "sha256": {
+                    "type": "string",
+                    "pattern": "^[0-9a-f]{64}$"
+                  }
+                },
+                "additionalProperties": false
+              },
+              "uniqueItems": true
+            },
+            "failure_class": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "source_presence": {
+              "type": "boolean"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "gate_id",
+            "result",
+            "evidence_refs",
+            "failure_class",
+            "source_presence"
+          ],
+          "properties": {
+            "gate_id": {
+              "const": "PL-REF-003"
+            },
+            "result": {
+              "enum": [
+                "PASS",
+                "FAIL",
+                "EVIDENCE_MISSING",
+                "NOT_EXECUTED",
+                "NOT_APPLICABLE"
+              ]
+            },
+            "evidence_refs": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "object",
+                "required": [
+                  "path",
+                  "sha256"
+                ],
+                "properties": {
+                  "path": {
+                    "type": "string",
+                    "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))[A-Za-z0-9._/-]+$"
+                  },
+                  "sha256": {
+                    "type": "string",
+                    "pattern": "^[0-9a-f]{64}$"
+                  }
+                },
+                "additionalProperties": false
+              },
+              "uniqueItems": true
+            },
+            "failure_class": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "source_presence": {
+              "type": "boolean"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "gate_id",
+            "result",
+            "evidence_refs",
+            "failure_class",
+            "source_presence"
+          ],
+          "properties": {
+            "gate_id": {
+              "const": "PL-REF-004"
+            },
+            "result": {
+              "enum": [
+                "PASS",
+                "FAIL",
+                "EVIDENCE_MISSING",
+                "NOT_EXECUTED",
+                "NOT_APPLICABLE"
+              ]
+            },
+            "evidence_refs": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "object",
+                "required": [
+                  "path",
+                  "sha256"
+                ],
+                "properties": {
+                  "path": {
+                    "type": "string",
+                    "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))[A-Za-z0-9._/-]+$"
+                  },
+                  "sha256": {
+                    "type": "string",
+                    "pattern": "^[0-9a-f]{64}$"
+                  }
+                },
+                "additionalProperties": false
+              },
+              "uniqueItems": true
+            },
+            "failure_class": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "source_presence": {
+              "type": "boolean"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "gate_id",
+            "result",
+            "evidence_refs",
+            "failure_class",
+            "source_presence"
+          ],
+          "properties": {
+            "gate_id": {
+              "const": "PL-CASE-001"
+            },
+            "result": {
+              "enum": [
+                "PASS",
+                "FAIL",
+                "EVIDENCE_MISSING",
+                "NOT_EXECUTED",
+                "NOT_APPLICABLE"
+              ]
+            },
+            "evidence_refs": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "object",
+                "required": [
+                  "path",
+                  "sha256"
+                ],
+                "properties": {
+                  "path": {
+                    "type": "string",
+                    "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))[A-Za-z0-9._/-]+$"
+                  },
+                  "sha256": {
+                    "type": "string",
+                    "pattern": "^[0-9a-f]{64}$"
+                  }
+                },
+                "additionalProperties": false
+              },
+              "uniqueItems": true
+            },
+            "failure_class": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "source_presence": {
+              "type": "boolean"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "gate_id",
+            "result",
+            "evidence_refs",
+            "failure_class",
+            "source_presence"
+          ],
+          "properties": {
+            "gate_id": {
+              "const": "PL-REPORT-001"
+            },
+            "result": {
+              "enum": [
+                "PASS",
+                "FAIL",
+                "EVIDENCE_MISSING",
+                "NOT_EXECUTED",
+                "NOT_APPLICABLE"
+              ]
+            },
+            "evidence_refs": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "object",
+                "required": [
+                  "path",
+                  "sha256"
+                ],
+                "properties": {
+                  "path": {
+                    "type": "string",
+                    "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))[A-Za-z0-9._/-]+$"
+                  },
+                  "sha256": {
+                    "type": "string",
+                    "pattern": "^[0-9a-f]{64}$"
+                  }
+                },
+                "additionalProperties": false
+              },
+              "uniqueItems": true
+            },
+            "failure_class": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "source_presence": {
+              "type": "boolean"
+            }
+          },
+          "additionalProperties": false
+        }
+      ],
+      "items": false
+    },
+    "complex_case_coverage": {
+      "type": "object",
+      "required": [
+        "exact",
+        "supplied_count",
+        "expected_count",
+        "missing_ids",
+        "duplicate_ids",
+        "unknown_ids",
+        "malformed_row_count",
+        "invalid_result_ids",
+        "missing_evidence_ids",
+        "header_valid",
+        "checks"
+      ],
+      "properties": {
+        "exact": {
+          "type": "boolean"
+        },
+        "supplied_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "expected_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "missing_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        },
+        "duplicate_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        },
+        "unknown_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        },
+        "malformed_row_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "invalid_result_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        },
+        "missing_evidence_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        },
+        "header_valid": {
+          "type": "boolean"
+        },
+        "checks": {
+          "type": "array",
+          "minItems": 7,
+          "maxItems": 7,
+          "prefixItems": [
+            {
+              "type": "object",
+              "required": [
+                "coverage_id",
+                "result",
+                "evidence_refs",
+                "failure_class",
+                "source_presence"
+              ],
+              "properties": {
+                "coverage_id": {
+                  "const": "recursive_updates"
+                },
+                "result": {
+                  "enum": [
+                    "PASS",
+                    "FAIL",
+                    "EVIDENCE_MISSING",
+                    "NOT_EXECUTED",
+                    "NOT_APPLICABLE"
+                  ]
+                },
+                "evidence_refs": {
+                  "type": "array",
+                  "minItems": 1,
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "path",
+                      "sha256"
+                    ],
+                    "properties": {
+                      "path": {
+                        "type": "string",
+                        "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))[A-Za-z0-9._/-]+$"
+                      },
+                      "sha256": {
+                        "type": "string",
+                        "pattern": "^[0-9a-f]{64}$"
+                      }
+                    },
+                    "additionalProperties": false
+                  },
+                  "uniqueItems": true
+                },
+                "failure_class": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "source_presence": {
+                  "type": "boolean"
+                }
+              },
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "required": [
+                "coverage_id",
+                "result",
+                "evidence_refs",
+                "failure_class",
+                "source_presence"
+              ],
+              "properties": {
+                "coverage_id": {
+                  "const": "at_least_two_local_domains"
+                },
+                "result": {
+                  "enum": [
+                    "PASS",
+                    "FAIL",
+                    "EVIDENCE_MISSING",
+                    "NOT_EXECUTED",
+                    "NOT_APPLICABLE"
+                  ]
+                },
+                "evidence_refs": {
+                  "type": "array",
+                  "minItems": 1,
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "path",
+                      "sha256"
+                    ],
+                    "properties": {
+                      "path": {
+                        "type": "string",
+                        "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))[A-Za-z0-9._/-]+$"
+                      },
+                      "sha256": {
+                        "type": "string",
+                        "pattern": "^[0-9a-f]{64}$"
+                      }
+                    },
+                    "additionalProperties": false
+                  },
+                  "uniqueItems": true
+                },
+                "failure_class": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "source_presence": {
+                  "type": "boolean"
+                }
+              },
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "required": [
+                "coverage_id",
+                "result",
+                "evidence_refs",
+                "failure_class",
+                "source_presence"
+              ],
+              "properties": {
+                "coverage_id": {
+                  "const": "concurrent_process_target_from_oracle"
+                },
+                "result": {
+                  "enum": [
+                    "PASS",
+                    "FAIL",
+                    "EVIDENCE_MISSING",
+                    "NOT_EXECUTED",
+                    "NOT_APPLICABLE"
+                  ]
+                },
+                "evidence_refs": {
+                  "type": "array",
+                  "minItems": 1,
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "path",
+                      "sha256"
+                    ],
+                    "properties": {
+                      "path": {
+                        "type": "string",
+                        "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))[A-Za-z0-9._/-]+$"
+                      },
+                      "sha256": {
+                        "type": "string",
+                        "pattern": "^[0-9a-f]{64}$"
+                      }
+                    },
+                    "additionalProperties": false
+                  },
+                  "uniqueItems": true
+                },
+                "failure_class": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "source_presence": {
+                  "type": "boolean"
+                }
+              },
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "required": [
+                "coverage_id",
+                "result",
+                "evidence_refs",
+                "failure_class",
+                "source_presence"
+              ],
+              "properties": {
+                "coverage_id": {
+                  "const": "delayed_information"
+                },
+                "result": {
+                  "enum": [
+                    "PASS",
+                    "FAIL",
+                    "EVIDENCE_MISSING",
+                    "NOT_EXECUTED",
+                    "NOT_APPLICABLE"
+                  ]
+                },
+                "evidence_refs": {
+                  "type": "array",
+                  "minItems": 1,
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "path",
+                      "sha256"
+                    ],
+                    "properties": {
+                      "path": {
+                        "type": "string",
+                        "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))[A-Za-z0-9._/-]+$"
+                      },
+                      "sha256": {
+                        "type": "string",
+                        "pattern": "^[0-9a-f]{64}$"
+                      }
+                    },
+                    "additionalProperties": false
+                  },
+                  "uniqueItems": true
+                },
+                "failure_class": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "source_presence": {
+                  "type": "boolean"
+                }
+              },
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "required": [
+                "coverage_id",
+                "result",
+                "evidence_refs",
+                "failure_class",
+                "source_presence"
+              ],
+              "properties": {
+                "coverage_id": {
+                  "const": "reliable_negative_evidence"
+                },
+                "result": {
+                  "enum": [
+                    "PASS",
+                    "FAIL",
+                    "EVIDENCE_MISSING",
+                    "NOT_EXECUTED",
+                    "NOT_APPLICABLE"
+                  ]
+                },
+                "evidence_refs": {
+                  "type": "array",
+                  "minItems": 1,
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "path",
+                      "sha256"
+                    ],
+                    "properties": {
+                      "path": {
+                        "type": "string",
+                        "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))[A-Za-z0-9._/-]+$"
+                      },
+                      "sha256": {
+                        "type": "string",
+                        "pattern": "^[0-9a-f]{64}$"
+                      }
+                    },
+                    "additionalProperties": false
+                  },
+                  "uniqueItems": true
+                },
+                "failure_class": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "source_presence": {
+                  "type": "boolean"
+                }
+              },
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "required": [
+                "coverage_id",
+                "result",
+                "evidence_refs",
+                "failure_class",
+                "source_presence"
+              ],
+              "properties": {
+                "coverage_id": {
+                  "const": "performed_action_lifecycle_with_response"
+                },
+                "result": {
+                  "enum": [
+                    "PASS",
+                    "FAIL",
+                    "EVIDENCE_MISSING",
+                    "NOT_EXECUTED",
+                    "NOT_APPLICABLE"
+                  ]
+                },
+                "evidence_refs": {
+                  "type": "array",
+                  "minItems": 1,
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "path",
+                      "sha256"
+                    ],
+                    "properties": {
+                      "path": {
+                        "type": "string",
+                        "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))[A-Za-z0-9._/-]+$"
+                      },
+                      "sha256": {
+                        "type": "string",
+                        "pattern": "^[0-9a-f]{64}$"
+                      }
+                    },
+                    "additionalProperties": false
+                  },
+                  "uniqueItems": true
+                },
+                "failure_class": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "source_presence": {
+                  "type": "boolean"
+                }
+              },
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "required": [
+                "coverage_id",
+                "result",
+                "evidence_refs",
+                "failure_class",
+                "source_presence"
+              ],
+              "properties": {
+                "coverage_id": {
+                  "const": "prospective_pre_next_cut_forecasts"
+                },
+                "result": {
+                  "enum": [
+                    "PASS",
+                    "FAIL",
+                    "EVIDENCE_MISSING",
+                    "NOT_EXECUTED",
+                    "NOT_APPLICABLE"
+                  ]
+                },
+                "evidence_refs": {
+                  "type": "array",
+                  "minItems": 1,
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "path",
+                      "sha256"
+                    ],
+                    "properties": {
+                      "path": {
+                        "type": "string",
+                        "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))[A-Za-z0-9._/-]+$"
+                      },
+                      "sha256": {
+                        "type": "string",
+                        "pattern": "^[0-9a-f]{64}$"
+                      }
+                    },
+                    "additionalProperties": false
+                  },
+                  "uniqueItems": true
+                },
+                "failure_class": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "source_presence": {
+                  "type": "boolean"
+                }
+              },
+              "additionalProperties": false
+            }
+          ],
+          "items": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "diagnosis_override": {
+      "type": "object",
+      "required": [
+        "correct_diagnosis_reported",
+        "used_to_override_gate_failure"
+      ],
+      "properties": {
+        "correct_diagnosis_reported": {
+          "type": "boolean"
+        },
+        "used_to_override_gate_failure": {
+          "const": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "verdict": {
+      "enum": [
+        "PERFECT_LANDING_WITHIN_FROZEN_CASE_SCOPE",
+        "FAILED",
+        "HARNESS_INCOMPLETE"
+      ]
+    },
+    "reason_codes": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "result_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "evidence_integrity": {
+      "type": "object",
+      "required": [
+        "all_valid",
+        "validated_artifact_count",
+        "invalid_artifacts"
+      ],
+      "properties": {
+        "all_valid": {
+          "type": "boolean"
+        },
+        "validated_artifact_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "invalid_artifacts": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "subject_id",
+              "reason"
+            ],
+            "properties": {
+              "subject_id": {
+                "type": "string"
+              },
+              "reason": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false,
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "verdict": {
+            "const": "PERFECT_LANDING_WITHIN_FROZEN_CASE_SCOPE"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "gate_coverage": {
+            "properties": {
+              "exact": {
+                "const": true
+              }
+            }
+          },
+          "complex_case_coverage": {
+            "properties": {
+              "exact": {
+                "const": true
+              }
+            }
+          },
+          "gate_results": {
+            "items": {
+              "properties": {
+                "result": {
+                  "const": "PASS"
+                },
+                "source_presence": {
+                  "const": true
+                }
+              }
+            }
+          },
+          "diagnosis_override": {
+            "properties": {
+              "used_to_override_gate_failure": {
+                "const": false
+              }
+            }
+          },
+          "evidence_integrity": {
+            "properties": {
+              "all_valid": {
+                "const": true
+              },
+              "validated_artifact_count": {
+                "minimum": 37
+              },
+              "invalid_artifacts": {
+                "maxItems": 0
+              }
+            }
+          }
+        }
+      }
+    }
+  ]
+}

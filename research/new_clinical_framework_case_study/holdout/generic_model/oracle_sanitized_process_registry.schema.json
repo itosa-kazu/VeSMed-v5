@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "processes": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "domain": {"minLength": 1, "type": "string"},
+          "name_en": {"minLength": 1, "type": "string"},
+          "name_ja": {"minLength": 1, "type": "string"},
+          "neutral_description": {"minLength": 1, "type": "string"},
+          "process_id": {"minLength": 1, "type": "string"}
+        },
+        "required": ["process_id", "name_ja", "name_en", "neutral_description", "domain"],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "schema_version": {"const": "NCF-ORACLE-SANITIZED-PROCESS-REGISTRY-1.0.0"},
+    "source_model_pack_sha256": {"pattern": "^[0-9a-f]{64}$", "type": "string"}
+  },
+  "required": ["schema_version", "source_model_pack_sha256", "processes"],
+  "type": "object"
+}

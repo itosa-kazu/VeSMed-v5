@@ -1,0 +1,136 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "ncf.primary-availability-ledger.v1",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "publication_order_used_as_clinical_availability",
+    "events"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "ncf.primary-availability-ledger.v1"
+    },
+    "publication_order_used_as_clinical_availability": {
+      "const": false
+    },
+    "events": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "source_event_id",
+          "availability_evidence",
+          "runtime_event"
+        ],
+        "properties": {
+          "source_event_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "availability_evidence": {
+            "oneOf": [
+              {
+                "type": "object",
+                "required": [
+                  "kind",
+                  "exact_epoch"
+                ],
+                "properties": {
+                  "kind": {
+                    "const": "EXACT"
+                  },
+                  "exact_epoch": {
+                    "type": "number"
+                  }
+                },
+                "additionalProperties": true
+              },
+              {
+                "type": "object",
+                "required": [
+                  "kind",
+                  "earliest_epoch",
+                  "latest_epoch"
+                ],
+                "properties": {
+                  "kind": {
+                    "const": "INTERVAL"
+                  },
+                  "earliest_epoch": {
+                    "type": "number"
+                  },
+                  "latest_epoch": {
+                    "type": "number"
+                  }
+                },
+                "additionalProperties": true
+              },
+              {
+                "type": "object",
+                "required": [
+                  "kind",
+                  "batch_id",
+                  "latest_epoch"
+                ],
+                "properties": {
+                  "kind": {
+                    "const": "REPORTED_BATCH"
+                  },
+                  "batch_id": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "latest_epoch": {
+                    "type": "number"
+                  }
+                },
+                "additionalProperties": true
+              },
+              {
+                "type": "object",
+                "required": [
+                  "kind"
+                ],
+                "properties": {
+                  "kind": {
+                    "const": "PARTIAL_ORDER"
+                  },
+                  "latest_epoch": {
+                    "type": [
+                      "number",
+                      "null"
+                    ]
+                  }
+                },
+                "additionalProperties": true
+              },
+              {
+                "type": "object",
+                "required": [
+                  "kind"
+                ],
+                "properties": {
+                  "kind": {
+                    "const": "UNKNOWN"
+                  }
+                },
+                "additionalProperties": true
+              }
+            ]
+          },
+          "runtime_event": {
+            "type": "object",
+            "not": {
+              "required": [
+                "available_at"
+              ]
+            }
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

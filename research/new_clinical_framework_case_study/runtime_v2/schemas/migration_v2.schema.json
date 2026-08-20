@@ -1,0 +1,81 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "new-clinical-runtime.migration.v2.0",
+  "title": "Explicit Runtime v2 state migration",
+  "type": "object",
+  "required": ["migration_id", "from_model_digest", "to_model_digest", "process_map"],
+  "properties": {
+    "migration_id": {"type": "string", "minLength": 1},
+    "from_model_digest": {"type": ["string", "null"]},
+    "to_model_digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "process_map": {"type": "object", "additionalProperties": {"type": "string"}},
+    "drop_processes": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "coordinate_maps": {
+      "type": "object",
+      "additionalProperties": {"type": "object", "additionalProperties": {"type": "string"}}
+    },
+    "mode_maps": {
+      "type": "object",
+      "additionalProperties": {"type": "object", "additionalProperties": {"type": "string"}}
+    },
+    "stratum_maps": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": {
+          "oneOf": [
+            {"type": "string"},
+            {"type": "object", "additionalProperties": {"type": "number", "minimum": 0}}
+          ]
+        }
+      }
+    },
+    "history_stratum_maps": {
+      "type": "object",
+      "additionalProperties": {"type": "object", "additionalProperties": {"type": "string"}}
+    },
+    "factor_map": {"type": "object", "additionalProperties": {"type": "string"}},
+    "action_transports": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": [
+          "transport_type",
+          "target_action_id",
+          "source_action_digest",
+          "target_action_digest",
+          "source_dose_unit",
+          "target_dose_unit",
+          "dose_multiplier",
+          "validation_artifact_digest"
+        ],
+        "properties": {
+          "transport_type": {"const": "linear_dose_unit_conversion"},
+          "target_action_id": {"type": "string", "minLength": 1},
+          "source_action_digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+          "target_action_digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+          "source_dose_unit": {"type": ["string", "null"]},
+          "target_dose_unit": {"type": ["string", "null"]},
+          "dose_multiplier": {"type": "number", "exclusiveMinimum": 0},
+          "validation_artifact_digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+        },
+        "additionalProperties": false
+      }
+    },
+    "validated_posterior_transport": {
+      "type": "object",
+      "required": ["source_state_hash", "from_factor_graph_digest", "to_factor_graph_digest", "validation_artifact_digest"],
+      "properties": {
+        "source_state_hash": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "from_factor_graph_digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "to_factor_graph_digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "validation_artifact_digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+      },
+      "additionalProperties": false
+    },
+    "merge_kernels": {"type": "object"},
+    "refinement_lineage": {"type": "object"},
+    "action_map": {"type": "object", "additionalProperties": {"type": "string"}}
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,80 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "ncf.compiled-guaranteed-availability.v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "source_ledger_canonical_sha256",
+    "release_semantics",
+    "released_events",
+    "withheld_events",
+    "cut_manifest",
+    "compiled_sha256"
+  ],
+  "properties": {
+    "schema_version": {"const": "ncf.compiled-guaranteed-availability.v1"},
+    "source_ledger_canonical_sha256": {"$ref": "#/$defs/sha256"},
+    "release_semantics": {
+      "const": "LATEST_POSSIBLE_AVAILABILITY_GUARANTEED_NO_LATER_THAN_CUT"
+    },
+    "released_events": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "source_event_id",
+          "guaranteed_available_epoch",
+          "availability_kind",
+          "runtime_event"
+        ],
+        "properties": {
+          "source_event_id": {"type": "string", "minLength": 1},
+          "guaranteed_available_epoch": {"type": "number"},
+          "availability_kind": {
+            "enum": ["EXACT", "INTERVAL", "REPORTED_BATCH", "PARTIAL_ORDER"]
+          },
+          "runtime_event": {
+            "type": "object",
+            "required": ["available_at"],
+            "properties": {"available_at": {"type": "number"}}
+          }
+        }
+      }
+    },
+    "withheld_events": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["source_event_id", "reason", "measurement_uncertainty_required"],
+        "properties": {
+          "source_event_id": {"type": "string", "minLength": 1},
+          "reason": {"const": "availability_unknown"},
+          "measurement_uncertainty_required": {"const": true}
+        }
+      }
+    },
+    "cut_manifest": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["cut", "released_source_event_ids"],
+        "properties": {
+          "cut": {"type": "number"},
+          "released_source_event_ids": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": {"type": "string", "minLength": 1}
+          }
+        }
+      }
+    },
+    "compiled_sha256": {"$ref": "#/$defs/sha256"}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  }
+}

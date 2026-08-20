@@ -1,0 +1,137 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "ncf.primary-case-screening-compiler-input.v1",
+  "title": "Mechanical primary-case screening compiler input",
+  "description": "Agent-authored criterion judgments and immutable evidence bindings. The compiler validates and materializes them but does not make medical judgments.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "protocol_ref", "search_snapshot_ref", "exclusions_ref", "candidates"],
+  "properties": {
+    "schema_version": {"const": "NCF-PRIMARY-CASE-SCREENING-COMPILER-INPUT-1.0.0"},
+    "protocol_ref": {"$ref": "#/$defs/artifactRef"},
+    "search_snapshot_ref": {"$ref": "#/$defs/artifactRef"},
+    "exclusions_ref": {"$ref": "#/$defs/artifactRef"},
+    "candidates": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/candidate"}
+    }
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "artifactRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256", "bytes"],
+      "properties": {
+        "path": {"type": "string", "minLength": 1},
+        "sha256": {"$ref": "#/$defs/sha256"},
+        "bytes": {"type": "integer", "minimum": 1}
+      }
+    },
+    "assertion": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["assertion_id", "statement", "passed"],
+      "properties": {
+        "assertion_id": {"type": "string", "minLength": 1},
+        "statement": {"type": "string", "minLength": 1},
+        "passed": {"const": true}
+      }
+    },
+    "locator": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["locator_kind", "byte_start", "byte_end", "excerpt_sha256", "source_anchor", "assertions"],
+      "properties": {
+        "locator_kind": {"enum": ["EXACT_EXCERPT", "WHOLE_DOCUMENT_REVIEW"]},
+        "byte_start": {"type": "integer", "minimum": 0},
+        "byte_end": {"type": "integer", "minimum": 1},
+        "excerpt_sha256": {"$ref": "#/$defs/sha256"},
+        "source_anchor": {"type": "string", "minLength": 1},
+        "assertions": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/assertion"}}
+      }
+    },
+    "identityAliases": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["provider", "aliases", "source_document_id", "raw_identity_response_ref", "locators"],
+      "properties": {
+        "provider": {"const": "NCBI_ID_CONVERTER_JSON"},
+        "aliases": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"type": "string", "pattern": "^(PMID:[0-9]+|PMCID:PMC[0-9]+|DOI:.+)$"}
+        },
+        "source_document_id": {"type": "string", "pattern": "^(PMID:[0-9]+|PMCID:PMC[0-9]+)$"},
+        "raw_identity_response_ref": {"$ref": "#/$defs/artifactRef"},
+        "locators": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/locator"}}
+      }
+    },
+    "criterion": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["criterion_id", "claimed_result", "locators"],
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "criterion_id": {
+                "enum": [
+                  "minimum_guaranteed_availability_epochs_before_terminal_verification",
+                  "minimum_additional_organ_domains",
+                  "minimum_concurrent_process_target_candidates"
+                ]
+              }
+            },
+            "required": ["criterion_id"]
+          },
+          "then": {"required": ["actual_count"]},
+          "else": {"not": {"required": ["actual_count"]}}
+        }
+      ],
+      "properties": {
+        "criterion_id": {
+          "enum": [
+            "single_adult_primary_case",
+            "open_full_text_snapshot_required",
+            "acute_icu_level_hemodynamic_collapse",
+            "minimum_guaranteed_availability_epochs_before_terminal_verification",
+            "minimum_additional_organ_domains",
+            "minimum_concurrent_process_target_candidates",
+            "performed_action_with_later_response",
+            "explicit_reliable_negative",
+            "delayed_result_or_response",
+            "reported_final_diagnosis_with_direct_or_convergent_basis",
+            "must_not_be_in_presealed_exclusion_set",
+            "must_not_require_invented_time_to_meet_criteria"
+          ]
+        },
+        "claimed_result": {"type": "boolean"},
+        "actual_count": {"type": "integer", "minimum": 0},
+        "locators": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/locator"}}
+      }
+    },
+    "candidate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "canonical_case_id",
+        "source_artifact_ref",
+        "identity_aliases",
+        "opaque_concurrent_process_candidate_packet_ref",
+        "criteria",
+        "screening_notes"
+      ],
+      "properties": {
+        "canonical_case_id": {"type": "string", "pattern": "^PMID:[0-9]+$"},
+        "source_artifact_ref": {"$ref": "#/$defs/artifactRef"},
+        "identity_aliases": {"$ref": "#/$defs/identityAliases"},
+        "opaque_concurrent_process_candidate_packet_ref": {"$ref": "#/$defs/artifactRef"},
+        "criteria": {"type": "array", "minItems": 12, "maxItems": 12, "items": {"$ref": "#/$defs/criterion"}},
+        "screening_notes": {"type": "string"}
+      }
+    }
+  }
+}

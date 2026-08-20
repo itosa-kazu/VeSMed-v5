@@ -1,0 +1,121 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "ncf.primary-role-tool-access-trace.v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "role",
+    "run_id",
+    "execution_kind",
+    "case_identity_exposed",
+    "prompt_or_command_sha256",
+    "parent_packet_sha256",
+    "tool_lineage",
+    "accesses",
+    "network_requests",
+    "trace_complete",
+    "undeclared_access_detected",
+    "network_access_detected"
+  ],
+  "properties": {
+    "schema_version": {"const": "NCF-PRIMARY-ROLE-TOOL-ACCESS-TRACE-1.0.0"},
+    "role": {"$ref": "#/$defs/role"},
+    "run_id": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$"},
+    "execution_kind": {"enum": ["AGENT", "SCRIPT", "HYBRID"]},
+    "case_identity_exposed": {"type": "boolean"},
+    "prompt_or_command_sha256": {"$ref": "#/$defs/sha256"},
+    "parent_packet_sha256": {"$ref": "#/$defs/sha256"},
+    "tool_lineage": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/toolLineage"}
+    },
+    "accesses": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/access"}
+    },
+    "trace_complete": {"const": true},
+    "undeclared_access_detected": {"const": false},
+    "network_access_detected": {"type": "boolean"},
+    "network_requests": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/networkRequest"}
+    }
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "role": {
+      "enum": [
+        "scout",
+        "screener",
+        "extractor",
+        "source_auditor",
+        "concept_mapper",
+        "oracle_adjudicator",
+        "evaluator",
+        "scorer_auditor"
+      ]
+    },
+    "toolLineage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["tool_id", "version_or_build", "invocation_id"],
+      "properties": {
+        "tool_id": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/-]{0,255}$"},
+        "version_or_build": {"type": "string", "minLength": 1},
+        "invocation_id": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$"}
+      }
+    },
+    "access": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "sequence",
+        "operation",
+        "artifact_kind",
+        "path",
+        "sha256",
+        "bytes",
+        "data_class",
+        "schema_id",
+        "access_count"
+      ],
+      "properties": {
+        "sequence": {"type": "integer", "minimum": 0},
+        "operation": {"enum": ["READ", "WRITE"]},
+        "artifact_kind": {"enum": ["INPUT", "OUTPUT", "PROMPT_OR_COMMAND", "PARENT_PACKET"]},
+        "path": {"type": "string", "minLength": 1},
+        "sha256": {"$ref": "#/$defs/sha256"},
+        "bytes": {"type": "integer", "minimum": 1},
+        "data_class": {"type": "string", "pattern": "^[a-z][a-z0-9_]{0,127}$"},
+        "schema_id": {"type": "string", "minLength": 1},
+        "access_count": {"type": "integer", "minimum": 1}
+      }
+    },
+    "networkRequest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "sequence",
+        "method",
+        "request_url",
+        "response_sha256",
+        "response_bytes",
+        "retrieved_at"
+      ],
+      "properties": {
+        "sequence": {"type": "integer", "minimum": 0},
+        "method": {"const": "GET"},
+        "request_url": {"type": "string", "minLength": 1},
+        "response_sha256": {"$ref": "#/$defs/sha256"},
+        "response_bytes": {"type": "integer", "minimum": 1},
+        "retrieved_at": {"type": "string", "format": "date-time"}
+      }
+    }
+  }
+}

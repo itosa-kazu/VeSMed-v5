@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "ncf.primary-json-packager-event-replay-report.v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "status", "bundle_digest", "model_digest",
+    "recursive_fresh_process_byte_exact", "cold_prefix_replay_byte_exact",
+    "cold_full_history_replay_byte_exact", "deterministic_event_order_validated",
+    "available_time_boundary_validated", "recursive_steps", "cold_prefixes",
+    "future_exclusion_by_cut", "final_binding", "report_digest"
+  ],
+  "properties": {
+    "schema_version": {"const": "ncf.holdout.fresh-process-replay-report.v1"},
+    "status": {"enum": ["PASS", "FAIL"]},
+    "bundle_digest": {"$ref": "#/$defs/sha256"},
+    "model_digest": {"$ref": "#/$defs/sha256"},
+    "recursive_fresh_process_byte_exact": {"type": "boolean"},
+    "cold_prefix_replay_byte_exact": {"type": "boolean"},
+    "cold_full_history_replay_byte_exact": {"type": "boolean"},
+    "deterministic_event_order_validated": {"type": "boolean"},
+    "available_time_boundary_validated": {"type": "boolean"},
+    "recursive_steps": {"type": "array"},
+    "cold_prefixes": {"type": "array"},
+    "future_exclusion_by_cut": {"type": "array"},
+    "final_binding": {"type": "object"},
+    "report_digest": {"$ref": "#/$defs/sha256"}
+  },
+  "$defs": {"sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}}
+}

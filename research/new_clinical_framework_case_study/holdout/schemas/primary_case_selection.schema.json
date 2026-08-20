@@ -1,0 +1,85 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "ncf.primary-case-selection.v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "algorithm",
+    "selection_domain",
+    "pre_primary_payload_sha256",
+    "execution_protocol_sha256",
+    "search_snapshot_sha256",
+    "screening_manifest_sha256",
+    "screening_evidence_index_sha256",
+    "exclusions_sha256",
+    "frozen_query_contract_sha256",
+    "raw_ordered_identifier_projection_sha256",
+    "canonical_eligible_id_set_sha256",
+    "eligible_candidate_count",
+    "eligible_candidate_digests",
+    "eligible_complexity_packet_refs",
+    "selected_case_id",
+    "selected_digest",
+    "human_override_permitted",
+    "selection_record_sha256"
+  ],
+  "properties": {
+    "schema_version": {"const": "NCF-PRIMARY-CASE-SELECTION-1.1.0"},
+    "algorithm": {"const": "lexicographically_smallest_sha256"},
+    "selection_domain": {"const": "NCF-PRIMARY-SELECTION-v1"},
+    "pre_primary_payload_sha256": {"$ref": "#/$defs/sha256"},
+    "execution_protocol_sha256": {"$ref": "#/$defs/sha256"},
+    "search_snapshot_sha256": {"$ref": "#/$defs/sha256"},
+    "screening_manifest_sha256": {"$ref": "#/$defs/sha256"},
+    "screening_evidence_index_sha256": {"$ref": "#/$defs/sha256"},
+    "exclusions_sha256": {"$ref": "#/$defs/sha256"},
+    "frozen_query_contract_sha256": {"$ref": "#/$defs/sha256"},
+    "raw_ordered_identifier_projection_sha256": {"$ref": "#/$defs/sha256"},
+    "canonical_eligible_id_set_sha256": {"$ref": "#/$defs/sha256"},
+    "eligible_candidate_count": {"type": "integer", "minimum": 1},
+    "eligible_candidate_digests": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["canonical_case_id", "selection_digest"],
+        "properties": {
+          "canonical_case_id": {"type": "string", "minLength": 1},
+          "selection_digest": {"$ref": "#/$defs/sha256"}
+        }
+      }
+    },
+    "eligible_complexity_packet_refs": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["canonical_case_id", "packet_ref"],
+        "properties": {
+          "canonical_case_id": {"type": "string", "minLength": 1},
+          "packet_ref": {"$ref": "#/$defs/artifactRef"}
+        }
+      }
+    },
+    "selected_case_id": {"type": "string", "minLength": 1},
+    "selected_digest": {"$ref": "#/$defs/sha256"},
+    "human_override_permitted": {"const": false},
+    "selection_record_sha256": {"$ref": "#/$defs/sha256"}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "artifactRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256", "bytes"],
+      "properties": {
+        "path": {"type": "string", "minLength": 1},
+        "sha256": {"$ref": "#/$defs/sha256"},
+        "bytes": {"type": "integer", "minimum": 1}
+      }
+    }
+  }
+}

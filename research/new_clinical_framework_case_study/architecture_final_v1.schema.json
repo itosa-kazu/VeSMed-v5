@@ -1,0 +1,1623 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://vesmed.local/schemas/new-clinical-framework/shared-patient-state-v1.json",
+  "title": "New Clinical Framework SharedPatientStateV1",
+  "description": "Canonical wire schema for the V1 shared posterior state. This schema is independent of other VeSMed architectures.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "architecture_version",
+    "state_id",
+    "as_of",
+    "scope",
+    "model_lineage",
+    "event_lineage",
+    "active_process_posterior",
+    "local_states",
+    "cross_couplings",
+    "action_memory",
+    "factor_graph_state",
+    "geometry_state",
+    "history_summary",
+    "epistemic_residual",
+    "identifiability_claims",
+    "integrity"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "ncf.shared_patient_state.v1"
+    },
+    "architecture_version": {
+      "const": "NCF-ARCH-1.0.0"
+    },
+    "state_id": {
+      "$ref": "#/$defs/nonEmptyId"
+    },
+    "as_of": {
+      "$ref": "#/$defs/asOf"
+    },
+    "scope": {
+      "$ref": "#/$defs/scope"
+    },
+    "model_lineage": {
+      "$ref": "#/$defs/modelLineage"
+    },
+    "event_lineage": {
+      "$ref": "#/$defs/eventLineage"
+    },
+    "active_process_posterior": {
+      "$ref": "#/$defs/activeProcessPosterior"
+    },
+    "local_states": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/localState"
+      }
+    },
+    "cross_couplings": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/couplingState"
+      }
+    },
+    "action_memory": {
+      "$ref": "#/$defs/actionMemory"
+    },
+    "factor_graph_state": {
+      "$ref": "#/$defs/factorGraphState"
+    },
+    "geometry_state": {
+      "$ref": "#/$defs/geometryState"
+    },
+    "history_summary": {
+      "$ref": "#/$defs/historySummary"
+    },
+    "epistemic_residual": {
+      "$ref": "#/$defs/epistemicResidual"
+    },
+    "identifiability_claims": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/identifiabilityClaim"
+      }
+    },
+    "integrity": {
+      "$ref": "#/$defs/integrity"
+    }
+  },
+  "$defs": {
+    "nonEmptyId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "probability": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "finiteNumber": {
+      "type": "number"
+    },
+    "nullableCursor": {
+      "oneOf": [
+        {
+          "type": "integer",
+          "minimum": 0
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "asOf": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "cut_id",
+        "event_cursor",
+        "availability_watermark"
+      ],
+      "properties": {
+        "cut_id": {
+          "$ref": "#/$defs/nonEmptyId"
+        },
+        "event_cursor": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "availability_watermark": {
+          "$ref": "#/$defs/nonEmptyId"
+        },
+        "occurred_time_lower": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "occurred_time_upper": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "clock_time": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        }
+      }
+    },
+    "scope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "scope_id",
+        "scope_version",
+        "scope_digest",
+        "population_id",
+        "observation_catalog_digest",
+        "action_catalog_digest",
+        "policy_catalog_digest",
+        "horizon",
+        "outcome_ids",
+        "utility_digest",
+        "distance_metric_id",
+        "tolerance"
+      ],
+      "properties": {
+        "scope_id": {
+          "$ref": "#/$defs/nonEmptyId"
+        },
+        "scope_version": {
+          "$ref": "#/$defs/nonEmptyId"
+        },
+        "scope_digest": {
+          "$ref": "#/$defs/sha256"
+        },
+        "population_id": {
+          "$ref": "#/$defs/nonEmptyId"
+        },
+        "observation_catalog_digest": {
+          "$ref": "#/$defs/sha256"
+        },
+        "action_catalog_digest": {
+          "$ref": "#/$defs/sha256"
+        },
+        "policy_catalog_digest": {
+          "$ref": "#/$defs/sha256"
+        },
+        "horizon": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "value",
+            "unit"
+          ],
+          "properties": {
+            "value": {
+              "type": "number",
+              "exclusiveMinimum": 0
+            },
+            "unit": {
+              "$ref": "#/$defs/nonEmptyId"
+            }
+          }
+        },
+        "outcome_ids": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/nonEmptyId"
+          }
+        },
+        "utility_digest": {
+          "$ref": "#/$defs/sha256"
+        },
+        "distance_metric_id": {
+          "$ref": "#/$defs/nonEmptyId"
+        },
+        "tolerance": {
+          "type": "number",
+          "minimum": 0
+        }
+      }
+    },
+    "modelLineage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "model_id",
+        "model_version",
+        "model_digest",
+        "process_registry_digest",
+        "mode_registry_digest",
+        "factor_graph_digest",
+        "dynamics_digest",
+        "geometry_digest",
+        "parent_model_digest",
+        "migration_id"
+      ],
+      "properties": {
+        "model_id": {
+          "$ref": "#/$defs/nonEmptyId"
+        },
+        "model_version": {
+          "$ref": "#/$defs/nonEmptyId"
+        },
+        "model_digest": {
+          "$ref": "#/$defs/sha256"
+        },
+        "process_registry_digest": {
+          "$ref": "#/$defs/sha256"
+        },
+        "mode_registry_digest": {
+          "$ref": "#/$defs/sha256"
+        },
+        "factor_graph_digest": {
+          "$ref": "#/$defs/sha256"
+        },
+        "dynamics_digest": {
+          "$ref": "#/$defs/sha256"
+        },
+        "geometry_digest": {
+          "$ref": "#/$defs/sha256"
+        },
+        "parent_model_digest": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/sha256"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "migration_id": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/nonEmptyId"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      }
+    },
+    "eventLineage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "event_ledger_digest",
+        "processed_event_ids",
+        "parent_state_hash",
+        "update_id",
+        "new_event_ids"
+      ],
+      "properties": {
+        "event_ledger_digest": {
+          "$ref": "#/$defs/sha256"
+        },
+        "processed_event_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/nonEmptyId"
+          }
+        },
+        "parent_state_hash": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/sha256"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "update_id": {
+          "$ref": "#/$defs/nonEmptyId"
+        },
+        "new_event_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/nonEmptyId"
+          }
+        }
+      }
+    },
+    "activeProcessPosterior": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "representation",
+        "process_marginals",
+        "dependence_factors",
+        "joint_hypotheses",
+        "world_model_hypotheses"
+      ],
+      "properties": {
+        "representation": {
+          "enum": [
+            "factorial_joint",
+            "structured_particles",
+            "exact_factor_graph",
+            "hybrid_approximation"
+          ]
+        },
+        "process_marginals": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/processMarginal"
+          }
+        },
+        "dependence_factors": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/processDependence"
+          }
+        },
+        "joint_hypotheses": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/jointHypothesis"
+          }
+        },
+        "world_model_hypotheses": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/worldModelHypothesis"
+          }
+        }
+      }
+    },
+    "processMarginal": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "process_id",
+        "branch_id",
+        "organ_ids",
+        "p_active",
+        "activation_status",
+        "supporting_factor_ids",
+        "opposing_factor_ids"
+      ],
+      "properties": {
+        "process_id": {
+          "$ref": "#/$defs/nonEmptyId"
+        },
+        "branch_id": {
+          "$ref": "#/$defs/nonEmptyId"
+        },
+        "organ_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/nonEmptyId"
+          }
+        },
+        "p_active": {
+          "$ref": "#/$defs/probability"
+        },
+        "activation_status": {
+          "enum": [
+            "inactive",
+            "possible",
+            "active",
+            "resolving",
+            "resolved",
+            "unknown"
+          ]
+        },
+        "supporting_factor_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/nonEmptyId"
+          }
+        },
+        "opposing_factor_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/nonEmptyId"
+          }
+        }
+      }
+    },
+    "processDependence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "factor_id",
+        "process_ids",
+        "relation_type",
+        "log_potential",
+        "conditionality"
+      ],
+      "properties": {
+        "factor_id": {
+          "$ref": "#/$defs/nonEmptyId"
+        },
+        "process_ids": {
+          "type": "array",
+          "minItems": 2,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/nonEmptyId"
+          }
+        },
+        "relation_type": {
+          "enum": [
+            "coactivation",
+            "inhibition",
+            "exclusive",
+            "causal_activation",
+            "shared_context"
+          ]
+        },
+        "log_potential": {
+          "$ref": "#/$defs/finiteNumber"
+        },
+        "conditionality": {
+          "type": "string"
+        }
+      }
+    },
+    "jointHypothesis": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "hypothesis_id",
+        "active_process_ids",
+        "probability"
+      ],
+      "properties": {
+        "hypothesis_id": {
+          "$ref": "#/$defs/nonEmptyId"
+        },
+        "active_process_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/nonEmptyId"
+          }
+        },
+        "probability": {
+          "$ref": "#/$defs/probability"
+        }
+      }
+    },
+    "worldModelHypothesis": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "hypothesis_id",
+        "model_digest",
+        "probability"
+      ],
+      "properties": {
+        "hypothesis_id": {
+          "$ref": "#/$defs/nonEmptyId"
+        },
+        "model_digest": {
+          "$ref": "#/$defs/sha256"
+        },
+        "probability": {
+          "$ref": "#/$defs/probability"
+        }
+      }
+    },
+    "localState": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "stratum_id",
+        "process_id",
+        "organ_id",
+        "coordinates",
+        "mode_posterior",
+        "support_dependence",
+        "last_transition_cursor"
+      ],
+      "properties": {
+        "stratum_id": {
+          "$ref": "#/$defs/nonEmptyId"
+        },
+        "process_id": {
+          "$ref": "#/$defs/nonEmptyId"
+        },
+        "organ_id": {
+          "$ref": "#/$defs/nonEmptyId"
+        },
+        "coordinates": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/coordinatePosterior"
+          }
+        },
+        "mode_posterior": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/modeProbability"
+          }
+        },
+        "support_dependence": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/supportDependence"
+          }
+        },
+        "last_transition_cursor": {
+          "$ref": "#/$defs/nullableCursor"
+        }
+      }
+    },
+    "coordinatePosterior": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "coordinate_id",
+        "unit",
+        "support",
+        "distribution",
+        "knownness",
+        "source_factor_ids"
+      ],
+      "properties": {
+        "coordinate_id": {
+          "$ref": "#/$defs/nonEmptyId"
+        },
+        "unit": {
+          "type": "string"
+        },
+        "support": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "lower",
+            "upper"
+          ],
+          "properties": {
+            "lower": {
+              "oneOf": [
+                {
+                  "$ref": "#/$defs/finiteNumber"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "upper": {
+              "oneOf": [
+                {
+                  "$ref": "#/$defs/finiteNumber"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          }
+        },
+        "distribution": {
+          "$ref": "#/$defs/numericDistribution"
+        },
+        "knownness": {
+          "$ref": "#/$defs/probability"
+        },
+        "source_factor_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/nonEmptyId"
+          }
+        }
+      }
+    },
+    "numericDistribution": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "family",
+        "mean",
+        "sd",
+        "quantiles",
+        "particle_digest"
+      ],
+      "properties": {
+        "family": {
+          "enum": [
+            "point",
+            "normal",
+            "lognormal",
+            "beta",
+            "truncated_normal",
+            "empirical_particles",
+            "interval",
+            "unknown"
+          ]
+        },
+        "mean": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/finiteNumber"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "sd": {
+          "oneOf": [
+            {
+              "type": "number",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "quantiles": {
+          "type": "object",
+          "propertyNames": {
+            "pattern": "^(0(\\.\\d+)?|1(\\.0+)?)$"
+          },
+          "additionalProperties": {
+            "$ref": "#/$defs/finiteNumber"
+          }
+        },
+        "particle_digest": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/sha256"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      }
+    },
+    "modeProbability": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "mode_id",
+        "probability"
+      ],
+      "properties": {
+        "mode_id": {
+          "$ref": "#/$defs/nonEmptyId"
+        },
+        "probability": {
+          "$ref": "#/$defs/probability"
+        }
+      }
+    },
+    "supportDependence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "action_instance_id",
+        "coordinate_id",
+        "estimated_fraction_supported",
+        "trend"
+      ],
+      "properties": {
+        "action_instance_id": {
+          "$ref": "#/$defs/nonEmptyId"
+        },
+        "coordinate_id": {
+          "$ref": "#/$defs/nonEmptyId"
+        },
+        "estimated_fraction_supported": {
+          "$ref": "#/$defs/probability"
+        },
+        "trend": {
+          "enum": [
+            "increasing",
+            "stable",
+            "decreasing",
+            "unknown"
+          ]
+        }
+      }
+    },
+    "couplingState": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "coupling_id",
+        "source_stratum_id",
+        "target_stratum_id",
+        "coupling_type",
+        "effect_direction",
+        "lag",
+        "activity_probability",
+        "conditionality",
+        "source_factor_ids"
+      ],
+      "properties": {
+        "coupling_id": {
+          "$ref": "#/$defs/nonEmptyId"
+        },
+        "source_stratum_id": {
+          "$ref": "#/$defs/nonEmptyId"
+        },
+        "target_stratum_id": {
+          "$ref": "#/$defs/nonEmptyId"
+        },
+        "coupling_type": {
+          "enum": [
+            "dynamic",
+            "mode_guard",
+            "shared_latent",
+            "constraint",
+            "event_transition"
+          ]
+        },
+        "effect_direction": {
+          "enum": [
+            "increase",
+            "decrease",
+            "mixed",
+            "constraint_only"
+          ]
+        },
+        "lag": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "lower",
+            "upper",
+            "unit"
+          ],
+          "properties": {
+            "lower": {
+              "type": "number",
+              "minimum": 0
+            },
+            "upper": {
+              "type": "number",
+              "minimum": 0
+            },
+            "unit": {
+              "$ref": "#/$defs/nonEmptyId"
+            }
+          }
+        },
+        "activity_probability": {
+          "$ref": "#/$defs/probability"
+        },
+        "conditionality": {
+          "type": "string"
+        },
+        "source_factor_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/nonEmptyId"
+          }
+        }
+      }
+    },
+    "actionMemory": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "instances",
+        "current_policy_id",
+        "history_digest"
+      ],
+      "properties": {
+        "instances": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/actionInstance"
+          }
+        },
+        "current_policy_id": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/nonEmptyId"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "history_digest": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    },
+    "actionInstance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "action_instance_id",
+        "action_id",
+        "status",
+        "planned_cursor",
+        "started_cursor",
+        "held_cursor",
+        "stopped_cursor",
+        "completed_cursor",
+        "dose_history",
+        "cumulative_exposure",
+        "washout",
+        "response_summaries",
+        "source_event_ids"
+      ],
+      "properties": {
+        "action_instance_id": {
+          "$ref": "#/$defs/nonEmptyId"
+        },
+        "action_id": {
+          "$ref": "#/$defs/nonEmptyId"
+        },
+        "status": {
+          "enum": [
+            "planned",
+            "started",
+            "active",
+            "held",
+            "stopped",
+            "completed",
+            "residual",
+            "unknown"
+          ]
+        },
+        "planned_cursor": {
+          "$ref": "#/$defs/nullableCursor"
+        },
+        "started_cursor": {
+          "$ref": "#/$defs/nullableCursor"
+        },
+        "held_cursor": {
+          "$ref": "#/$defs/nullableCursor"
+        },
+        "stopped_cursor": {
+          "$ref": "#/$defs/nullableCursor"
+        },
+        "completed_cursor": {
+          "$ref": "#/$defs/nullableCursor"
+        },
+        "dose_history": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/dosePoint"
+          }
+        },
+        "cumulative_exposure": {
+          "$ref": "#/$defs/valueWithUnit"
+        },
+        "washout": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "residual_effect_probability",
+            "estimated_remaining_fraction"
+          ],
+          "properties": {
+            "residual_effect_probability": {
+              "$ref": "#/$defs/probability"
+            },
+            "estimated_remaining_fraction": {
+              "$ref": "#/$defs/probability"
+            }
+          }
+        },
+        "response_summaries": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/responseSummary"
+          }
+        },
+        "source_event_ids": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/nonEmptyId"
+          }
+        }
+      }
+    },
+    "dosePoint": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "event_cursor",
+        "operation",
+        "value",
+        "unit",
+        "route"
+      ],
+      "properties": {
+        "event_cursor": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "operation": {
+          "enum": [
+            "start",
+            "continue",
+            "increase",
+            "decrease",
+            "hold",
+            "stop"
+          ]
+        },
+        "value": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/finiteNumber"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "unit": {
+          "type": "string"
+        },
+        "route": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "valueWithUnit": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "value",
+        "unit"
+      ],
+      "properties": {
+        "value": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/finiteNumber"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "unit": {
+          "type": "string"
+        }
+      }
+    },
+    "responseSummary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "target_id",
+        "window_id",
+        "direction",
+        "magnitude",
+        "attribution_status",
+        "source_event_ids"
+      ],
+      "properties": {
+        "target_id": {
+          "$ref": "#/$defs/nonEmptyId"
+        },
+        "window_id": {
+          "$ref": "#/$defs/nonEmptyId"
+        },
+        "direction": {
+          "enum": [
+            "increase",
+            "decrease",
+            "stable",
+            "mixed",
+            "unknown"
+          ]
+        },
+        "magnitude": {
+          "$ref": "#/$defs/numericDistribution"
+        },
+        "attribution_status": {
+          "enum": [
+            "descriptive_only",
+            "identified_within_scope",
+            "partially_identified",
+            "unidentifiable"
+          ]
+        },
+        "source_event_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/nonEmptyId"
+          }
+        }
+      }
+    },
+    "factorGraphState": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "graph_digest",
+        "messages_digest",
+        "factor_messages",
+        "recognized_result_ids",
+        "unrecognized_result_ids"
+      ],
+      "properties": {
+        "graph_digest": {
+          "$ref": "#/$defs/sha256"
+        },
+        "messages_digest": {
+          "$ref": "#/$defs/sha256"
+        },
+        "factor_messages": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/factorMessage"
+          }
+        },
+        "recognized_result_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/nonEmptyId"
+          }
+        },
+        "unrecognized_result_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/nonEmptyId"
+          }
+        }
+      }
+    },
+    "factorMessage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "factor_id",
+        "factor_type",
+        "variable_ids",
+        "source_result_ids",
+        "log_likelihood_by_hypothesis",
+        "reliability"
+      ],
+      "properties": {
+        "factor_id": {
+          "$ref": "#/$defs/nonEmptyId"
+        },
+        "factor_type": {
+          "enum": [
+            "emission",
+            "common_cause",
+            "measurement",
+            "interaction",
+            "constraint"
+          ]
+        },
+        "variable_ids": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/nonEmptyId"
+          }
+        },
+        "source_result_ids": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/nonEmptyId"
+          }
+        },
+        "log_likelihood_by_hypothesis": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/finiteNumber"
+          }
+        },
+        "reliability": {
+          "$ref": "#/$defs/probability"
+        }
+      }
+    },
+    "geometryState": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "geometry_digest",
+        "distance_metric_id",
+        "stratum_memberships",
+        "nearest_behavioral_neighbors"
+      ],
+      "properties": {
+        "geometry_digest": {
+          "$ref": "#/$defs/sha256"
+        },
+        "distance_metric_id": {
+          "$ref": "#/$defs/nonEmptyId"
+        },
+        "stratum_memberships": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/stratumMembership"
+          }
+        },
+        "nearest_behavioral_neighbors": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/behavioralNeighbor"
+          }
+        }
+      }
+    },
+    "stratumMembership": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "stratum_id",
+        "probability"
+      ],
+      "properties": {
+        "stratum_id": {
+          "$ref": "#/$defs/nonEmptyId"
+        },
+        "probability": {
+          "$ref": "#/$defs/probability"
+        }
+      }
+    },
+    "behavioralNeighbor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "reference_state_id",
+        "distance",
+        "shared_scope_digest",
+        "policy_witness_ids"
+      ],
+      "properties": {
+        "reference_state_id": {
+          "$ref": "#/$defs/nonEmptyId"
+        },
+        "distance": {
+          "type": "number",
+          "minimum": 0
+        },
+        "shared_scope_digest": {
+          "$ref": "#/$defs/sha256"
+        },
+        "policy_witness_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/nonEmptyId"
+          }
+        }
+      }
+    },
+    "historySummary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "summary_digest",
+        "trajectory_features",
+        "mode_transitions",
+        "action_response_windows",
+        "retained_event_ids"
+      ],
+      "properties": {
+        "summary_digest": {
+          "$ref": "#/$defs/sha256"
+        },
+        "trajectory_features": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/trajectoryFeature"
+          }
+        },
+        "mode_transitions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/modeTransition"
+          }
+        },
+        "action_response_windows": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/actionResponseWindow"
+          }
+        },
+        "retained_event_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/nonEmptyId"
+          }
+        }
+      }
+    },
+    "trajectoryFeature": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "feature_id",
+        "target_id",
+        "window_id",
+        "value",
+        "unit",
+        "source_event_ids"
+      ],
+      "properties": {
+        "feature_id": {
+          "$ref": "#/$defs/nonEmptyId"
+        },
+        "target_id": {
+          "$ref": "#/$defs/nonEmptyId"
+        },
+        "window_id": {
+          "$ref": "#/$defs/nonEmptyId"
+        },
+        "value": {
+          "$ref": "#/$defs/finiteNumber"
+        },
+        "unit": {
+          "type": "string"
+        },
+        "source_event_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/nonEmptyId"
+          }
+        }
+      }
+    },
+    "modeTransition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "stratum_id",
+        "from_mode_id",
+        "to_mode_id",
+        "event_cursor",
+        "probability",
+        "guard_ids"
+      ],
+      "properties": {
+        "stratum_id": {
+          "$ref": "#/$defs/nonEmptyId"
+        },
+        "from_mode_id": {
+          "$ref": "#/$defs/nonEmptyId"
+        },
+        "to_mode_id": {
+          "$ref": "#/$defs/nonEmptyId"
+        },
+        "event_cursor": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "probability": {
+          "$ref": "#/$defs/probability"
+        },
+        "guard_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/nonEmptyId"
+          }
+        }
+      }
+    },
+    "actionResponseWindow": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "window_id",
+        "action_instance_ids",
+        "start_cursor",
+        "end_cursor",
+        "baseline_state_hash",
+        "result_event_ids"
+      ],
+      "properties": {
+        "window_id": {
+          "$ref": "#/$defs/nonEmptyId"
+        },
+        "action_instance_ids": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/nonEmptyId"
+          }
+        },
+        "start_cursor": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "end_cursor": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "baseline_state_hash": {
+          "$ref": "#/$defs/sha256"
+        },
+        "result_event_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/nonEmptyId"
+          }
+        }
+      }
+    },
+    "epistemicResidual": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "mapping_coverage",
+        "mapping_gap",
+        "model_misfit",
+        "unmodeled_process",
+        "measurement_uncertainty",
+        "causal_nonidentifiability",
+        "scope_gap",
+        "unexplained_observations",
+        "missing_distinguishing_information",
+        "abstention_status"
+      ],
+      "properties": {
+        "mapping_coverage": {
+          "$ref": "#/$defs/probability"
+        },
+        "mapping_gap": {
+          "$ref": "#/$defs/probability"
+        },
+        "model_misfit": {
+          "$ref": "#/$defs/probability"
+        },
+        "unmodeled_process": {
+          "$ref": "#/$defs/probability"
+        },
+        "measurement_uncertainty": {
+          "$ref": "#/$defs/probability"
+        },
+        "causal_nonidentifiability": {
+          "$ref": "#/$defs/probability"
+        },
+        "scope_gap": {
+          "$ref": "#/$defs/probability"
+        },
+        "unexplained_observations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/unexplainedObservation"
+          }
+        },
+        "missing_distinguishing_information": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/missingInformation"
+          }
+        },
+        "abstention_status": {
+          "enum": [
+            "not_required",
+            "partial_answer_only",
+            "abstain_unmodeled",
+            "abstain_unidentifiable",
+            "out_of_scope"
+          ]
+        }
+      }
+    },
+    "unexplainedObservation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "result_id",
+        "reason",
+        "surprisal",
+        "candidate_process_ids"
+      ],
+      "properties": {
+        "result_id": {
+          "$ref": "#/$defs/nonEmptyId"
+        },
+        "reason": {
+          "enum": [
+            "unmapped",
+            "unsupported_value_type",
+            "model_misfit",
+            "conflicting_measurements",
+            "unknown_measurement_condition"
+          ]
+        },
+        "surprisal": {
+          "oneOf": [
+            {
+              "type": "number",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "candidate_process_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/nonEmptyId"
+          }
+        }
+      }
+    },
+    "missingInformation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "information_id",
+        "target_query_id",
+        "expected_discrimination",
+        "availability",
+        "risk_class"
+      ],
+      "properties": {
+        "information_id": {
+          "$ref": "#/$defs/nonEmptyId"
+        },
+        "target_query_id": {
+          "$ref": "#/$defs/nonEmptyId"
+        },
+        "expected_discrimination": {
+          "$ref": "#/$defs/probability"
+        },
+        "availability": {
+          "enum": [
+            "available_now",
+            "available_later",
+            "not_available",
+            "unknown"
+          ]
+        },
+        "risk_class": {
+          "enum": [
+            "passive",
+            "minimal",
+            "material",
+            "prohibitive",
+            "unknown"
+          ]
+        }
+      }
+    },
+    "identifiabilityClaim": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "query_id",
+        "target_id",
+        "status",
+        "assumption_ids",
+        "compatible_world_ids",
+        "identified_set",
+        "reason"
+      ],
+      "properties": {
+        "query_id": {
+          "$ref": "#/$defs/nonEmptyId"
+        },
+        "target_id": {
+          "$ref": "#/$defs/nonEmptyId"
+        },
+        "status": {
+          "enum": [
+            "IDENTIFIED_WITHIN_SCOPE",
+            "PARTIALLY_IDENTIFIED",
+            "UNIDENTIFIABLE",
+            "OUT_OF_SCOPE"
+          ]
+        },
+        "assumption_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/nonEmptyId"
+          }
+        },
+        "compatible_world_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/nonEmptyId"
+          }
+        },
+        "identified_set": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "lower",
+            "upper",
+            "unit"
+          ],
+          "properties": {
+            "lower": {
+              "oneOf": [
+                {
+                  "$ref": "#/$defs/finiteNumber"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "upper": {
+              "oneOf": [
+                {
+                  "$ref": "#/$defs/finiteNumber"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "unit": {
+              "type": "string"
+            }
+          }
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "integrity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "canonicalization",
+        "hash_algorithm",
+        "state_hash"
+      ],
+      "properties": {
+        "canonicalization": {
+          "const": "RFC8785-JCS"
+        },
+        "hash_algorithm": {
+          "const": "SHA-256"
+        },
+        "state_hash": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    }
+  }
+}

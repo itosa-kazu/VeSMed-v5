@@ -1,0 +1,167 @@
+{
+  "experiment_id": "new-framework-shadow-local-refinement-v1",
+  "independence_boundary": {
+    "uses_v5": false,
+    "uses_real_case_outcomes": false,
+    "interpretation": "finite synthetic architecture test only"
+  },
+  "scope": {
+    "base": {
+      "action_catalog": [
+        "wait",
+        "support"
+      ],
+      "check_catalog": [],
+      "horizon": 1,
+      "outcome": "synthetic_utility",
+      "tolerance": 0.0,
+      "digest": "7989af1655cd9a7c891e8ea46449a7051b07bb965ff35e5b262f53ea6b64521e"
+    },
+    "extended_observable": {
+      "action_catalog": [
+        "wait",
+        "support",
+        "precision_treatment"
+      ],
+      "check_catalog": [
+        "response_biomarker"
+      ],
+      "horizon": 1,
+      "outcome": "synthetic_utility",
+      "tolerance": 0.0,
+      "digest": "0604c8fbe57af4ef85f94e6d9a8f02ce117332f30a142840f94aada1227dc5a9"
+    },
+    "extended_unobservable": {
+      "action_catalog": [
+        "wait",
+        "support",
+        "precision_treatment"
+      ],
+      "check_catalog": [],
+      "horizon": 1,
+      "outcome": "synthetic_utility",
+      "tolerance": 0.0,
+      "digest": "04da0a7c07464bc9a8cf721a827e0e34bf2ed0fbaac35cee88c1759e83bcb412"
+    }
+  },
+  "base_scope": {
+    "same_old_state": true,
+    "old_state_sufficient_for_old_actions": true,
+    "old_best_action_both_subtypes": [
+      "support",
+      "support"
+    ],
+    "classification": "STRUCTURALLY_SUPPORTED"
+  },
+  "new_action_collision": {
+    "count": 1,
+    "witnesses": [
+      {
+        "state_signature": "8363f70da3ee611c7a9f4e65e4866f7676ae2008ad2ae4350474728c03a76c0e",
+        "patient_a": "target-a",
+        "patient_b": "target-b",
+        "action": "precision_treatment",
+        "response_a": 6.0,
+        "response_b": -10.0,
+        "optimal_action_a": "precision_treatment",
+        "optimal_action_b": "support",
+        "opposite_response": true,
+        "disjoint_optima": true
+      }
+    ],
+    "classification": "STRUCTURALLY_SUPPORTED"
+  },
+  "observable_refinement": {
+    "record": {
+      "from_scope_digest": "7989af1655cd9a7c891e8ea46449a7051b07bb965ff35e5b262f53ea6b64521e",
+      "to_scope_digest": "0604c8fbe57af4ef85f94e6d9a8f02ce117332f30a142840f94aada1227dc5a9",
+      "affected_parent_strata": [
+        "shared_branch/compensated"
+      ],
+      "child_strata": [
+        "shared_branch/compensated/response_subtype_a",
+        "shared_branch/compensated/response_subtype_b"
+      ],
+      "discriminator_source": "new_public_check",
+      "migration_kernel": {
+        "shared_branch/compensated": {
+          "shared_branch/compensated/response_subtype_a": 0.5,
+          "shared_branch/compensated/response_subtype_b": 0.5
+        }
+      },
+      "preserved_old_queries": [
+        "utility:wait",
+        "utility:support"
+      ],
+      "unresolved_collision_classes": [],
+      "status": "LOCALLY_REFINED"
+    },
+    "before_result": {
+      "statuses": [
+        "AWAITING_PUBLIC_CHECK",
+        "AWAITING_PUBLIC_CHECK"
+      ],
+      "choices": [
+        "support",
+        "support"
+      ],
+      "mean_oracle_regret": 3.0
+    },
+    "after_result": {
+      "statuses": [
+        "IDENTIFIED_BY_PUBLIC_CHECK",
+        "IDENTIFIED_BY_PUBLIC_CHECK"
+      ],
+      "choices": [
+        "precision_treatment",
+        "support"
+      ],
+      "mean_oracle_regret": 0.0
+    },
+    "regret_reduction": 3.0,
+    "old_query_non_regression": true,
+    "unaffected_stratum_unchanged": true,
+    "classification": "STRUCTURALLY_SUPPORTED"
+  },
+  "unobservable_refinement": {
+    "record": {
+      "from_scope_digest": "7989af1655cd9a7c891e8ea46449a7051b07bb965ff35e5b262f53ea6b64521e",
+      "to_scope_digest": "04da0a7c07464bc9a8cf721a827e0e34bf2ed0fbaac35cee88c1759e83bcb412",
+      "affected_parent_strata": [
+        "shared_branch/compensated"
+      ],
+      "child_strata": [
+        "shared_branch/compensated/response_subtype_a",
+        "shared_branch/compensated/response_subtype_b"
+      ],
+      "discriminator_source": "none_available",
+      "migration_kernel": {
+        "shared_branch/compensated": {
+          "shared_branch/compensated/response_subtype_a": 0.5,
+          "shared_branch/compensated/response_subtype_b": 0.5
+        }
+      },
+      "preserved_old_queries": [
+        "utility:wait",
+        "utility:support"
+      ],
+      "unresolved_collision_classes": [
+        "new_action_opposite_response_without_pretreatment_discriminator"
+      ],
+      "status": "SCOPE_INSUFFICIENT_UNIDENTIFIABLE"
+    },
+    "statuses": [
+      "UNIDENTIFIABLE",
+      "UNIDENTIFIABLE"
+    ],
+    "choices": [
+      "support",
+      "support"
+    ],
+    "mean_oracle_regret": 3.0,
+    "forced_child_assignment": false,
+    "individual_treatment_direction_identified": false,
+    "classification": "UNIDENTIFIABLE"
+  },
+  "conclusion_boundary": "The experiment supports the local-refinement control flow in a finite shadow world. It does not prove a universal, finite, or clinically calibrated patient-state model."
+}

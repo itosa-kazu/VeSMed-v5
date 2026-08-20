@@ -1,0 +1,37 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "ncf.structural-gate-results.v1",
+  "title": "Case-blind NCF G01-G17 structural gate result bundle",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "produced_by",
+    "contract_id",
+    "contract_version",
+    "architecture_version",
+    "generated_at",
+    "case_blind",
+    "scope",
+    "runtime_binding",
+    "gate_results",
+    "architecture_gate_results",
+    "overall_status",
+    "evidence_manifest"
+  ],
+  "properties": {
+    "schema_version": {"const": "ncf.structural-gate-results.v1"},
+    "produced_by": {"const": "holdout/tools/structural_gate_harness.py"},
+    "contract_id": {"const": "NCF-PERFECT-LANDING-GATES"},
+    "contract_version": {"type": "string"},
+    "architecture_version": {"const": "NCF-ARCH-1.0.0"},
+    "generated_at": {"type": "string", "format": "date-time"},
+    "case_blind": {"const": true},
+    "scope": {"type": "object"},
+    "runtime_binding": {"type": "object"},
+    "gate_results": {"type": "array"},
+    "architecture_gate_results": {"type": "array", "minItems": 17, "maxItems": 17},
+    "overall_status": {"enum": ["PASS", "FAIL", "EVIDENCE_MISSING"]},
+    "evidence_manifest": {"type": "array"}
+  },
+  "additionalProperties": false
+}

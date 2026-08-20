@@ -1,0 +1,222 @@
+{
+  "audit_id": "generic-model-case-blind-audit-20260720T175705+0900",
+  "audit_status": "COMPLETED_FOR_BOUND_SNAPSHOT",
+  "case_blind": true,
+  "clinical_claim_status": "NOT_TESTED_NOT_CLAIMED",
+  "forbidden_inputs_read": false,
+  "model_id": "adult-icu-acute-hemodynamic-collapse-generic-v1",
+  "model_pack_sha256": "17ee2d86173d2b8a99dfa3f3897abae67459fb3fa0b545fce8167810be48331b",
+  "overall_verdict": "NOT_READY_FOR_GENERIC_MODEL_FREEZE",
+  "allowed_inputs": [
+    "ARCHITECTURE_FINAL_v1.md",
+    "runtime_v2 public README/DESIGN/API/schema contract",
+    "holdout/generic_model/MODEL_SCOPE.md",
+    "holdout/generic_model/MODEL_CARD.md",
+    "holdout/generic_model/model_pack.json",
+    "holdout/generic_model/model_validation.json",
+    "holdout/PERFECT_LANDING_GATES.md",
+    "holdout/PERFECT_LANDING_GATES.json"
+  ],
+  "forbidden_input_classes": [
+    "CASE_SELECTION",
+    "cases",
+    "article",
+    "event_ledger",
+    "prior_concept_maps",
+    "replay_outputs"
+  ],
+  "artifact_hashes": {
+    "ARCHITECTURE_FINAL_v1.md": "d83b910f3cd32c777f126b245c2652e88fccb31aaa125b455f4c5af90cc4575c",
+    "runtime_v2/README.md": "50febf192adb38c52e63150f86921d724ccb27f581b8a12153e15f4b9a25c8bf",
+    "runtime_v2/DESIGN.md": "04b989e0decbefde60b8e6a948b60110446a00babb4c6780910c2e93691953e3",
+    "holdout/generic_model/MODEL_SCOPE.md": "4b8bfd2769741cafe18ad30024ae8647280ff94b986b153cd360bc8dcc52deab",
+    "holdout/generic_model/MODEL_CARD.md": "568eb59184e2f05d837bc8990fe37c9c65910aaca0e8b15ff8821207d4920ffb",
+    "holdout/generic_model/model_pack.json": "17ee2d86173d2b8a99dfa3f3897abae67459fb3fa0b545fce8167810be48331b",
+    "holdout/generic_model/model_validation.json": "89f6292a6acdd470be1b430f788c94b93333813651cbafb5479a175355180eb3",
+    "holdout/PERFECT_LANDING_GATES.md": "8d32096bd12b5e11b850776cff152d0acd54304e430a4dfd258eda6aeea84935",
+    "holdout/PERFECT_LANDING_GATES.json": "a00b963fd090d4accb304b343075661a5bfd6ecf2fc8371843a0a974e9fe3798"
+  },
+  "inventory": {
+    "known_processes": 12,
+    "local_coordinates": 25,
+    "typed_observation_concepts": 46,
+    "boolean_observation_concepts": 38,
+    "categorical_observation_concepts": 8,
+    "numeric_observation_concepts": 0,
+    "action_classes": 13,
+    "process_coordinate_couplings": 20,
+    "mode_couplings": 9,
+    "coactivation_interactions": 10,
+    "topology_edges": 23,
+    "planning_bridges": 11,
+    "explicit_mode_transition_guards": 0,
+    "explicit_hysteresis_contracts": 0,
+    "explicit_measurement_condition_factors": 0,
+    "explicit_treatment_masking_factors": 0
+  },
+  "checks": [
+    {
+      "check_id": "GM-REF-001",
+      "name": "cross-reference integrity",
+      "status": "PASS",
+      "evidence": "all process, coordinate, mode, action-effect, coupling and topology references resolve"
+    },
+    {
+      "check_id": "GM-FACTORIAL-001",
+      "name": "12-process exact factorial runtime",
+      "status": "PASS_ON_NONFINAL_RUNTIME",
+      "evidence": {
+        "joint_hypotheses": 8192,
+        "expected_joint_hypotheses": 8192,
+        "local_state_blocks": 12,
+        "initialization_seconds": 0.45651240000734106
+      }
+    },
+    {
+      "check_id": "GM-NONSIMPLEX-001",
+      "name": "non-mutually-exclusive process representation",
+      "status": "PASS",
+      "evidence": {
+        "activation_prior_sum": 1.4,
+        "multi_process_probe_marginal_sum": 5.828359524852098,
+        "simultaneously_high_processes": {
+          "P_PUMP_FAILURE": 0.984539,
+          "P_ARRHYTHMIA": 0.809177,
+          "P_AKI": 0.674038,
+          "P_VASOPLEGIA": 0.538548
+        }
+      }
+    },
+    {
+      "check_id": "GM-SIGNED-001",
+      "name": "signed positive and negative evidence",
+      "status": "PASS",
+      "evidence": {
+        "pump_failure_baseline": 0.20928444077542754,
+        "pump_failure_after_normal_filling_pressure": 0.049134827687666256,
+        "pump_failure_after_elevated_filling_pressure": 0.5322459767817455
+      }
+    },
+    {
+      "check_id": "GM-DEDUP-001",
+      "name": "same-source evidence deduplication",
+      "status": "PASS",
+      "evidence": {
+        "max_process_marginal_difference_one_vs_duplicate_source": 0.0,
+        "note": "state hashes differ because event lineage records both deliveries; factor posterior does not double count"
+      }
+    },
+    {
+      "check_id": "GM-GEOM-001",
+      "name": "topology connected to runtime inference",
+      "status": "PASS_INTEGRATION_ONLY",
+      "evidence": {
+        "max_marginal_change_topology_on_vs_off": 0.017237227204805528,
+        "clinical_edge_validity": "NOT_ESTABLISHED"
+      }
+    },
+    {
+      "check_id": "GM-OOD-001",
+      "name": "unmapped evidence changes epistemic residual",
+      "status": "PASS_STRUCTURAL_ONLY",
+      "evidence": {
+        "mapping_gap_before": 0.5,
+        "mapping_gap_after": 0.6666666666666666,
+        "unmodeled_process_before": 0.24000000000000116,
+        "unmodeled_process_after": 0.39348667118433744
+      }
+    },
+    {
+      "check_id": "GM-MODE-001",
+      "name": "mode guard and hysteresis completeness",
+      "status": "FAIL",
+      "evidence": "per-process mode posteriors and mode-specific drifts exist, but the model declares no entry/exit guards, transition hazards, or hysteresis contract"
+    },
+    {
+      "check_id": "GM-SCOPE-001",
+      "name": "frozen broad observation scope coverage",
+      "status": "FAIL",
+      "evidence": "catalog has only boolean/categorical concepts and no numeric measurement, method, support-masking, censoring or MNAR factors despite broad O declaration"
+    },
+    {
+      "check_id": "GM-PROCESS-001",
+      "name": "upstream infectious driver representation",
+      "status": "FAIL",
+      "evidence": "infection/source observations and source-control action exist, but no infectious-burden/source active process exists; they are folded into downstream vasoplegia/respiratory failure"
+    },
+    {
+      "check_id": "GM-ONTOLOGY-001",
+      "name": "diagnosis-neutral atomic observation ontology",
+      "status": "FAIL",
+      "evidence": [
+        "elevated_tsh_with_low_free_t4_presence is a compound lab pattern",
+        "suppressed_tsh_with_elevated_thyroid_hormone_presence is a compound lab pattern",
+        "specific_toxicologic_assay_positive omits assay/agent identity",
+        "stress_distribution_wall_motion_pattern_presence requires source-bound interpretation/dedup"
+      ]
+    },
+    {
+      "check_id": "GM-PARAM-001",
+      "name": "no unlabeled clinical pseudo-precision",
+      "status": "PASS_WITH_OUTPUT_CONDITION",
+      "evidence": "all numerical families are labeled toy/not calibrated and counterfactuals are UNIDENTIFIABLE; UI/query reports must surface these labels beside long decimals"
+    },
+    {
+      "check_id": "GM-SEAL-001",
+      "name": "machine validation and freeze readiness",
+      "status": "FAIL",
+      "evidence": {
+        "validation_status": "PENDING_RUNTIME_V2_1_FREEZE",
+        "structural_claim_status": "DRAFT_NOT_SEALED",
+        "recorded_tests": 0
+      }
+    }
+  ],
+  "blocking_findings": [
+    {
+      "finding_id": "F1",
+      "severity": "HIGH",
+      "category": "mode_contract",
+      "summary": "No explicit mode-transition guard or hysteresis semantics in model pack"
+    },
+    {
+      "finding_id": "F2",
+      "severity": "HIGH",
+      "category": "scope_model_mismatch",
+      "summary": "Declared broad observation scope exceeds actual typed factor catalog"
+    },
+    {
+      "finding_id": "F3",
+      "severity": "HIGH",
+      "category": "active_process_gap",
+      "summary": "Infectious driver/source burden is folded into downstream vasoplegia despite source-specific evidence and action"
+    },
+    {
+      "finding_id": "F4",
+      "severity": "MEDIUM",
+      "category": "observation_atomicity",
+      "summary": "Compound lab patterns and underspecified assay observation violate strict atomic provenance"
+    },
+    {
+      "finding_id": "F5",
+      "severity": "MEDIUM",
+      "category": "action_scope",
+      "summary": "The 13-action set is a narrow declared scope, not comprehensive ICU action coverage"
+    },
+    {
+      "finding_id": "F6",
+      "severity": "HIGH",
+      "category": "validation_seal",
+      "summary": "model_validation explicitly remains pending and unsealed"
+    }
+  ],
+  "required_before_reaudit": [
+    "Add model-level guard/hysteresis semantics or explicitly reduce the frozen capability claim",
+    "Narrow O to the actual 46 concepts or add auditable numeric/method/support-masking factors",
+    "Represent infectious burden/source as an active process or classify it honestly as unmodeled/scope gap",
+    "Split compound lab patterns and preserve assay/image source identity",
+    "Run and record final runtime v2.1 compatibility, 8192-hypothesis, lifecycle, topology, OOD and shared-state probes",
+    "Seal a new model digest and re-run this independent audit"
+  ],
+  "strongest_allowed_claim": "This snapshot is a case-blind, non-simplex, executable structural draft with honest toy-parameter and identifiability labels; it is not yet a frozen complete model for the declared broad scope."
+}

@@ -1,0 +1,79 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "ncf.primary-json-evidence-package.v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "phase", "packager_tool", "frozen_contracts",
+    "inputs", "gate_evidence", "coverage_evidence", "gate_bundle",
+    "coverage_bundle", "invariants", "package_digest"
+  ],
+  "properties": {
+    "schema_version": {"const": "ncf.primary-json-evidence-package.v1"},
+    "phase": {"enum": ["PRE_REPORT", "FINAL"]},
+    "packager_tool": {"$ref": "#/$defs/ref"},
+    "frozen_contracts": {
+      "type": "object", "additionalProperties": false,
+      "required": ["scoring", "gates", "combined_preprimary_seal"],
+      "properties": {
+        "scoring": {"$ref": "#/$defs/ref"},
+        "gates": {"$ref": "#/$defs/ref"},
+        "combined_preprimary_seal": {"$ref": "#/$defs/ref"}
+      }
+    },
+    "inputs": {
+      "type": "object", "minProperties": 7,
+      "additionalProperties": {"$ref": "#/$defs/ref"}
+    },
+    "gate_evidence": {
+      "type": "array", "minItems": 29, "maxItems": 30, "uniqueItems": true,
+      "items": {"$ref": "#/$defs/evidenceIndex"}
+    },
+    "coverage_evidence": {
+      "type": "array", "minItems": 7, "maxItems": 7, "uniqueItems": true,
+      "items": {"$ref": "#/$defs/evidenceIndex"}
+    },
+    "gate_bundle": {"$ref": "#/$defs/ref"},
+    "coverage_bundle": {"$ref": "#/$defs/ref"},
+    "pre_report_receipt": {"$ref": "#/$defs/ref"},
+    "invariants": {
+      "type": "object", "additionalProperties": false,
+      "required": [
+        "write_once", "schema_validated", "all_results_source_derived",
+        "manual_pass_forbidden", "exact_gate_set", "exact_coverage_set",
+        "unknown_duplicate_missing_rejected"
+      ],
+      "properties": {
+        "write_once": {"const": true},
+        "schema_validated": {"const": true},
+        "all_results_source_derived": {"const": true},
+        "manual_pass_forbidden": {"const": true},
+        "exact_gate_set": {"const": true},
+        "exact_coverage_set": {"const": true},
+        "unknown_duplicate_missing_rejected": {"const": true}
+      }
+    },
+    "package_digest": {"$ref": "#/$defs/sha256"}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "ref": {
+      "type": "object", "additionalProperties": false,
+      "required": ["path", "sha256", "bytes"],
+      "properties": {
+        "path": {"type": "string", "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))[A-Za-z0-9._/-]+$"},
+        "sha256": {"$ref": "#/$defs/sha256"},
+        "bytes": {"type": "integer", "minimum": 1}
+      }
+    },
+    "evidenceIndex": {
+      "type": "object", "additionalProperties": false,
+      "required": ["subject_id", "result", "evidence_ref"],
+      "properties": {
+        "subject_id": {"type": "string", "minLength": 1},
+        "result": {"enum": ["PASS", "FAIL"]},
+        "evidence_ref": {"$ref": "#/$defs/ref"}
+      }
+    }
+  }
+}

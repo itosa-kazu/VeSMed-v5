@@ -1,0 +1,71 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "ncf.primary-case-screening.v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "search_snapshot_sha256", "candidates"],
+  "properties": {
+    "schema_version": {"const": "NCF-PRIMARY-CASE-SCREENING-1.1.0"},
+    "search_snapshot_sha256": {"$ref": "#/$defs/sha256"},
+    "candidates": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["canonical_case_id", "eligible", "criteria", "source_locator", "opaque_concurrent_process_candidate_packet_ref", "screening_notes"],
+        "properties": {
+          "canonical_case_id": {"type": "string", "minLength": 1},
+          "eligible": {"type": "boolean"},
+          "criteria": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "single_adult_primary_case",
+              "open_full_text_snapshot_required",
+              "acute_icu_level_hemodynamic_collapse",
+              "minimum_guaranteed_availability_epochs_before_terminal_verification",
+              "minimum_additional_organ_domains",
+              "minimum_concurrent_process_target_candidates",
+              "performed_action_with_later_response",
+              "explicit_reliable_negative",
+              "delayed_result_or_response",
+              "reported_final_diagnosis_with_direct_or_convergent_basis",
+              "must_not_be_in_presealed_exclusion_set",
+              "must_not_require_invented_time_to_meet_criteria"
+            ],
+            "properties": {
+              "single_adult_primary_case": {"type": "boolean"},
+              "open_full_text_snapshot_required": {"type": "boolean"},
+              "acute_icu_level_hemodynamic_collapse": {"type": "boolean"},
+              "minimum_guaranteed_availability_epochs_before_terminal_verification": {"type": "boolean"},
+              "minimum_additional_organ_domains": {"type": "boolean"},
+              "minimum_concurrent_process_target_candidates": {"type": "boolean"},
+              "performed_action_with_later_response": {"type": "boolean"},
+              "explicit_reliable_negative": {"type": "boolean"},
+              "delayed_result_or_response": {"type": "boolean"},
+              "reported_final_diagnosis_with_direct_or_convergent_basis": {"type": "boolean"},
+              "must_not_be_in_presealed_exclusion_set": {"type": "boolean"},
+              "must_not_require_invented_time_to_meet_criteria": {"type": "boolean"}
+            }
+          },
+          "source_locator": {"type": "string", "minLength": 1},
+          "opaque_concurrent_process_candidate_packet_ref": {"$ref": "#/$defs/artifactRef"},
+          "screening_notes": {"type": "string"}
+        }
+      }
+    }
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "artifactRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256", "bytes"],
+      "properties": {
+        "path": {"type": "string", "minLength": 1},
+        "sha256": {"$ref": "#/$defs/sha256"},
+        "bytes": {"type": "integer", "minimum": 1}
+      }
+    }
+  }
+}

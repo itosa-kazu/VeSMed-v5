@@ -1,0 +1,409 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "new-clinical-runtime.model.v2.0",
+  "title": "Runtime v2 finite factorial model",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "model_id",
+    "scope",
+    "posterior_factorization",
+    "processes",
+    "observations",
+    "topology",
+    "actions"
+  ],
+  "$defs": {
+    "likelihood": {
+      "oneOf": [
+        {
+          "type": "object",
+          "required": ["family", "p_true"],
+          "properties": {
+            "family": {"const": "bernoulli"},
+            "p_true": {"type": "number", "exclusiveMinimum": 0, "exclusiveMaximum": 1}
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": ["family", "probabilities"],
+          "properties": {
+            "family": {"const": "categorical"},
+            "probabilities": {
+              "type": "object",
+              "minProperties": 1,
+              "additionalProperties": {"type": "number", "exclusiveMinimum": 0}
+            },
+            "floor": {"type": "number", "exclusiveMinimum": 0}
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": ["family", "mean", "sd"],
+          "properties": {
+            "family": {"const": "gaussian"},
+            "mean": {"type": "number"},
+            "sd": {"type": "number", "exclusiveMinimum": 0}
+          },
+          "additionalProperties": false
+        }
+      ]
+    }
+  },
+  "properties": {
+    "schema_version": {"const": "new-clinical-runtime.model.v2.0"},
+    "model_id": {"type": "string", "minLength": 1},
+    "scope": {
+      "type": "object",
+      "required": [
+        "scope_id",
+        "scope_version",
+        "population_id",
+        "horizon",
+        "outcome_ids",
+        "distance_metric_id",
+        "tolerance"
+      ],
+      "properties": {
+        "scope_id": {"type": "string", "minLength": 1},
+        "scope_version": {"type": "string", "minLength": 1},
+        "population_id": {"type": "string", "minLength": 1},
+        "horizon": {
+          "type": "object",
+          "required": ["value", "unit"],
+          "properties": {
+            "value": {"type": "number", "exclusiveMinimum": 0},
+            "unit": {"type": "string", "minLength": 1}
+          }
+        },
+        "outcome_ids": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"type": "string", "minLength": 1}
+        },
+        "distance_metric_id": {"type": "string", "minLength": 1},
+        "tolerance": {"type": "number", "minimum": 0}
+      }
+    },
+    "posterior_factorization": {
+      "type": "object",
+      "required": [
+        "representation",
+        "local_state_semantics",
+        "assumption_ids",
+        "error_tolerance",
+        "unsupported_correlations_policy"
+      ],
+      "properties": {
+        "representation": {
+          "const": "conditional_active_mean_field_over_process_local_state"
+        },
+        "local_state_semantics": {"const": "q(x,m|process_active)"},
+        "assumption_ids": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"type": "string", "minLength": 1}
+        },
+        "error_tolerance": {
+          "type": "object",
+          "required": ["reference", "epsilon"],
+          "properties": {
+            "reference": {"const": "scope.tolerance"},
+            "epsilon": {"type": "number", "minimum": 0}
+          },
+          "additionalProperties": false,
+          "$comment": "epsilon MUST equal the enclosing scope.tolerance; validate_model_spec enforces this cross-field invariant."
+        },
+        "unsupported_correlations_policy": {"const": "OUT_OF_SCOPE"}
+      },
+      "additionalProperties": false
+    },
+    "inference": {
+      "type": "object",
+      "properties": {"max_exact_processes": {"type": "integer", "minimum": 1, "maximum": 20}}
+    },
+    "epistemic": {
+      "type": "object",
+      "properties": {
+        "unknown_prior": {"type": "number", "exclusiveMinimum": 0, "exclusiveMaximum": 1},
+        "unmapped_event_log_bayes_factor": {"type": "number"},
+        "mapping_beta_prior": {
+          "type": "array",
+          "prefixItems": [
+            {"type": "number", "exclusiveMinimum": 0},
+            {"type": "number", "exclusiveMinimum": 0}
+          ],
+          "minItems": 2,
+          "maxItems": 2
+        }
+      }
+    },
+    "processes": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["process_id", "activation_prior", "coordinates", "modes"],
+        "properties": {
+          "process_id": {"type": "string", "minLength": 1},
+          "organ_or_domain": {"type": "string"},
+          "activation_prior": {"type": "number", "exclusiveMinimum": 0, "exclusiveMaximum": 1},
+          "activation_transition": {
+            "type": "object",
+            "properties": {
+              "enter_hazard_per_step": {"type": "number", "minimum": 0},
+              "withdraw_hazard_per_step": {"type": "number", "minimum": 0},
+              "enter_log_hazard_shift_by_mode": {
+                "type": "object",
+                "additionalProperties": {"type": "number"}
+              },
+              "withdraw_log_hazard_shift_by_mode": {
+                "type": "object",
+                "additionalProperties": {"type": "number"}
+              },
+              "enter_log_hazard_shift_by_coordinate": {
+                "type": "object",
+                "additionalProperties": {"type": "number"}
+              },
+              "withdraw_log_hazard_shift_by_coordinate": {
+                "type": "object",
+                "additionalProperties": {"type": "number"}
+              },
+              "entry_initialization": {
+                "type": "object",
+                "required": ["policy"],
+                "properties": {"policy": {"enum": ["CARRY", "RESET_TO_PRIOR"]}},
+                "additionalProperties": false
+              },
+              "exit_policy": {
+                "oneOf": [
+                  {
+                    "type": "object",
+                    "required": ["policy"],
+                    "properties": {
+                      "policy": {
+                        "enum": [
+                          "CARRY",
+                          "RESET_TO_PRIOR",
+                          "SURVIVOR_CARRY_REENTRY_RESET"
+                        ]
+                      }
+                    },
+                    "additionalProperties": false
+                  },
+                  {
+                    "type": "object",
+                    "required": ["policy", "decay_rate_per_step"],
+                    "properties": {
+                      "policy": {"const": "DECAY_TO_PRIOR"},
+                      "decay_rate_per_step": {"type": "number", "exclusiveMinimum": 0}
+                    },
+                    "additionalProperties": false
+                  }
+                ]
+              },
+              "parameter_status": {
+                "enum": [
+                  "STRUCTURAL_TOY_NONCALIBRATED",
+                  "MECHANISM_CONSTRAINED",
+                  "EMPIRICALLY_ESTIMATED"
+                ]
+              },
+              "source_id": {"type": "string", "minLength": 1},
+              "version": {"type": "string", "minLength": 1}
+            },
+            "additionalProperties": false,
+            "allOf": [
+              {
+                "if": {
+                  "anyOf": [
+                    {
+                      "required": ["enter_hazard_per_step"],
+                      "properties": {
+                        "enter_hazard_per_step": {"exclusiveMinimum": 0}
+                      }
+                    },
+                    {
+                      "required": ["withdraw_hazard_per_step"],
+                      "properties": {
+                        "withdraw_hazard_per_step": {"exclusiveMinimum": 0}
+                      }
+                    }
+                  ]
+                },
+                "then": {
+                  "required": ["entry_initialization", "exit_policy"],
+                  "properties": {
+                    "entry_initialization": {
+                      "const": {"policy": "RESET_TO_PRIOR"}
+                    },
+                    "exit_policy": {
+                      "const": {"policy": "SURVIVOR_CARRY_REENTRY_RESET"}
+                    },
+                    "enter_log_hazard_shift_by_mode": {"maxProperties": 0},
+                    "withdraw_log_hazard_shift_by_mode": {"maxProperties": 0},
+                    "enter_log_hazard_shift_by_coordinate": {"maxProperties": 0},
+                    "withdraw_log_hazard_shift_by_coordinate": {"maxProperties": 0}
+                  }
+                }
+              }
+            ]
+          },
+          "coordinates": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["coordinate_id", "bounds", "prior_mean"],
+              "properties": {
+                "coordinate_id": {"type": "string"},
+                "bounds": {"type": "array", "items": {"type": "number"}, "minItems": 2, "maxItems": 2},
+                "prior_mean": {"type": "number"},
+                "prior_uncertainty": {"type": "number", "minimum": 0},
+                "objective_weight": {"type": "number"}
+              }
+            }
+          },
+          "modes": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "required": ["mode_id", "prior", "coordinate_drift"],
+              "properties": {
+                "mode_id": {"type": "string"},
+                "prior": {"type": "number", "minimum": 0},
+                "coordinate_drift": {"type": "object", "additionalProperties": {"type": "number"}}
+              }
+            }
+          }
+        }
+      }
+    },
+    "observations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["concept_id", "factor_id", "emissions"],
+        "properties": {
+          "concept_id": {"type": "string"},
+          "factor_id": {"type": "string"},
+          "emissions": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "required": ["process_id", "active_likelihood", "inactive_likelihood"],
+              "properties": {
+                "process_id": {"type": "string"},
+                "active_likelihood": {"$ref": "#/$defs/likelihood"},
+                "inactive_likelihood": {"$ref": "#/$defs/likelihood"},
+                "coordinate_update": {"type": "object"},
+                "mode_likelihoods": {
+                  "type": "object",
+                  "additionalProperties": {"$ref": "#/$defs/likelihood"}
+                }
+              }
+            }
+          },
+          "unknown_likelihood": {"$ref": "#/$defs/likelihood"},
+          "reference_likelihood": {"$ref": "#/$defs/likelihood"}
+        }
+      }
+    },
+    "common_cause_factors": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "factor_id",
+          "member_concept_ids",
+          "binding_mode",
+          "value_encoding",
+          "reliability_aggregation",
+          "joint_value_likelihoods"
+        ],
+        "properties": {
+          "factor_id": {"type": "string", "minLength": 1},
+          "member_concept_ids": {
+            "type": "array",
+            "minItems": 2,
+            "uniqueItems": true,
+            "items": {"type": "string", "minLength": 1}
+          },
+          "binding_mode": {
+            "enum": ["SAME_SOURCE_RESULT", "SHARED_LATENT_INSTANCE"]
+          },
+          "value_encoding": {"const": "CANONICAL_MEMBER_OBJECT"},
+          "reliability_aggregation": {"const": "MINIMUM"},
+          "joint_value_likelihoods": {
+            "type": "object",
+            "minProperties": 1,
+            "additionalProperties": {"$ref": "#/$defs/likelihood"}
+          },
+          "unknown_likelihood": {"$ref": "#/$defs/likelihood"},
+          "reference_likelihood": {"$ref": "#/$defs/likelihood"}
+        },
+        "additionalProperties": false
+      }
+    },
+    "topology": {
+      "type": "object",
+      "required": ["edges"],
+      "properties": {
+        "distance_scale": {"type": "number", "exclusiveMinimum": 0},
+        "inference_coupling": {"type": "number"},
+        "planning_coupling": {"type": "number"},
+        "edges": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["source", "target", "distance"],
+            "properties": {
+              "source": {"type": "string"},
+              "target": {"type": "string"},
+              "distance": {"type": "number", "exclusiveMinimum": 0},
+              "directed": {"type": "boolean"}
+            }
+          }
+        },
+        "stratum_edges": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["source_stratum_id", "target_stratum_id", "distance"],
+            "properties": {
+              "source_stratum_id": {"type": "string"},
+              "target_stratum_id": {"type": "string"},
+              "distance": {"type": "number", "exclusiveMinimum": 0},
+              "directed": {"type": "boolean"}
+            },
+            "additionalProperties": false
+          }
+        },
+        "planning_bridges": {"type": "array", "items": {"type": "object"}}
+      }
+    },
+    "actions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["action_id", "dose_reference", "washout_steps", "effects"],
+        "properties": {
+          "action_id": {"type": "string"},
+          "dose_reference": {"type": "number", "exclusiveMinimum": 0},
+          "washout_steps": {"type": "number", "minimum": 0},
+          "action_cost": {"type": "number"},
+          "effects": {"type": "array", "items": {"type": "object"}}
+        }
+      }
+    },
+    "process_couplings": {"type": "array", "items": {"type": "object"}},
+    "mode_couplings": {"type": "array", "items": {"type": "object"}},
+    "coactivation_interactions": {"type": "array", "items": {"type": "object"}}
+  },
+  "additionalProperties": true
+}

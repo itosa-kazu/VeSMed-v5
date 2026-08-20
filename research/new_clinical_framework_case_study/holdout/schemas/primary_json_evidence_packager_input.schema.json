@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "ncf.primary-json-evidence-packager-input.v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "phase", "inputs"],
+  "properties": {
+    "schema_version": {"const": "ncf.primary-json-evidence-packager-input.v1"},
+    "phase": {"enum": ["PRE_REPORT", "FINAL"]},
+    "inputs": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "structural_results", "event_replay_report", "event_replay_bundle",
+        "model", "case_evaluation", "case_evaluator_manifest",
+        "combined_preprimary_seal"
+      ],
+      "properties": {
+        "structural_results": {"$ref": "#/$defs/namedRef"},
+        "event_replay_report": {"$ref": "#/$defs/namedRef"},
+        "event_replay_bundle": {"$ref": "#/$defs/namedRef"},
+        "model": {"$ref": "#/$defs/namedRef"},
+        "case_evaluation": {"$ref": "#/$defs/namedRef"},
+        "case_evaluator_manifest": {"$ref": "#/$defs/namedRef"},
+        "combined_preprimary_seal": {"$ref": "#/$defs/namedRef"},
+        "report_evaluation": {"$ref": "#/$defs/namedRef"},
+        "report_evaluator_manifest": {"$ref": "#/$defs/namedRef"},
+        "pre_report_receipt": {"$ref": "#/$defs/namedRef"},
+        "pre_report_gate_bundle": {"$ref": "#/$defs/namedRef"},
+        "coverage_bundle": {"$ref": "#/$defs/namedRef"}
+      }
+    }
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "namedRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256", "bytes"],
+      "properties": {
+        "path": {"type": "string", "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))[A-Za-z0-9._/-]+$"},
+        "sha256": {"$ref": "#/$defs/sha256"},
+        "bytes": {"type": "integer", "minimum": 1}
+      }
+    }
+  }
+}

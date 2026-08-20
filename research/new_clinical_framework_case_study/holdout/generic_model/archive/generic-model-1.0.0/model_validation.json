@@ -1,0 +1,166 @@
+{
+  "architecture_version": "NCF-ARCH-1.0.0",
+  "artifact": "adult-icu-acute-hemodynamic-collapse-generic-v1",
+  "artifact_hashes": {
+    "MODEL_CARD.md": "1852ad735d825d3f96a38f76b6dd49ba206ca8659b21647ce9816d9831db71b4",
+    "MODEL_SCOPE.md": "5437305adf07ed6e9e40e240095f027813566c1075e374609d658a1e75ecd406",
+    "model_pack.json": "88b018ee8224d483dae24133080c4d0ffd3797ff1f97513bd5ef9b8c1ef80009"
+  },
+  "build_boundary": {
+    "case_oriented_assets_consumed": false,
+    "holdout_outcome_seen": false,
+    "holdout_timeline_seen": false,
+    "holdout_values_seen": false,
+    "specific_case_web_search_performed": false
+  },
+  "case_blind": true,
+  "clinical_claim_status": "NOT_CLINICALLY_CALIBRATED",
+  "digests": {
+    "baseline_state_hash": "fc448650c9f592fba81f7d357ff6fe2da463ced29c9ed7783b64a9a3036b4983",
+    "model_digest": "45cee5d2f1d07f74ca0ac1354d951772fe82c358b847c925809195c3d62e7b22"
+  },
+  "generic_probe_results": {
+    "active_action_trace_present": true,
+    "adrenergic_drive_after_high_metanephrine": 0.9999999830889992,
+    "adrenergic_drive_prior": 0.08602576575993597,
+    "checks": "24/24",
+    "hormonal_support_after_low_cortisol": 0.5015951305965174,
+    "hormonal_support_prior": 0.08248405018352119,
+    "infectious_burden_with_confirmed_infection_and_high_map": 0.7070682422154478,
+    "joint_probability_sum": 1.0,
+    "mode_guard_decompensated_disabled": 0.005,
+    "mode_guard_decompensated_enabled": 0.544,
+    "negative_hypotension_hormonal_marginal": 0.04519517028219773,
+    "non_simplex_process_marginal_sum": 1.8919412565361429,
+    "ood_abstention": "partial_answer_only",
+    "ood_unmodelled_after": 0.39348667118433606,
+    "ood_unmodelled_before": 0.24000000000000069,
+    "opposite_local_modes": {
+      "P_PUMP_FAILURE": "recovering",
+      "P_RESP_FAILURE": "decompensated"
+    },
+    "planned_action_record_only": true,
+    "process_and_mode_coupling_traces_present": true,
+    "shared_query_hash_exact": true,
+    "status": "PASS",
+    "topology_vasoplegia_off": 0.3054922735180396,
+    "topology_vasoplegia_on": 0.3289778576649189,
+    "vasoplegia_with_confirmed_infection_and_high_map": 0.01656399942963871
+  },
+  "identifiability": {
+    "cause_specific_neurologic_action": "OUT_OF_SCOPE",
+    "clinical_recommendation_claimed": false,
+    "declared_action_rollouts": "UNIDENTIFIABLE",
+    "diagnosis": "STRUCTURALLY_SUPPORTED_NOT_CALIBRATED",
+    "no_new_action_forecast": "UNIDENTIFIABLE_FOR_CLINICAL_MAGNITUDES"
+  },
+  "measurement_factor_contract": {
+    "all_have_unit_method_provenance_support_masking": true,
+    "alternative_representation_contract_present": true,
+    "censoring_contract_present": true,
+    "enforcement_boundary": "model declares the contract; the case-blind mapper/harness must withhold invalid or support-masked emissions and record residuals",
+    "mnar_contract_present": true,
+    "numeric_concepts_checked": 8,
+    "runtime_alone_claimed_to_infer_missing_method_metadata": false,
+    "status": "PASS",
+    "structural_harness_path": "holdout/evidence/structural_gate_harness/structural_gate_results.json",
+    "structural_harness_sha256": "cc8e210a6f9539471e2e1ecccc2e987dc34a325016b3dbaa4cd356f9c3238861"
+  },
+  "model_parameter_status": "expert_elicited_ordinal_toy_not_calibrated",
+  "model_summary": {
+    "action_classes": 15,
+    "action_effect_classes": 14,
+    "exact_joint_hypotheses": 16384,
+    "known_processes": 13,
+    "local_coordinates": 28,
+    "numeric_observation_concepts": 8,
+    "observation_concepts": 49,
+    "observation_emissions": 146,
+    "strata_or_stratum_likelihoods": 0,
+    "typed_out_of_scope_action_classes": 1,
+    "unmodelled_process_dimension": 1
+  },
+  "model_version": "generic-model/1.0.0",
+  "notes": [
+    "All priors, likelihood-shaped weights, drifts, couplings, guards, topology lengths, action deltas, costs, and thresholds are expert-elicited ordinal toy values and are not clinical probabilities or calibrated effect sizes.",
+    "The pack is a frozen structural model for the declared scope, not a clinical diagnostic, prognosis, or treatment system.",
+    "No patient-level counterfactual magnitude is identified; declared effects are directional mechanism placeholders only."
+  ],
+  "performance": {
+    "canonical_state_wire_bytes": 5696313,
+    "initialize_ms_with_tracemalloc": 4031.9,
+    "peak_mib_with_tracemalloc": 28.858,
+    "resource_boundary": "scope-specific exact enumeration only; no extrapolation beyond 13 known processes",
+    "runtime_construct_ms": 79.023
+  },
+  "runtime_binding": {
+    "manifest_sha256": "d841f940d42b8f98aba9ea7de867ee0f15ffe5cb7553fdfdc144c80fd839bab0",
+    "runtime_state_schema": "ncf.shared_patient_state.v1",
+    "seal_kind": "runtime_v2_1_case_blind_freeze",
+    "seal_path": "runtime_v2/evidence/FREEZE_SEAL.json",
+    "seal_sha256": "960c8e45b5c3f4be2c0cc2ba10fdfeb96d979f824b0055ab9064529f73d95c2c",
+    "source_tree_sha256": "5680bd925209fd4422a4433efa8621557ae5cfe79314ca90263c9122c1c6e1d8"
+  },
+  "runtime_version": "2.1",
+  "schema_version": "generic-model-validation/1.0.0",
+  "status": "FINAL_PASS",
+  "structural_claim_status": "STRUCTURALLY_VALIDATED_CASE_BLIND",
+  "tests": [
+    {
+      "name": "model JSON schema",
+      "result": "PASS"
+    },
+    {
+      "name": "validate_model_spec semantic validation",
+      "result": "PASS"
+    },
+    {
+      "detail": "16384 hypotheses",
+      "name": "13-process exact factorial initialization",
+      "result": "PASS"
+    },
+    {
+      "detail": "24/24",
+      "name": "generic structural probes",
+      "result": "PASS"
+    },
+    {
+      "name": "typed neurologic out-of-scope rollout and plan exclusion",
+      "result": "PASS"
+    },
+    {
+      "detail": "F1-F5 all PASS; no generic-model blocker",
+      "name": "independent case-blind generic F1-F5 audit",
+      "result": "PASS"
+    },
+    {
+      "detail": "40/40",
+      "name": "runtime v2.1 unit tests",
+      "result": "PASS"
+    },
+    {
+      "detail": "6/6",
+      "name": "runtime cold-ledger replay tests",
+      "result": "PASS"
+    },
+    {
+      "detail": "4/4",
+      "name": "structural harness unit tests",
+      "result": "PASS"
+    },
+    {
+      "detail": "G01-G17; 24/24 harness gate results",
+      "name": "structural architecture gates",
+      "result": "PASS"
+    }
+  ],
+  "typed_scope_refusal_probe": {
+    "action_id": "ACTION_CAUSE_SPECIFIC_NEUROLOGIC_INTERVENTION",
+    "effect_count": 0,
+    "plan_selected_policy": "NO_NEW_ACTION",
+    "rollout_status": "OUT_OF_SCOPE",
+    "status": "PASS",
+    "typed_policy_excluded": true
+  },
+  "validated_at": "2026-07-20T19:23:22+09:00"
+}

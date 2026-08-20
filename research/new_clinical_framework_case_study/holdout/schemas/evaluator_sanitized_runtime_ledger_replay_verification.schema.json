@@ -1,0 +1,133 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "ncf.evaluator-sanitized-runtime-ledger-replay-verification.v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "produced_by",
+    "producer_id",
+    "status",
+    "verifier_tool",
+    "compiler_tool",
+    "compiler_input_manifest",
+    "compiler_outputs",
+    "combined_preprimary_seal_payload_sha256",
+    "replay_policy_sha256",
+    "replay_claim",
+    "fresh_replay"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "NCF-EVALUATOR-SANITIZED-RUNTIME-LEDGER-REPLAY-VERIFICATION-1.0.0"
+    },
+    "produced_by": {
+      "const": "holdout/tools/verify_evaluator_sanitized_runtime_ledger.py"
+    },
+    "producer_id": {
+      "const": "evaluator-sanitized-runtime-ledger-compiler-v1"
+    },
+    "status": {
+      "const": "PASS"
+    },
+    "verifier_tool": {
+      "$ref": "#/$defs/contentRef"
+    },
+    "compiler_tool": {
+      "$ref": "#/$defs/contentRef"
+    },
+    "compiler_input_manifest": {
+      "$ref": "#/$defs/contentRef"
+    },
+    "compiler_outputs": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["ledger", "assignment_proof"],
+      "properties": {
+        "ledger": {"$ref": "#/$defs/contentRef"},
+        "assignment_proof": {"$ref": "#/$defs/contentRef"}
+      }
+    },
+    "combined_preprimary_seal_payload_sha256": {
+      "$ref": "#/$defs/sha256"
+    },
+    "replay_policy_sha256": {
+      "$ref": "#/$defs/sha256"
+    },
+    "replay_claim": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["adapter_id", "input_ref_ids", "output_ref_ids", "check_args", "invocation_sha256"],
+      "properties": {
+        "adapter_id": {"const": "CONFIGURED_CLI_EXACT_JSON_V1"},
+        "input_ref_ids": {
+          "const": {"input_manifest": "compiler-input-manifest"}
+        },
+        "output_ref_ids": {
+          "const": {"ledger": "sanitized-ledger", "assignment_proof": "assignment-proof"}
+        },
+        "check_args": {"const": {}},
+        "invocation_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "fresh_replay": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "status",
+        "invocation_sha256",
+        "output_sha256",
+        "output_bytes",
+        "output_semantic_sha256",
+        "network_control",
+        "outputs"
+      ],
+      "properties": {
+        "schema_version": {"const": "ncf.producer-replay-verification.v1"},
+        "status": {"const": "PASS"},
+        "invocation_sha256": {"$ref": "#/$defs/sha256"},
+        "output_sha256": {"$ref": "#/$defs/sha256"},
+        "output_bytes": {"type": "integer", "minimum": 2},
+        "output_semantic_sha256": {"$ref": "#/$defs/sha256"},
+        "network_control": {"const": "APPLICATION_SOCKET_GUARD_OFFLINE_NOT_OS_SANDBOX"},
+        "outputs": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["ledger", "assignment_proof"],
+          "properties": {
+            "ledger": {"$ref": "#/$defs/namedOutput"},
+            "assignment_proof": {"$ref": "#/$defs/namedOutput"}
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "contentRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256", "bytes"],
+      "properties": {
+        "path": {"type": "string", "minLength": 1},
+        "sha256": {"$ref": "#/$defs/sha256"},
+        "bytes": {"type": "integer", "minimum": 1}
+      }
+    },
+    "namedOutput": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["ref_id", "sha256", "bytes", "semantic_sha256"],
+      "properties": {
+        "ref_id": {"enum": ["sanitized-ledger", "assignment-proof"]},
+        "sha256": {"$ref": "#/$defs/sha256"},
+        "bytes": {"type": "integer", "minimum": 1},
+        "semantic_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    }
+  }
+}

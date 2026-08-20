@@ -1,0 +1,82 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "ncf.mapped-observation-consumption.v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "execution_role", "runtime_output_sha256", "event_count", "records"],
+  "properties": {
+    "schema_version": {"const": "NCF-MAPPED-OBSERVATION-CONSUMPTION-1.1.0"},
+    "execution_role": {"const": "evaluator"},
+    "runtime_output_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "event_count": {"type": "integer", "minimum": 0},
+    "records": {"type": "array", "items": {"$ref": "#/$defs/record"}}
+  },
+  "$defs": {
+    "record": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["event_id", "source_result_id", "mapped_id", "mapping_status", "method", "unit", "reliability", "rankability_disposition", "support_masking", "alternative_representation", "runtime_event_type", "runtime_disposition_reason"],
+      "properties": {
+        "event_id": {"type": "string", "minLength": 1},
+        "source_result_id": {"type": "string", "minLength": 1},
+        "mapped_id": {"type": ["string", "null"]},
+        "mapping_status": {"enum": ["MAPPED", "UNMAPPED", "MAPPING_INVALID"]},
+        "method": {
+          "type": "object", "additionalProperties": false,
+          "required": ["requirement_status", "required_provenance_fields_present", "required_provenance_fields_missing"],
+          "properties": {
+            "requirement_status": {"enum": ["SATISFIED", "FAILED", "UNKNOWN"]},
+            "required_provenance_fields_present": {"type": "array", "items": {"type": "string"}},
+            "required_provenance_fields_missing": {"type": "array", "items": {"type": "string"}}
+          }
+        },
+        "unit": {
+          "type": "object", "additionalProperties": false, "required": ["normalization_status", "source_unit", "normalized_unit"],
+          "properties": {
+            "normalization_status": {"enum": ["SATISFIED", "FAILED", "NOT_APPLICABLE"]},
+            "source_unit": {"type": ["string", "null"]},
+            "normalized_unit": {"type": ["string", "null"]}
+          }
+        },
+        "reliability": {
+          "type": "object", "additionalProperties": false, "required": ["status", "basis"],
+          "properties": {
+            "status": {"enum": ["RELIABLE", "LOW", "UNKNOWN"]},
+            "basis": {
+              "type": "object", "additionalProperties": false,
+              "required": ["explicit_assertion", "target_scope", "adequate_method", "adequate_timing", "adequate_reliability"],
+              "properties": {
+                "explicit_assertion": {"type": "boolean"}, "target_scope": {"type": "boolean"},
+                "adequate_method": {"type": "boolean"}, "adequate_timing": {"type": "boolean"},
+                "adequate_reliability": {"type": "boolean"}
+              }
+            }
+          }
+        },
+        "rankability_disposition": {"enum": ["CONSUME", "WITHHOLD_TO_MEASUREMENT_UNCERTAINTY", "RECORD_ONLY"]},
+        "support_masking": {
+          "type": "object", "additionalProperties": false,
+          "required": ["active_action_ids_at_sample", "masking_action_ids", "masking_risk", "conditioned_factor_available", "disposition"],
+          "properties": {
+            "active_action_ids_at_sample": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+            "masking_action_ids": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+            "masking_risk": {"enum": ["NONE", "POSSIBLE", "PRESENT", "UNKNOWN"]},
+            "conditioned_factor_available": {"type": "boolean"},
+            "disposition": {"enum": ["CONSUME_UNMASKED", "CONSUME_CONDITIONED", "WITHHOLD_TO_MEASUREMENT_UNCERTAINTY"]}
+          }
+        },
+        "alternative_representation": {
+          "type": "object", "additionalProperties": false,
+          "required": ["group_id", "selected_source_result_ids", "suppressed_source_result_ids"],
+          "properties": {
+            "group_id": {"type": ["string", "null"]},
+            "selected_source_result_ids": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+            "suppressed_source_result_ids": {"type": "array", "items": {"type": "string"}, "uniqueItems": true}
+          }
+        },
+        "runtime_event_type": {"enum": ["ObservationAvailable", "RecordOnly"]},
+        "runtime_disposition_reason": {"type": ["string", "null"]}
+      }
+    }
+  }
+}

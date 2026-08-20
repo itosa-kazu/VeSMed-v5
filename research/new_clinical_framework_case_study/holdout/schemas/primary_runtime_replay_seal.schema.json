@@ -1,0 +1,96 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "ncf.data.replay-seal.v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "execution_role", "case_blind", "invocation_contract",
+    "input_manifest", "input_bindings", "combined_preprimary_closure",
+    "runtime_output", "event_ledger_replay_bundle", "mapped_observation_consumption",
+    "fresh_process_replay", "dependency_trace", "artifact_set_digest", "seal_payload_sha256"
+  ],
+  "properties": {
+    "schema_version": {"const": "NCF-PRIMARY-RUNTIME-REPLAY-SEAL-1.0.0"},
+    "execution_role": {"const": "evaluator"},
+    "case_blind": {"const": true},
+    "invocation_contract": {"type": "object"},
+    "input_manifest": {"$ref": "#/$defs/artifact"},
+    "input_bindings": {"type": "array", "minItems": 9, "maxItems": 9},
+    "combined_preprimary_closure": {"type": "object"},
+    "runtime_output": {"$ref": "#/$defs/artifact"},
+    "event_ledger_replay_bundle": {"$ref": "#/$defs/artifact"},
+    "mapped_observation_consumption": {"$ref": "#/$defs/artifact"},
+    "fresh_process_replay": {"type": "object"},
+    "dependency_trace": {"$ref": "#/$defs/dependencyTrace"},
+    "artifact_set_digest": {"$ref": "#/$defs/hash"},
+    "seal_payload_sha256": {"$ref": "#/$defs/hash"}
+  },
+  "$defs": {
+    "hash": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "artifact": {
+      "type": "object", "additionalProperties": false,
+      "required": ["filename", "schema_id", "sha256", "bytes"],
+      "properties": {
+        "filename": {"type": "string", "pattern": "^[A-Za-z0-9._-]+$"},
+        "schema_id": {"type": "string", "minLength": 1},
+        "sha256": {"$ref": "#/$defs/hash"},
+        "bytes": {"type": "integer", "minimum": 1}
+      }
+    },
+    "dependencyTrace": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version", "trace_scope", "approved_origin_classes",
+        "module_origins", "builtin_or_frozen_modules", "outside_allowlist",
+        "io_trace", "network_guard"
+      ],
+      "properties": {
+        "schema_version": {"const": "NCF-PRIMARY-RUNTIME-DEPENDENCY-TRACE-1.0.0"},
+        "trace_scope": {"const": "ACTUAL_PRIMARY_CASE_RUNTIME_REPLAY_PROCESS"},
+        "approved_origin_classes": {
+          "const": ["NCF_FROZEN_SOURCE", "PYTHON_STDLIB", "BUILTIN_OR_FROZEN"]
+        },
+        "module_origins": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["module", "origin", "classification", "sha256", "bytes"],
+            "properties": {
+              "module": {"type": "string", "minLength": 1},
+              "origin": {"type": "string", "minLength": 1},
+              "classification": {"enum": ["NCF_FROZEN_SOURCE", "PYTHON_STDLIB"]},
+              "sha256": {"$ref": "#/$defs/hash"},
+              "bytes": {"type": "integer", "minimum": 1}
+            }
+          }
+        },
+        "builtin_or_frozen_modules": {
+          "type": "array", "uniqueItems": true,
+          "items": {"type": "string", "minLength": 1}
+        },
+        "outside_allowlist": {"const": []},
+        "io_trace": {
+          "type": "object", "additionalProperties": false,
+          "required": ["input_bindings", "produced_artifacts"],
+          "properties": {
+            "input_bindings": {"type": "array", "minItems": 9, "maxItems": 9},
+            "produced_artifacts": {"type": "array", "minItems": 3, "maxItems": 3}
+          }
+        },
+        "network_guard": {
+          "type": "object", "additionalProperties": false,
+          "required": ["control", "attempt_count", "attempts", "passed"],
+          "properties": {
+            "control": {"const": "APPLICATION_SOCKET_GUARD_OFFLINE_NOT_OS_SANDBOX"},
+            "attempt_count": {"const": 0},
+            "attempts": {"const": []},
+            "passed": {"const": true}
+          }
+        }
+      }
+    }
+  }
+}

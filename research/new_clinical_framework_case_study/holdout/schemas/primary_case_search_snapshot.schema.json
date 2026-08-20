@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "ncf.primary-case-search-snapshot.v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "retrieved_at", "query_runs", "canonical_case_ids"],
+  "properties": {
+    "schema_version": {"const": "NCF-PRIMARY-SEARCH-SNAPSHOT-1.0.0"},
+    "retrieved_at": {"type": "string", "format": "date-time"},
+    "query_runs": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 2,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["query_id", "query", "sort", "retmax", "ordered_case_ids", "raw_response_ref"],
+        "properties": {
+          "query_id": {"enum": ["Q1", "Q2"]},
+          "query": {"type": "string", "minLength": 1},
+          "sort": {"const": "pub date"},
+          "retmax": {"const": 100},
+          "ordered_case_ids": {"type": "array", "items": {"type": "string", "minLength": 1}},
+          "raw_response_ref": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["path", "sha256"],
+            "properties": {
+              "path": {
+                "type": "string",
+                "pattern": "^holdout/evidence/primary_search_raw/[^/]+\\.capture\\.json$"
+              },
+              "sha256": {"$ref": "#/$defs/sha256"}
+            }
+          }
+        }
+      }
+    },
+    "canonical_case_ids": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1}
+    }
+  },
+  "$defs": {"sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}}
+}

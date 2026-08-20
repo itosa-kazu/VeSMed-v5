@@ -1,0 +1,1054 @@
+{
+  "schema_version": "new-clinical-map.generic-model.v0.1",
+  "model_id": "blind-tma-differential-v0",
+  "model_status": "EXPERIMENTAL_UNCALIBRATED",
+  "language": "en",
+  "blindness_contract": {
+    "allowed_medical_input": [
+      "candidate process names",
+      "background name APS",
+      "general medical knowledge"
+    ],
+    "forbidden_inputs": [
+      "case files or case-specific structured events",
+      "target-case articles or source-specific identifiers",
+      "VeSMed V5 distillations, trajectories, rankings, or expected outputs",
+      "target-case measurements, dates, interventions, diagnoses, or outcomes"
+    ],
+    "candidate_processes": [
+      "complement-mediated thrombotic microangiopathy",
+      "thrombotic thrombocytopenic purpura",
+      "anti-glomerular-basement-membrane disease",
+      "iatrogenic biopsy bleeding",
+      "heparin-induced thrombocytopenia"
+    ],
+    "background_only": [
+      "antiphospholipid syndrome"
+    ],
+    "declaration": "No patient-specific value, time point, expected diagnosis, or outcome was used to select this topology or its parameters."
+  },
+  "scope": {
+    "purpose": "Mechanism-aware longitudinal belief-state experiment over a deliberately small differential-process set.",
+    "not_for": [
+      "clinical diagnosis",
+      "treatment selection",
+      "dose or timing decisions",
+      "patient-specific causal claims",
+      "population calibration claims"
+    ],
+    "time_unit": "model_step",
+    "coordinate_domain": "all continuous branch-local coordinates are normalized to [0,1] unless otherwise stated",
+    "observation_policy": "Only typed observations available at the current cut may update belief.",
+    "action_policy": "Only PerformedTreatment or PerformedProcedure events alter dynamics; planned or considered actions do not.",
+    "coexistence_policy": "The hidden state may contain more than one active process. Mutually exclusive single-label normalization is forbidden."
+  },
+  "inference_prior_policy": {
+    "calibration_status": "NO_CLINICAL_PREVALENCE_CALIBRATION",
+    "default_for_structural_tests": "exchangeable sparse prior over known candidate-process subsets, with a separately represented unknown branch",
+    "unknown_initial_mass_sensitivity_range": [0.15, 0.40],
+    "known_branch_rule": "Distribute the remaining mass without using target-case labels; report sensitivity rather than treating the default as prevalence.",
+    "background_rule": "APS, reserve, and performed exposure context may modulate activation through registered factors or transition gates, but may not be counted again as an extra prior bonus.",
+    "reporting_rule": "If a branch ordering or action rollout changes materially across the registered prior ensemble, label the output PRIOR_SENSITIVE."
+  },
+  "background_state": {
+    "stable_or_slow_coordinates": [
+      {
+        "id": "theta_aps_activity",
+        "meaning": "Uncertain APS-related prothrombotic/immune background activity",
+        "range": [0.0, 1.0],
+        "role": "background_modifier_not_diagnosis_branch"
+      },
+      {
+        "id": "theta_renal_reserve",
+        "meaning": "Renal functional reserve before the active process",
+        "range": [0.0, 1.0],
+        "role": "reserve"
+      },
+      {
+        "id": "theta_hematologic_reserve",
+        "meaning": "Capacity to tolerate or recover from red-cell and platelet loss",
+        "range": [0.0, 1.0],
+        "role": "reserve"
+      },
+      {
+        "id": "theta_pulmonary_reserve",
+        "meaning": "Pulmonary reserve before the active process",
+        "range": [0.0, 1.0],
+        "role": "reserve"
+      },
+      {
+        "id": "theta_complement_susceptibility",
+        "meaning": "Slow or stable susceptibility to dysregulated complement amplification",
+        "range": [0.0, 1.0],
+        "role": "predisposition_modifier_not_current_activity"
+      }
+    ],
+    "aps_modulation_hypotheses": [
+      {
+        "target": "L_THROMBIN_GENERATION",
+        "direction": "up",
+        "status": "UNIDENTIFIED_CAUSAL_EDGE",
+        "note": "APS is treated as a permissive background, not proof of the active branch."
+      },
+      {
+        "target": "L_COMPLEMENT_AMPLIFICATION",
+        "direction": "possibly_up",
+        "status": "UNIDENTIFIED_CAUSAL_EDGE",
+        "note": "The strength and patient-level relevance of this interaction are not identified by the blind package."
+      }
+    ],
+    "double_count_guard": "APS may modify branch activation or trajectory, but it must not also be added as a separate copy of the same thrombosis or complement evidence."
+  },
+  "branch_graph": {
+    "graph_type": "directed_process_topology_with_concurrent_activation",
+    "root_id": "B_PHYSIOLOGIC_REFERENCE",
+    "nodes": [
+      {
+        "branch_id": "B_PHYSIOLOGIC_REFERENCE",
+        "label": "No represented active candidate process",
+        "node_type": "reference",
+        "parents": []
+      },
+      {
+        "branch_id": "B_MICROANGIOPATHIC_PROCESS",
+        "label": "Microangiopathic process family",
+        "node_type": "non_rankable_internal_parent",
+        "parents": ["B_PHYSIOLOGIC_REFERENCE"],
+        "shared_latents": [
+          "L_ENDOTHELIAL_INJURY",
+          "L_MICROVASCULAR_PLATELET_CONSUMPTION",
+          "L_MICROANGIOPATHIC_RBC_DESTRUCTION",
+          "L_ORGAN_ISCHEMIA"
+        ]
+      },
+      {
+        "branch_id": "B_COMPLEMENT_TMA",
+        "label": "Complement-mediated TMA",
+        "node_type": "candidate_process",
+        "parents": ["B_MICROANGIOPATHIC_PROCESS"],
+        "activation_gate": "L_COMPLEMENT_AMPLIFICATION"
+      },
+      {
+        "branch_id": "B_TTP",
+        "label": "TTP",
+        "node_type": "candidate_process",
+        "parents": ["B_MICROANGIOPATHIC_PROCESS"],
+        "activation_gate": "L_ADAMTS13_FUNCTIONAL_DEFICIENCY"
+      },
+      {
+        "branch_id": "B_ANTI_GBM",
+        "label": "Anti-GBM disease",
+        "node_type": "candidate_process",
+        "parents": ["B_PHYSIOLOGIC_REFERENCE"],
+        "activation_gate": "L_ANTI_GBM_AUTOANTIBODY_ACTIVITY"
+      },
+      {
+        "branch_id": "B_BIOPSY_BLEEDING",
+        "label": "Iatrogenic biopsy bleeding",
+        "node_type": "candidate_event_process",
+        "parents": ["B_PHYSIOLOGIC_REFERENCE"],
+        "activation_gate": "action_memory.performed_procedure_exposures.biopsy_and_L_PROCEDURAL_BLEED_SOURCE"
+      },
+      {
+        "branch_id": "B_HIT",
+        "label": "HIT",
+        "node_type": "candidate_process",
+        "parents": ["B_PHYSIOLOGIC_REFERENCE"],
+        "activation_gate": "action_memory.heparin_exposure_history_and_L_PF4_DEPENDENT_PLATELET_ACTIVATION"
+      },
+      {
+        "branch_id": "B_UNKNOWN",
+        "label": "Unrepresented active process",
+        "node_type": "unknown",
+        "parents": ["B_PHYSIOLOGIC_REFERENCE"]
+      }
+    ],
+    "allowed_concurrent_sets": {
+      "rule": "Any nonempty subset of candidate-process branches is representable unless a future scope version supplies evidence for a hard incompatibility. Unknown may coexist with any known subset.",
+      "examples_not_exhaustive": [
+        ["B_COMPLEMENT_TMA", "B_BIOPSY_BLEEDING"],
+        ["B_TTP", "B_BIOPSY_BLEEDING"],
+        ["B_ANTI_GBM", "B_BIOPSY_BLEEDING"],
+        ["B_HIT", "B_BIOPSY_BLEEDING"],
+        ["B_COMPLEMENT_TMA", "B_HIT"],
+        ["B_ANTI_GBM", "B_COMPLEMENT_TMA"],
+        ["B_UNKNOWN", "any_known_subset"]
+      ],
+      "regularization": "Sparse active sets are a computational prior only; they must not make coexistence impossible."
+    },
+    "forbidden_shortcuts": [
+      "Do not force exactly one active branch.",
+      "Do not let procedure or drug exposure alone prove a complication branch.",
+      "Do not turn APS into an active-process answer without separate evidence.",
+      "Do not use a treatment response as deterministic branch identity."
+    ],
+    "bridge_edges": [
+      {
+        "from": "B_PHYSIOLOGIC_REFERENCE",
+        "to": "B_MICROANGIOPATHIC_PROCESS",
+        "transition": "family_activation",
+        "parents": ["L_ENDOTHELIAL_INJURY", "L_MICROVASCULAR_PLATELET_CONSUMPTION", "L_MICROANGIOPATHIC_RBC_DESTRUCTION"],
+        "status": "MODEL_HYPOTHESIS"
+      },
+      {
+        "from": "B_MICROANGIOPATHIC_PROCESS",
+        "to": "B_COMPLEMENT_TMA",
+        "transition": "mechanism_refinement",
+        "parents": ["L_COMPLEMENT_AMPLIFICATION", "L_ENDOTHELIAL_INJURY"],
+        "status": "MODEL_HYPOTHESIS"
+      },
+      {
+        "from": "B_MICROANGIOPATHIC_PROCESS",
+        "to": "B_TTP",
+        "transition": "mechanism_refinement",
+        "parents": ["L_ADAMTS13_FUNCTIONAL_DEFICIENCY", "L_MICROVASCULAR_PLATELET_CONSUMPTION"],
+        "status": "MODEL_HYPOTHESIS"
+      },
+      {
+        "from": "B_PHYSIOLOGIC_REFERENCE",
+        "to": "B_ANTI_GBM",
+        "transition": "activation",
+        "parents": ["L_ANTI_GBM_AUTOANTIBODY_ACTIVITY", "L_GLOMERULAR_CAPILLARY_INJURY"],
+        "status": "MODEL_HYPOTHESIS"
+      },
+      {
+        "from": "B_PHYSIOLOGIC_REFERENCE",
+        "to": "B_BIOPSY_BLEEDING",
+        "transition": "event_activation",
+        "parents": ["action_memory.performed_procedure_exposures.biopsy", "L_PROCEDURAL_BLEED_SOURCE"],
+        "status": "MODEL_HYPOTHESIS"
+      },
+      {
+        "from": "B_PHYSIOLOGIC_REFERENCE",
+        "to": "B_HIT",
+        "transition": "exposure_conditioned_activation",
+        "parents": ["action_memory.heparin_exposure_history", "L_PF4_DEPENDENT_PLATELET_ACTIVATION"],
+        "status": "MODEL_HYPOTHESIS"
+      },
+      {
+        "from": "any_known_branch",
+        "to": "B_UNKNOWN",
+        "transition": "residual_explanation",
+        "parents": ["persistent_model_misfit"],
+        "status": "ENGINE_CONSTRAINT"
+      }
+    ],
+    "distance_rule": {
+      "within_branch": "weighted local-chart distance with posterior uncertainty",
+      "across_branch": "shortest legal path through shared parent and bridge costs",
+      "concurrent_state": "set-aware distance over active branches plus shared-latent consistency",
+      "prohibited": "flat Euclidean distance across incompatible local coordinates"
+    }
+  },
+  "branch_local_charts": [
+    {
+      "branch_id": "B_COMPLEMENT_TMA",
+      "chart_id": "CHART_COMPLEMENT_TMA_V0",
+      "coordinates": [
+        {"id": "complement_amplification", "latent_ref": "L_COMPLEMENT_AMPLIFICATION", "range": [0.0, 1.0]},
+        {"id": "endothelial_injury", "latent_ref": "L_ENDOTHELIAL_INJURY", "range": [0.0, 1.0]},
+        {"id": "microangiopathic_rbc_destruction", "latent_ref": "L_MICROANGIOPATHIC_RBC_DESTRUCTION", "range": [0.0, 1.0]},
+        {"id": "microvascular_platelet_consumption", "latent_ref": "L_MICROVASCULAR_PLATELET_CONSUMPTION", "range": [0.0, 1.0]},
+        {"id": "renal_microvascular_injury", "latent_ref": "L_RENAL_MICROVASCULAR_INJURY", "range": [0.0, 1.0]},
+        {"id": "extra_renal_organ_ischemia", "latent_ref": "L_ORGAN_ISCHEMIA", "range": [0.0, 1.0]},
+        {"id": "hematologic_recovery_momentum", "range": [-1.0, 1.0]},
+        {"id": "organ_reserve", "range": [0.0, 1.0]}
+      ],
+      "required_shared_latents": [
+        "L_MICROANGIOPATHIC_RBC_DESTRUCTION",
+        "L_MICROVASCULAR_PLATELET_CONSUMPTION",
+        "L_ENDOTHELIAL_INJURY"
+      ]
+    },
+    {
+      "branch_id": "B_TTP",
+      "chart_id": "CHART_TTP_V0",
+      "coordinates": [
+        {"id": "adamts13_functional_deficiency", "latent_ref": "L_ADAMTS13_FUNCTIONAL_DEFICIENCY", "range": [0.0, 1.0]},
+        {"id": "microvascular_platelet_consumption", "latent_ref": "L_MICROVASCULAR_PLATELET_CONSUMPTION", "range": [0.0, 1.0]},
+        {"id": "microangiopathic_rbc_destruction", "latent_ref": "L_MICROANGIOPATHIC_RBC_DESTRUCTION", "range": [0.0, 1.0]},
+        {"id": "neurologic_microvascular_burden", "latent_ref": "L_NEUROLOGIC_MICROVASCULAR_INJURY", "range": [0.0, 1.0]},
+        {"id": "cardiac_microvascular_burden", "latent_ref": "L_CARDIAC_MICROVASCULAR_INJURY", "range": [0.0, 1.0]},
+        {"id": "renal_microvascular_injury", "latent_ref": "L_RENAL_MICROVASCULAR_INJURY", "range": [0.0, 1.0]},
+        {"id": "hematologic_recovery_momentum", "range": [-1.0, 1.0]},
+        {"id": "organ_reserve", "range": [0.0, 1.0]}
+      ],
+      "required_shared_latents": [
+        "L_MICROANGIOPATHIC_RBC_DESTRUCTION",
+        "L_MICROVASCULAR_PLATELET_CONSUMPTION"
+      ]
+    },
+    {
+      "branch_id": "B_ANTI_GBM",
+      "chart_id": "CHART_ANTI_GBM_V0",
+      "coordinates": [
+        {"id": "anti_gbm_autoantibody_activity", "latent_ref": "L_ANTI_GBM_AUTOANTIBODY_ACTIVITY", "range": [0.0, 1.0]},
+        {"id": "glomerular_capillary_injury", "latent_ref": "L_GLOMERULAR_CAPILLARY_INJURY", "range": [0.0, 1.0]},
+        {"id": "pulmonary_capillary_injury", "latent_ref": "L_PULMONARY_CAPILLARY_INJURY", "range": [0.0, 1.0]},
+        {"id": "renal_function_loss", "latent_ref": "L_RENAL_FUNCTION_LOSS", "range": [0.0, 1.0]},
+        {"id": "alveolar_hemorrhage_burden", "latent_ref": "L_ALVEOLAR_HEMORRHAGE", "range": [0.0, 1.0]},
+        {"id": "immune_activity_recovery_momentum", "range": [-1.0, 1.0]},
+        {"id": "organ_reserve", "range": [0.0, 1.0]}
+      ]
+    },
+    {
+      "branch_id": "B_BIOPSY_BLEEDING",
+      "chart_id": "CHART_BIOPSY_BLEEDING_V0",
+      "coordinates": [
+        {"id": "procedural_bleed_source_activity", "latent_ref": "L_PROCEDURAL_BLEED_SOURCE", "range": [0.0, 1.0]},
+        {"id": "ongoing_blood_loss_rate", "latent_ref": "L_ONGOING_BLOOD_LOSS", "range": [0.0, 1.0]},
+        {"id": "local_hematoma_burden", "latent_ref": "L_LOCAL_HEMATOMA", "range": [0.0, 1.0]},
+        {"id": "hemodynamic_effect", "latent_ref": "L_CIRCULATORY_STRAIN", "range": [0.0, 1.0]},
+        {"id": "hemostatic_stability", "range": [0.0, 1.0], "direction_note": "higher is more stable"},
+        {"id": "hematologic_recovery_momentum", "range": [-1.0, 1.0]},
+        {"id": "organ_reserve", "range": [0.0, 1.0]}
+      ]
+    },
+    {
+      "branch_id": "B_HIT",
+      "chart_id": "CHART_HIT_V0",
+      "coordinates": [
+        {"id": "pf4_dependent_platelet_activation", "latent_ref": "L_PF4_DEPENDENT_PLATELET_ACTIVATION", "range": [0.0, 1.0]},
+        {"id": "immune_platelet_consumption", "latent_ref": "L_IMMUNE_PLATELET_CONSUMPTION", "range": [0.0, 1.0]},
+        {"id": "thrombin_generation", "latent_ref": "L_THROMBIN_GENERATION", "range": [0.0, 1.0]},
+        {"id": "macrovascular_thrombosis_burden", "latent_ref": "L_MACROVASCULAR_THROMBOSIS", "range": [0.0, 1.0]},
+        {"id": "organ_ischemia", "latent_ref": "L_ORGAN_ISCHEMIA", "range": [0.0, 1.0]},
+        {"id": "platelet_recovery_momentum", "range": [-1.0, 1.0]},
+        {"id": "organ_reserve", "range": [0.0, 1.0]}
+      ]
+    },
+    {
+      "branch_id": "B_UNKNOWN",
+      "chart_id": "CHART_UNKNOWN_RESIDUAL_V0",
+      "coordinates": [
+        {"id": "unexplained_hematologic_activity", "range": [0.0, 1.0]},
+        {"id": "unexplained_renal_activity", "range": [0.0, 1.0]},
+        {"id": "unexplained_pulmonary_activity", "range": [0.0, 1.0]},
+        {"id": "unexplained_bleeding_activity", "range": [0.0, 1.0]},
+        {"id": "unexplained_thrombotic_activity", "range": [0.0, 1.0]},
+        {"id": "residual_model_misfit", "range": [0.0, 1.0]}
+      ]
+    }
+  ],
+  "modes": {
+    "mode_ids": [
+      "compensated",
+      "strained",
+      "decompensated",
+      "recovering"
+    ],
+    "definitions": {
+      "compensated": "Active mechanism may be present, but reserve and support keep organ-level output near baseline; latent load can still rise.",
+      "strained": "Reserve is being consumed or compensatory effort/support is increasing; surface observations may lag mechanism progression.",
+      "decompensated": "Reserve is insufficient for current load; organ-level consequences accelerate and abrupt jumps are allowed.",
+      "recovering": "Mechanism load or event source is falling and recovery momentum is positive; residual injury and action effects may persist."
+    },
+    "generic_transition_hypotheses": [
+      {
+        "from": "compensated",
+        "to": "strained",
+        "hazard_parents": ["mechanism_load_up", "reserve_down", "support_masking_up"],
+        "status": "UNCALIBRATED"
+      },
+      {
+        "from": "strained",
+        "to": "decompensated",
+        "hazard_parents": ["organ_injury_up", "reserve_down", "adverse_action_effect_up"],
+        "status": "UNCALIBRATED"
+      },
+      {
+        "from": "decompensated",
+        "to": "recovering",
+        "hazard_parents": ["source_or_mechanism_control_up", "support_adequacy_up", "recovery_momentum_up"],
+        "status": "UNCALIBRATED"
+      },
+      {
+        "from": "recovering",
+        "to": "compensated",
+        "hazard_parents": ["mechanism_load_low", "reserve_stable", "support_weaning_tolerated"],
+        "status": "UNCALIBRATED"
+      },
+      {
+        "from": "recovering",
+        "to": "strained",
+        "hazard_parents": ["rebound_or_persistent_source", "support_withdrawal_intolerance"],
+        "status": "UNCALIBRATED"
+      }
+    ],
+    "hysteresis": {
+      "required": true,
+      "rule": "Entry and exit use different guards and depend on recovery momentum plus action memory; identical coordinates may therefore imply different drift in different modes."
+    },
+    "branch_overrides": [
+      {
+        "branch_id": "B_BIOPSY_BLEEDING",
+        "direct_jump": "performed biopsy plus source activation may jump directly from compensated/reference to strained or decompensated",
+        "recovery_guard": "falling blood-loss latent and increasing hemostatic stability"
+      },
+      {
+        "branch_id": "B_HIT",
+        "activation_guard": "heparin exposure memory is necessary but not sufficient",
+        "recovery_guard": "platelet activation falls; thrombosis burden can persist after platelet recovery"
+      },
+      {
+        "branch_id": "B_ANTI_GBM",
+        "mode_note": "renal and pulmonary compartments may occupy different strain levels; aggregate mode retains uncertainty rather than averaging them away"
+      }
+    ]
+  },
+  "typed_factor_graph": {
+    "context_nodes": [
+      {"id": "C_ASSAY_CONTEXT", "type": "measurement_context", "source": "method, sample quality, and reference metadata"},
+      {"id": "C_VOLUME_STATUS", "type": "measurement_context", "source": "publicly available volume/support context"},
+      {"id": "C_URINE_COLLECTION", "type": "measurement_context", "source": "collection method and timing"},
+      {"id": "C_RESULT_AVAILABILITY", "type": "availability_context", "source": "performed, pending, unavailable, or resulted state"},
+      {"id": "C_SUPPORT_CONTEXT", "type": "action_context", "source": "performed support and residual action memory"}
+    ],
+    "latent_nodes": [
+      {"id": "L_COMPLEMENT_AMPLIFICATION", "type": "latent_mechanism", "domain": "ordinal_activity"},
+      {"id": "L_ADAMTS13_FUNCTIONAL_DEFICIENCY", "type": "latent_mechanism", "domain": "ordinal_activity"},
+      {"id": "L_ANTI_GBM_AUTOANTIBODY_ACTIVITY", "type": "latent_mechanism", "domain": "ordinal_activity"},
+      {"id": "L_PF4_DEPENDENT_PLATELET_ACTIVATION", "type": "latent_mechanism", "domain": "ordinal_activity"},
+      {"id": "L_ENDOTHELIAL_INJURY", "type": "latent_mechanism", "domain": "ordinal_activity"},
+      {"id": "L_MICROVASCULAR_PLATELET_CONSUMPTION", "type": "latent_process", "domain": "ordinal_activity"},
+      {"id": "L_IMMUNE_PLATELET_CONSUMPTION", "type": "latent_process", "domain": "ordinal_activity"},
+      {"id": "L_MICROANGIOPATHIC_RBC_DESTRUCTION", "type": "latent_process", "domain": "ordinal_activity"},
+      {"id": "L_ONGOING_BLOOD_LOSS", "type": "latent_process", "domain": "ordinal_activity"},
+      {"id": "L_RED_CELL_PRODUCTION_RESPONSE", "type": "latent_response", "domain": "ordinal_activity"},
+      {"id": "L_DILUTION_CONCENTRATION_CONTEXT", "type": "measurement_context", "domain": "signed_ordinal"},
+      {"id": "L_RENAL_MICROVASCULAR_INJURY", "type": "latent_organ_process", "domain": "ordinal_activity"},
+      {"id": "L_GLOMERULAR_CAPILLARY_INJURY", "type": "latent_organ_process", "domain": "ordinal_activity"},
+      {"id": "L_RENAL_FUNCTION_LOSS", "type": "latent_organ_state", "domain": "ordinal_activity"},
+      {"id": "L_PULMONARY_CAPILLARY_INJURY", "type": "latent_organ_process", "domain": "ordinal_activity"},
+      {"id": "L_ALVEOLAR_HEMORRHAGE", "type": "latent_event", "domain": "ordinal_activity"},
+      {"id": "L_PROCEDURAL_BLEED_SOURCE", "type": "latent_event_source", "domain": "ordinal_activity"},
+      {"id": "L_LOCAL_HEMATOMA", "type": "latent_event_state", "domain": "ordinal_activity"},
+      {"id": "L_THROMBIN_GENERATION", "type": "latent_mechanism", "domain": "ordinal_activity"},
+      {"id": "L_MACROVASCULAR_THROMBOSIS", "type": "latent_event_state", "domain": "ordinal_activity"},
+      {"id": "L_ORGAN_ISCHEMIA", "type": "latent_organ_state", "domain": "ordinal_activity"},
+      {"id": "L_NEUROLOGIC_MICROVASCULAR_INJURY", "type": "latent_organ_process", "domain": "ordinal_activity"},
+      {"id": "L_CARDIAC_MICROVASCULAR_INJURY", "type": "latent_organ_process", "domain": "ordinal_activity"},
+      {"id": "L_CIRCULATORY_STRAIN", "type": "latent_mode_driver", "domain": "ordinal_activity"}
+    ],
+    "observed_nodes": [
+      {"id": "O_HEMOGLOBIN_RELATIVE", "type": "measurement", "scale": "ordinal_relative_to_personal_or_lab_reference"},
+      {"id": "O_LDH_RELATIVE", "type": "measurement", "scale": "ordinal_relative_to_lab_reference"},
+      {"id": "O_HAPTOGLOBIN_RELATIVE", "type": "measurement", "scale": "ordinal_relative_to_lab_reference"},
+      {"id": "O_INDIRECT_BILIRUBIN_RELATIVE", "type": "measurement", "scale": "ordinal_relative_to_lab_reference"},
+      {"id": "O_SCHISTOCYTE_BURDEN", "type": "measurement", "scale": "ordinal_with_sampling_context"},
+      {"id": "O_RETICULOCYTE_RESPONSE", "type": "measurement", "scale": "ordinal_with_timing_context"},
+      {"id": "O_PLATELET_COUNT_RELATIVE", "type": "measurement", "scale": "ordinal_relative_to_personal_or_lab_reference"},
+      {"id": "O_CREATININE_RELATIVE", "type": "measurement", "scale": "ordinal_relative_to_baseline_or_lab_reference"},
+      {"id": "O_EGFR_RELATIVE", "type": "measurement", "scale": "ordinal_relative_to_baseline_or_lab_reference"},
+      {"id": "O_URINE_OUTPUT_RELATIVE", "type": "measurement", "scale": "ordinal_with_support_context"},
+      {"id": "O_HEMATURIA", "type": "finding", "scale": "absent_equivocal_present_marked"},
+      {"id": "O_PROTEINURIA", "type": "measurement", "scale": "ordinal"},
+      {"id": "O_ANTI_GBM_ASSAY", "type": "assay", "scale": "negative_indeterminate_positive"},
+      {"id": "O_ADAMTS13_ACTIVITY", "type": "assay", "scale": "preserved_intermediate_markedly_reduced"},
+      {"id": "O_COMPLEMENT_COMPONENT_PATTERN", "type": "correlated_measurement_panel", "scale": "unsupported_indeterminate_supportive"},
+      {"id": "O_TERMINAL_COMPLEMENT_ACTIVATION_MARKER", "type": "assay", "scale": "unsupported_indeterminate_supportive"},
+      {"id": "O_COMPLEMENT_PREDISPOSITION_EVIDENCE", "type": "genetic_or_functional_context", "scale": "unsupported_indeterminate_supportive"},
+      {"id": "O_PF4_IMMUNOASSAY", "type": "assay", "scale": "negative_indeterminate_positive"},
+      {"id": "O_PLATELET_ACTIVATION_FUNCTIONAL_ASSAY", "type": "assay", "scale": "negative_indeterminate_positive"},
+      {"id": "O_MACROVASCULAR_THROMBOSIS", "type": "finding", "scale": "absent_indeterminate_present"},
+      {"id": "O_NEUROLOGIC_DYSFUNCTION", "type": "finding", "scale": "absent_mild_marked"},
+      {"id": "O_CARDIAC_INJURY", "type": "measurement_or_finding", "scale": "absent_mild_marked"},
+      {"id": "O_HEMOPTYSIS", "type": "finding", "scale": "absent_indeterminate_present"},
+      {"id": "O_HYPOXEMIA", "type": "measurement", "scale": "none_mild_marked"},
+      {"id": "O_ALVEOLAR_OPACITY_PATTERN", "type": "imaging_finding", "scale": "absent_indeterminate_present"},
+      {"id": "O_LOCAL_HEMATOMA_IMAGING", "type": "imaging_finding", "scale": "absent_indeterminate_present_expanding"},
+      {"id": "O_HEMODYNAMIC_STRAIN", "type": "measurement_bundle", "scale": "none_compensated_marked"},
+      {"id": "O_BIOPSY_PERFORMED", "type": "exposure_event", "scale": "no_yes"},
+      {"id": "O_HEPARIN_EXPOSURE", "type": "exposure_event", "scale": "none_uncertain_present"}
+    ],
+    "factors": [
+      {
+        "factor_id": "F_HEMOLYSIS_PANEL_JOINT",
+        "factor_type": "joint_observation_block",
+        "parents": [
+          "L_MICROANGIOPATHIC_RBC_DESTRUCTION",
+          "L_RED_CELL_PRODUCTION_RESPONSE",
+          "L_DILUTION_CONCENTRATION_CONTEXT",
+          "theta_hematologic_reserve",
+          "action_memory.red_cell_support"
+        ],
+        "children": [
+          "O_HEMOGLOBIN_RELATIVE",
+          "O_LDH_RELATIVE",
+          "O_HAPTOGLOBIN_RELATIVE",
+          "O_INDIRECT_BILIRUBIN_RELATIVE",
+          "O_SCHISTOCYTE_BURDEN",
+          "O_RETICULOCYTE_RESPONSE"
+        ],
+        "likelihood": "robust_multivariate_ordinal_shared_latent",
+        "residual_dependence": "positive residual correlation retained within the block",
+        "audit_rule": "The block emits one likelihood term. Its child observations must not be multiplied again as independent branch votes."
+      },
+      {
+        "factor_id": "F_HEMOGLOBIN_MULTI_CAUSE",
+        "factor_type": "single_observation_multi_parent",
+        "parents": [
+          "L_MICROANGIOPATHIC_RBC_DESTRUCTION",
+          "L_ONGOING_BLOOD_LOSS",
+          "L_RED_CELL_PRODUCTION_RESPONSE",
+          "L_DILUTION_CONCENTRATION_CONTEXT",
+          "action_memory.red_cell_support"
+        ],
+        "child": "O_HEMOGLOBIN_RELATIVE",
+        "likelihood": "ordinal_noisy_additive_with_saturation",
+        "audit_rule": "This factor is the hemoglobin marginal of F_HEMOLYSIS_PANEL_JOINT and is not an additional term when the joint block is active."
+      },
+      {
+        "factor_id": "F_PLATELET_MULTI_CAUSE",
+        "factor_type": "single_observation_multi_parent",
+        "parents": [
+          "L_MICROVASCULAR_PLATELET_CONSUMPTION",
+          "L_IMMUNE_PLATELET_CONSUMPTION",
+          "L_DILUTION_CONCENTRATION_CONTEXT",
+          "action_memory.platelet_support"
+        ],
+        "child": "O_PLATELET_COUNT_RELATIVE",
+        "likelihood": "ordinal_noisy_additive_with_saturation",
+        "audit_rule": "One platelet-count likelihood term is shared across TMA, TTP, and HIT explanations."
+      },
+      {
+        "factor_id": "F_RENAL_FUNCTION_JOINT",
+        "factor_type": "joint_observation_block",
+        "parents": [
+          "L_RENAL_MICROVASCULAR_INJURY",
+          "L_GLOMERULAR_CAPILLARY_INJURY",
+          "L_RENAL_FUNCTION_LOSS",
+          "theta_renal_reserve",
+          "action_memory.renal_support",
+          "C_VOLUME_STATUS"
+        ],
+        "children": [
+          "O_CREATININE_RELATIVE",
+          "O_EGFR_RELATIVE",
+          "O_URINE_OUTPUT_RELATIVE"
+        ],
+        "likelihood": "robust_multivariate_ordinal_shared_latent",
+        "audit_rule": "Creatinine and eGFR are coupled transforms, not independent evidence."
+      },
+      {
+        "factor_id": "F_GLOMERULAR_URINE",
+        "factor_type": "joint_observation_block",
+        "parents": ["L_GLOMERULAR_CAPILLARY_INJURY", "C_URINE_COLLECTION"],
+        "children": ["O_HEMATURIA", "O_PROTEINURIA"],
+        "likelihood": "robust_bivariate_ordinal",
+        "audit_rule": "Urine findings remain nonspecific and are not direct branch labels."
+      },
+      {
+        "factor_id": "F_PULMONARY_CAPILLARY_BLEED",
+        "factor_type": "joint_observation_block",
+        "parents": [
+          "L_PULMONARY_CAPILLARY_INJURY",
+          "L_ALVEOLAR_HEMORRHAGE",
+          "theta_pulmonary_reserve",
+          "action_memory.respiratory_support"
+        ],
+        "children": ["O_HEMOPTYSIS", "O_HYPOXEMIA", "O_ALVEOLAR_OPACITY_PATTERN", "O_HEMOGLOBIN_RELATIVE"],
+        "likelihood": "robust_multivariate_ordinal_shared_latent",
+        "audit_rule": "Absence of hemoptysis alone cannot switch off pulmonary hemorrhage; respiratory support is modeled as observation masking."
+      },
+      {
+        "factor_id": "F_PROCEDURAL_BLEED",
+        "factor_type": "exposure_gated_joint_observation_block",
+        "parents": [
+          "O_BIOPSY_PERFORMED",
+          "L_PROCEDURAL_BLEED_SOURCE",
+          "L_ONGOING_BLOOD_LOSS",
+          "L_LOCAL_HEMATOMA",
+          "L_CIRCULATORY_STRAIN"
+        ],
+        "children": ["O_LOCAL_HEMATOMA_IMAGING", "O_HEMOGLOBIN_RELATIVE", "O_HEMODYNAMIC_STRAIN"],
+        "likelihood": "gated_robust_multivariate_ordinal",
+        "audit_rule": "Biopsy exposure enables but does not prove bleeding; hemoglobin remains shared with other causes."
+      },
+      {
+        "factor_id": "F_HIT_ASSAYS",
+        "factor_type": "sequential_assay_block",
+        "parents": ["O_HEPARIN_EXPOSURE", "L_PF4_DEPENDENT_PLATELET_ACTIVATION", "C_ASSAY_CONTEXT"],
+        "children": ["O_PF4_IMMUNOASSAY", "O_PLATELET_ACTIVATION_FUNCTIONAL_ASSAY"],
+        "likelihood": "correlated_assay_ordinal",
+        "audit_rule": "Immunoassay and functional assay are not treated as independent copies of the same immune mechanism."
+      },
+      {
+        "factor_id": "F_HIT_THROMBOTIC_PHENOTYPE",
+        "factor_type": "joint_observation_block",
+        "parents": ["L_THROMBIN_GENERATION", "L_MACROVASCULAR_THROMBOSIS", "theta_aps_activity"],
+        "children": ["O_MACROVASCULAR_THROMBOSIS", "O_CARDIAC_INJURY", "O_NEUROLOGIC_DYSFUNCTION"],
+        "likelihood": "robust_multivariate_ordinal_shared_latent",
+        "audit_rule": "APS and HIT can share thrombotic outputs; the observation does not identify which parent caused it."
+      },
+      {
+        "factor_id": "F_TMA_ORGAN_INJURY",
+        "factor_type": "joint_observation_block",
+        "parents": [
+          "L_RENAL_MICROVASCULAR_INJURY",
+          "L_NEUROLOGIC_MICROVASCULAR_INJURY",
+          "L_CARDIAC_MICROVASCULAR_INJURY",
+          "L_ORGAN_ISCHEMIA"
+        ],
+        "children": ["O_NEUROLOGIC_DYSFUNCTION", "O_CARDIAC_INJURY", "O_CREATININE_RELATIVE"],
+        "likelihood": "robust_multivariate_ordinal_shared_latent",
+        "audit_rule": "Organ observations already consumed by a more specific joint block are shared marginals, not extra votes."
+      },
+      {
+        "factor_id": "F_DIRECT_MECHANISM_ASSAYS",
+        "factor_type": "conditionally_independent_assay_families",
+        "parent_child_pairs": [
+          ["L_ADAMTS13_FUNCTIONAL_DEFICIENCY", "O_ADAMTS13_ACTIVITY"],
+          ["L_ANTI_GBM_AUTOANTIBODY_ACTIVITY", "O_ANTI_GBM_ASSAY"]
+        ],
+        "likelihood": "broad_assay_ordinal",
+        "audit_rule": "Each assay family contributes once and is conditioned on method/context; no assay is a deterministic branch label."
+      },
+      {
+        "factor_id": "F_COMPLEMENT_ACTIVITY_ASSAYS",
+        "factor_type": "correlated_assay_block",
+        "parents": ["L_COMPLEMENT_AMPLIFICATION", "C_ASSAY_CONTEXT"],
+        "children": ["O_COMPLEMENT_COMPONENT_PATTERN", "O_TERMINAL_COMPLEMENT_ACTIVATION_MARKER"],
+        "likelihood": "robust_bivariate_ordinal",
+        "audit_rule": "Complement component and terminal-activation observations are imperfect correlated evidence and are not multiplied as independent direct labels."
+      },
+      {
+        "factor_id": "F_COMPLEMENT_PREDISPOSITION",
+        "factor_type": "background_context_factor",
+        "parents": ["theta_complement_susceptibility", "C_ASSAY_CONTEXT"],
+        "children": ["O_COMPLEMENT_PREDISPOSITION_EVIDENCE"],
+        "likelihood": "broad_assay_ordinal",
+        "audit_rule": "Predisposition evidence modifies susceptibility; it is not current complement activity and is not counted again as an acute observation."
+      }
+    ],
+    "factor_scheduling": {
+      "overlap_rule": "Build maximal joint blocks first. If two blocks share an observed child, use a declared shared marginal or a junction-tree separator; never multiply the child twice.",
+      "missing_rule": "Missing, not-yet-available, not-performed, and negative are distinct. Missing observations contribute no clinical likelihood but may contribute an availability-model term if selection is modeled.",
+      "conflict_rule": "Discordant observations widen latent posterior or allocate unknown mass; they are not deleted.",
+      "lineage": "Every posterior update records the factor IDs and observation event digests consumed."
+    }
+  },
+  "ordinal_likelihoods": {
+    "calibration_status": "NOT_CALIBRATED",
+    "interpretation": "These are deliberately broad normalized pseudo-likelihood kernels for structural experiments, not clinical frequencies.",
+    "latent_states": ["inactive_or_low", "intermediate", "high"],
+    "positive_observation_states": ["none_or_reference", "mild", "marked", "extreme"],
+    "positive_marker_kernel": {
+      "inactive_or_low": [0.60, 0.28, 0.10, 0.02],
+      "intermediate": [0.20, 0.40, 0.30, 0.10],
+      "high": [0.05, 0.20, 0.45, 0.30]
+    },
+    "inverse_marker_kernel": {
+      "note": "Apply the positive kernel after reversing the observation order; used for falling hemoglobin, platelets, haptoglobin, eGFR, or urine output.",
+      "states": ["extreme_low", "marked_low", "mild_low", "reference"]
+    },
+    "binary_or_ternary_assay_kernel": {
+      "observed_states": ["negative_or_unsupported", "indeterminate", "positive_or_supportive"],
+      "inactive_or_low": [0.72, 0.23, 0.05],
+      "intermediate": [0.25, 0.50, 0.25],
+      "high": [0.08, 0.24, 0.68]
+    },
+    "exposure_gate_kernel": {
+      "absent_required_exposure": {
+        "branch_activation": [0.98, 0.02],
+        "note": "Small residual mass preserves event-record error and unusual exposure uncertainty; it does not establish clinical probability."
+      },
+      "present_required_exposure": {
+        "branch_activation": [0.70, 0.30],
+        "note": "Exposure permits but does not establish the complication."
+      }
+    },
+    "robustness": {
+      "contamination_fraction_range": [0.05, 0.20],
+      "outlier_component": "uniform_over_ordinal_states",
+      "joint_block_residual_correlation_range": [0.20, 0.60],
+      "likelihood_temperature_range": [1.3, 2.0],
+      "note": "Ranges are sensitivity-analysis bounds and must be frozen before seeing target-case results."
+    },
+    "temporal_kernel": {
+      "rule": "Direction of change and persistence are represented separately from cross-sectional level.",
+      "trend_states": ["falling", "stable_or_uncertain", "rising"],
+      "trend_reliability": [0.20, 0.60, 0.20],
+      "note": "The symmetric default is intentionally weak until repeated observations exist."
+    }
+  },
+  "dynamics": {
+    "form": "branch-and-mode-conditioned stochastic difference equation with action memory",
+    "generic_step": "xi_next = clip(xi + drift(branch,mode,xi,theta,R,performed_actions) + process_noise, chart_domain)",
+    "action_memory_step": "R_next = decay(R) + injections_from_performed_actions",
+    "branch_rules": [
+      {
+        "branch_id": "B_COMPLEMENT_TMA",
+        "default_edges": [
+          {"from": "complement_amplification", "to": "endothelial_injury", "sign": "positive", "status": "MODEL_HYPOTHESIS"},
+          {"from": "endothelial_injury", "to": "microvascular_platelet_consumption", "sign": "positive", "status": "MODEL_HYPOTHESIS"},
+          {"from": "endothelial_injury", "to": "microangiopathic_rbc_destruction", "sign": "positive", "status": "MODEL_HYPOTHESIS"},
+          {"from": "endothelial_injury", "to": "renal_microvascular_injury", "sign": "positive", "status": "MODEL_HYPOTHESIS"}
+        ],
+        "mode_effects": {
+          "compensated": "organ reserve dampens observed organ consequences while mechanism coordinates may rise",
+          "strained": "injury coordinates persist and reserve drifts down",
+          "decompensated": "organ injury and circulatory strain may accelerate",
+          "recovering": "mechanism and hemolysis drift down; organ recovery may lag"
+        }
+      },
+      {
+        "branch_id": "B_TTP",
+        "default_edges": [
+          {"from": "adamts13_functional_deficiency", "to": "microvascular_platelet_consumption", "sign": "positive", "status": "MODEL_HYPOTHESIS"},
+          {"from": "microvascular_platelet_consumption", "to": "microangiopathic_rbc_destruction", "sign": "positive", "status": "MODEL_HYPOTHESIS"},
+          {"from": "microvascular_platelet_consumption", "to": "neurologic_microvascular_burden", "sign": "positive", "status": "MODEL_HYPOTHESIS"},
+          {"from": "microvascular_platelet_consumption", "to": "cardiac_microvascular_burden", "sign": "positive", "status": "MODEL_HYPOTHESIS"}
+        ],
+        "mode_effects": {
+          "compensated": "shared hematologic latents may be active before organ decompensation",
+          "strained": "platelet consumption and microvascular burden outpace recovery",
+          "decompensated": "organ injury can jump despite similar preceding surface counts",
+          "recovering": "platelet and hemolysis recovery may precede recovery from residual organ injury"
+        }
+      },
+      {
+        "branch_id": "B_ANTI_GBM",
+        "default_edges": [
+          {"from": "anti_gbm_autoantibody_activity", "to": "glomerular_capillary_injury", "sign": "positive", "status": "MODEL_HYPOTHESIS"},
+          {"from": "anti_gbm_autoantibody_activity", "to": "pulmonary_capillary_injury", "sign": "positive", "status": "MODEL_HYPOTHESIS"},
+          {"from": "glomerular_capillary_injury", "to": "renal_function_loss", "sign": "positive", "status": "MODEL_HYPOTHESIS"},
+          {"from": "pulmonary_capillary_injury", "to": "alveolar_hemorrhage_burden", "sign": "positive", "status": "MODEL_HYPOTHESIS"}
+        ],
+        "mode_effects": {
+          "compensated": "immune activity may precede overt organ loss",
+          "strained": "renal or pulmonary compartment burden rises while reserve masks part of the output",
+          "decompensated": "renal or pulmonary consequences accelerate",
+          "recovering": "immune activity can fall while structural renal loss persists"
+        }
+      },
+      {
+        "branch_id": "B_BIOPSY_BLEEDING",
+        "default_edges": [
+          {"from": "procedural_bleed_source_activity", "to": "ongoing_blood_loss_rate", "sign": "positive", "status": "MODEL_HYPOTHESIS"},
+          {"from": "ongoing_blood_loss_rate", "to": "local_hematoma_burden", "sign": "positive", "status": "MODEL_HYPOTHESIS"},
+          {"from": "ongoing_blood_loss_rate", "to": "hemodynamic_effect", "sign": "positive", "status": "MODEL_HYPOTHESIS"},
+          {"from": "hemostatic_stability", "to": "ongoing_blood_loss_rate", "sign": "negative", "status": "MODEL_HYPOTHESIS"}
+        ],
+        "mode_effects": {
+          "compensated": "blood loss may be partly masked by reserve or support",
+          "strained": "hematoma or blood-loss latent rises with maintained circulation",
+          "decompensated": "circulatory strain accelerates or a bleed-source jump occurs",
+          "recovering": "source activity falls; hemoglobin recovery may lag and support can mask the trend"
+        }
+      },
+      {
+        "branch_id": "B_HIT",
+        "default_edges": [
+          {"from": "pf4_dependent_platelet_activation", "to": "immune_platelet_consumption", "sign": "positive", "status": "MODEL_HYPOTHESIS"},
+          {"from": "pf4_dependent_platelet_activation", "to": "thrombin_generation", "sign": "positive", "status": "MODEL_HYPOTHESIS"},
+          {"from": "thrombin_generation", "to": "macrovascular_thrombosis_burden", "sign": "positive", "status": "MODEL_HYPOTHESIS"},
+          {"from": "macrovascular_thrombosis_burden", "to": "organ_ischemia", "sign": "positive", "status": "MODEL_HYPOTHESIS"}
+        ],
+        "mode_effects": {
+          "compensated": "immune activation may be present without overt thrombosis",
+          "strained": "platelet consumption or thrombin generation rises",
+          "decompensated": "thrombotic organ consequences can jump",
+          "recovering": "platelets may recover before established thrombosis burden resolves"
+        }
+      }
+    ],
+    "noise": {
+      "default": "heavy_tailed_correlated_process_noise",
+      "shared_latent_noise": "correlated within each declared joint factor block",
+      "mode_scaling": {
+        "compensated": 0.8,
+        "strained": 1.1,
+        "decompensated": 1.4,
+        "recovering": 1.0
+      },
+      "calibration_status": "UNCALIBRATED"
+    }
+  },
+  "actions": {
+    "interpretation": "Simulator action classes only. Presence here is not a recommendation, indication, contraindication, or claim of patient-level benefit.",
+    "memory_fields": [
+      "exposure_level",
+      "time_since_last_performed_action",
+      "decay_state",
+      "cumulative_effect_load",
+      "delayed_effect_queue",
+      "support_masking_state"
+    ],
+    "action_memory_schema": {
+      "performed_procedure_exposures": {
+        "biopsy": "typed exposure interval with occurrence and availability lineage"
+      },
+      "heparin_exposure_history": "typed performed exposure history with residual exposure state",
+      "red_cell_support": "residual support level and observation-masking state",
+      "platelet_support": "residual support level and observation-masking state",
+      "renal_support": "active settings, residual effects, and measurement context",
+      "respiratory_support": "active settings, residual effects, and measurement context",
+      "support_masking_state": "shared summary of ongoing support effects on observed outputs"
+    },
+    "catalog": [
+      {
+        "action_id": "A_NO_NEW_ACTION",
+        "class": "policy",
+        "targets": [],
+        "effect": "advance current dynamics and decay existing action memory"
+      },
+      {
+        "action_id": "A_CONTINUE_EXISTING_SUPPORT",
+        "class": "support_policy",
+        "targets": ["reserve_expression", "observation_generation"],
+        "effect": "maintain performed support settings; may mask surface observations without reducing source mechanism"
+      },
+      {
+        "action_id": "A_STOP_EXISTING_SUPPORT",
+        "class": "support_policy",
+        "targets": ["action_memory.support_masking_state"],
+        "effect": "remove ongoing support injection while residual effects decay; not equivalent to no new action"
+      },
+      {
+        "action_id": "A_COMPLEMENT_PATHWAY_SUPPRESSION",
+        "class": "mechanism_probe_or_intervention",
+        "targets": ["L_COMPLEMENT_AMPLIFICATION"],
+        "nominal_direction": "down",
+        "eligible_effect_branches": ["B_COMPLEMENT_TMA"],
+        "off_target_or_unmodeled": ["infection susceptibility", "incomplete target engagement"],
+        "causal_status": "UNIDENTIFIED_PATIENT_LEVEL_EFFECT"
+      },
+      {
+        "action_id": "A_PLASMA_EXCHANGE_LIKE",
+        "class": "multi_mechanism_intervention",
+        "targets": ["L_ADAMTS13_FUNCTIONAL_DEFICIENCY", "L_ANTI_GBM_AUTOANTIBODY_ACTIVITY", "circulating_soluble_factors"],
+        "nominal_direction": "branch_dependent_down",
+        "eligible_effect_branches": ["B_TTP", "B_ANTI_GBM", "B_UNKNOWN"],
+        "causal_status": "UNIDENTIFIED_PATIENT_LEVEL_EFFECT",
+        "audit_note": "A response cannot uniquely identify the branch because the action has multiple possible targets and concurrent actions may exist."
+      },
+      {
+        "action_id": "A_IMMUNE_ACTIVITY_SUPPRESSION",
+        "class": "mechanism_intervention",
+        "targets": ["L_ANTI_GBM_AUTOANTIBODY_ACTIVITY", "immune_driver_of_L_ADAMTS13_FUNCTIONAL_DEFICIENCY"],
+        "nominal_direction": "down_with_delay",
+        "eligible_effect_branches": ["B_ANTI_GBM", "B_TTP", "B_UNKNOWN"],
+        "off_target_or_unmodeled": ["infection susceptibility", "marrow effects"],
+        "causal_status": "UNIDENTIFIED_PATIENT_LEVEL_EFFECT"
+      },
+      {
+        "action_id": "A_PROCEDURAL_HEMOSTASIS",
+        "class": "source_control_intervention",
+        "targets": ["L_PROCEDURAL_BLEED_SOURCE", "hemostatic_stability"],
+        "nominal_direction": "source_down_stability_up",
+        "eligible_effect_branches": ["B_BIOPSY_BLEEDING"],
+        "causal_status": "UNIDENTIFIED_PATIENT_LEVEL_EFFECT"
+      },
+      {
+        "action_id": "A_HEPARIN_EXPOSURE_START_OR_CONTINUE",
+        "class": "exposure",
+        "targets": ["action_memory.heparin_exposure_history", "coagulation_state"],
+        "effect": "inject exposure memory and alter coagulation state",
+        "causal_status": "EXPOSURE_EVENT_NOT_DIAGNOSIS"
+      },
+      {
+        "action_id": "A_HEPARIN_EXPOSURE_STOP",
+        "class": "exposure_withdrawal",
+        "targets": ["action_memory.heparin_exposure_history"],
+        "effect": "stop new exposure injection; residual immune/action memory decays separately",
+        "causal_status": "PERFORMED_ACTION_REQUIRED"
+      },
+      {
+        "action_id": "A_NON_HEPARIN_ANTICOAGULATION_LIKE",
+        "class": "thrombin_or_thrombosis_intervention",
+        "targets": ["L_THROMBIN_GENERATION", "L_MACROVASCULAR_THROMBOSIS", "L_ONGOING_BLOOD_LOSS"],
+        "nominal_direction": "thrombin_down_blood_loss_risk_up",
+        "eligible_effect_branches": ["B_HIT", "B_BIOPSY_BLEEDING", "B_UNKNOWN"],
+        "causal_status": "UNIDENTIFIED_PATIENT_LEVEL_TRADEOFF",
+        "audit_note": "This opposing branch effect is intentionally preserved as a collision test, not converted into a recommendation."
+      },
+      {
+        "action_id": "A_RED_CELL_SUPPORT",
+        "class": "support",
+        "targets": ["O_HEMOGLOBIN_RELATIVE", "L_CIRCULATORY_STRAIN", "action_memory.red_cell_support"],
+        "effect": "may raise measured hemoglobin and reduce strain without controlling hemolysis or bleeding source",
+        "causal_status": "OBSERVATION_MASKING_AND_SUPPORT"
+      },
+      {
+        "action_id": "A_PLATELET_SUPPORT",
+        "class": "support",
+        "targets": ["O_PLATELET_COUNT_RELATIVE", "action_memory.platelet_support"],
+        "effect": "may change measured platelet count without uniquely changing the active source mechanism",
+        "causal_status": "OBSERVATION_MASKING_AND_SUPPORT"
+      },
+      {
+        "action_id": "A_RENAL_SUPPORT",
+        "class": "organ_support",
+        "targets": ["O_CREATININE_RELATIVE", "O_EGFR_RELATIVE", "O_URINE_OUTPUT_RELATIVE", "action_memory.renal_support"],
+        "effect": "changes observed solute/volume outputs and reserve expression without proving source-mechanism control",
+        "causal_status": "OBSERVATION_MASKING_AND_SUPPORT"
+      },
+      {
+        "action_id": "A_RESPIRATORY_SUPPORT",
+        "class": "organ_support",
+        "targets": ["O_HYPOXEMIA", "action_memory.respiratory_support"],
+        "effect": "changes measured oxygenation without directly proving pulmonary source control",
+        "causal_status": "OBSERVATION_MASKING_AND_SUPPORT"
+      }
+    ],
+    "constraints": [
+      {
+        "constraint_id": "C_PERFORMED_ONLY",
+        "rule": "Only performed actions inject physiology or action memory. Planned, recommended, considered, and ordered-only events have zero physiologic effect."
+      },
+      {
+        "constraint_id": "C_NO_ACTION_NE_CONTINUE_NE_STOP",
+        "rule": "NoNewAction, ContinueExistingSupport, and StopExistingSupport are distinct when residual or ongoing exposure exists."
+      },
+      {
+        "constraint_id": "C_EXPOSURE_NOT_IDENTITY",
+        "rule": "Biopsy and heparin exposure are necessary context gates for their iatrogenic branches, not sufficient diagnostic evidence."
+      },
+      {
+        "constraint_id": "C_CONCURRENT_PROCESS",
+        "rule": "An action may improve one branch coordinate while worsening another; rollout must retain the concurrent posterior rather than select a single label first."
+      },
+      {
+        "constraint_id": "C_SUPPORT_MASKING",
+        "rule": "Support changes observation generation and reserve expression separately from source-mechanism dynamics."
+      },
+      {
+        "constraint_id": "C_UNIDENTIFIED_EFFECT",
+        "rule": "If an action edge is not identified, output a sensitivity range or UNIDENTIFIABLE, not a directional patient-specific conclusion."
+      },
+      {
+        "constraint_id": "C_QUERY_PURITY",
+        "rule": "Counterfactual queries do not mutate factual state or action memory."
+      }
+    ],
+    "feasibility_semantics": {
+      "purpose": "Report whether the simulator has enough typed context to evaluate an action class; this is not clinical permission or advice.",
+      "allowed_outputs": [
+        "STRUCTURALLY_EVALUABLE",
+        "CONTEXT_MISSING",
+        "SCOPE_INSUFFICIENT",
+        "UNIDENTIFIABLE",
+        "CONFLICTING_BRANCH_EFFECTS"
+      ],
+      "rules": [
+        "Missing required performed-exposure history yields CONTEXT_MISSING, not an imputed action response.",
+        "An unrepresented action, dose dependence, toxicity, or interaction yields SCOPE_INSUFFICIENT.",
+        "Opposing effects across material concurrent branches yields CONFLICTING_BRANCH_EFFECTS unless the joint rollout reports the full uncertainty range.",
+        "An unidentified patient-level effect yields UNIDENTIFIABLE even when a nominal mechanism direction is encoded.",
+        "STRUCTURALLY_EVALUABLE means only that the registered transition can run; it does not mean safe, indicated, or beneficial."
+      ]
+    }
+  },
+  "unknown_branch": {
+    "branch_id": "B_UNKNOWN",
+    "purpose": "Preserve probability mass for active processes, assay failures, or interactions not represented by the known branches.",
+    "likelihood": {
+      "type": "contaminated_heavy_tailed_ordinal_mixture",
+      "components": [
+        "broad_hematologic",
+        "broad_renal",
+        "broad_pulmonary",
+        "broad_bleeding",
+        "broad_thrombotic"
+      ],
+      "complexity_control": "weak regularization against explaining everything; must be tuned only on non-target development data",
+      "not_a_diagnosis": true
+    },
+    "mass_update_rules": [
+      "Increase residual support when no known branch or allowed concurrent set explains the available joint factors without severe conflict.",
+      "Retain nonzero mass when direct assays are unavailable, discordant, or method-limited.",
+      "Do not collapse unknown mass merely because one known branch is the least bad fit.",
+      "Do not use a target-case-derived fixed likelihood cutoff."
+    ],
+    "readout": {
+      "when_dominant": "ABSTAIN_UNREPRESENTED_PROCESS",
+      "when_material_but_not_dominant": "REPORT_KNOWN_BRANCH_POSTERIOR_WITH_UNKNOWN_RESIDUAL",
+      "when_driven_by_factor_conflict": "REPORT_MODEL_MISFIT_AND_CONFLICTING_FACTOR_IDS"
+    }
+  },
+  "causal_identifiability_register": [
+    {
+      "edge": "theta_aps_activity -> L_THROMBIN_GENERATION",
+      "status": "UNIDENTIFIED_CAUSAL_EDGE",
+      "reason": "Background association does not identify individual causal contribution."
+    },
+    {
+      "edge": "theta_aps_activity -> L_COMPLEMENT_AMPLIFICATION",
+      "status": "UNIDENTIFIED_CAUSAL_EDGE",
+      "reason": "Interaction strength and direction may vary and are not identified by this blind package."
+    },
+    {
+      "edge": "any mechanism-directed action -> patient outcome",
+      "status": "UNIDENTIFIED_PATIENT_LEVEL_EFFECT",
+      "reason": "No randomized or otherwise identified individual counterfactual is present in the package."
+    },
+    {
+      "edge": "observed response after action -> active branch identity",
+      "status": "CONFOUNDED_PROBE_EDGE",
+      "reason": "Concurrent actions, spontaneous drift, support masking, and multi-target actions prevent deterministic inversion."
+    },
+    {
+      "edge": "hemoglobin fall -> hemolysis versus bleeding source",
+      "status": "NON_IDENTIFIED_WITHOUT_SHARED_PANEL_AND_TIMING",
+      "reason": "The same observed node has several latent parents."
+    },
+    {
+      "edge": "platelet fall -> TMA/TTP/HIT identity",
+      "status": "NON_IDENTIFIED_WITHOUT_MECHANISM_OR_CONTEXT_EVIDENCE",
+      "reason": "A single platelet observation is shared across branches."
+    },
+    {
+      "edge": "renal dysfunction -> complement TMA versus anti-GBM versus background reserve",
+      "status": "NON_IDENTIFIED_WITHOUT_JOINT_EVIDENCE",
+      "reason": "Renal output is downstream of multiple renal injury latents and reserve."
+    },
+    {
+      "edge": "biopsy exposure -> active bleeding",
+      "status": "EXPOSURE_GATE_ONLY",
+      "reason": "Procedure exposure is necessary context but does not establish the complication."
+    },
+    {
+      "edge": "heparin exposure -> HIT",
+      "status": "EXPOSURE_GATE_ONLY",
+      "reason": "Exposure permits but does not establish PF4-dependent platelet activation."
+    }
+  ],
+  "audit_contract": {
+    "required_runtime_outputs": [
+      "model_digest",
+      "scope_digest",
+      "consumed_state_hash",
+      "parent_state_hash",
+      "consumed_event_digests",
+      "branch_and_concurrent_set_posterior",
+      "mode_posterior_by_branch",
+      "local_coordinate_distributions",
+      "unknown_branch_mass",
+      "factor_block_log_likelihoods",
+      "shared_marginal_deduplication_log",
+      "action_memory_distribution",
+      "unidentified_edge_warnings",
+      "sensitivity_range_id"
+    ],
+    "hard_failures": [
+      "future information consumed before availability",
+      "planned action changes physiology",
+      "observation child counted more than once outside a declared junction separator",
+      "single-label normalization erases an allowed concurrent process",
+      "flat Euclidean comparison across incompatible charts",
+      "counterfactual query mutates factual state",
+      "patient-level action conclusion emitted through an unidentified edge",
+      "unknown mass forced to zero by construction"
+    ],
+    "required_ablations": [
+      "remove shared-latent joint blocks and measure overconfidence",
+      "remove mode and test same-coordinate divergent futures",
+      "remove action memory and test support/exposure masking collisions",
+      "force single active branch and test concurrent-process failures",
+      "remove unknown branch and measure forced-fit behavior",
+      "replace topology distance with flat Euclidean distance"
+    ],
+    "freeze_rule": "Topology, ordinal kernels, action edges, and evaluation thresholds must be frozen before target-case replay. Any post-replay change creates a new model version and requires fresh blinded evaluation."
+  }
+}

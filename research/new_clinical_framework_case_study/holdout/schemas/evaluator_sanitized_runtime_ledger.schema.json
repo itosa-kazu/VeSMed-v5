@@ -1,0 +1,432 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "ncf.evaluator-sanitized-runtime-ledger.v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "opaque_run_id",
+    "identity_removed",
+    "source_text_removed",
+    "source_locator_removed",
+    "reversible_source_ids_removed",
+    "events"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "NCF-EVALUATOR-SANITIZED-RUNTIME-LEDGER-1.0.0"
+    },
+    "opaque_run_id": {
+      "type": "string",
+      "pattern": "^RUN-[0-9a-f]{64}$"
+    },
+    "identity_removed": {
+      "const": true
+    },
+    "source_text_removed": {
+      "const": true
+    },
+    "source_locator_removed": {
+      "const": true
+    },
+    "reversible_source_ids_removed": {
+      "const": true
+    },
+    "events": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/event"
+      }
+    }
+  },
+  "$defs": {
+    "event": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "opaque_event_id",
+        "opaque_source_concept_token",
+        "event_kind",
+        "typed_value",
+        "unit",
+        "observed_epoch_ordinal",
+        "available_epoch_ordinal",
+        "reliability"
+      ],
+      "properties": {
+        "opaque_event_id": {
+          "type": "string",
+          "pattern": "^EV-[0-9]{8}$"
+        },
+        "opaque_source_concept_token": {
+          "type": "string",
+          "pattern": "^SC-[0-9]{8}$"
+        },
+        "event_kind": {
+          "enum": [
+            "OBSERVATION",
+            "ACTION",
+            "SUPPORT"
+          ]
+        },
+        "typed_value": {
+          "$ref": "#/$defs/typedValue"
+        },
+        "unit": {
+          "enum": [
+            null,
+            "mIU/L",
+            "mmHg",
+            "mmol/L",
+            "ng/dL",
+            "percent",
+            "ug/dL",
+            "xULN"
+          ]
+        },
+        "observed_epoch_ordinal": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "available_epoch_ordinal": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "reliability": {
+          "enum": [
+            "HIGH",
+            "MEDIUM",
+            "LOW",
+            "UNKNOWN"
+          ]
+        },
+        "action_lifecycle": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "opaque_action_id",
+            "phase"
+          ],
+          "properties": {
+            "opaque_action_id": {
+              "type": "string",
+              "pattern": "^ACT-[0-9]{8}$"
+            },
+            "phase": {
+              "enum": [
+                "ORDERED",
+                "STARTED",
+                "CONTINUED",
+                "DOSE_CHANGED",
+                "HELD",
+                "RESUMED",
+                "STOPPED",
+                "COMPLETED"
+              ]
+            },
+            "dose": {
+              "$ref": "#/$defs/nonnegativeDose"
+            },
+            "dose_unit": {
+              "enum": [
+                null
+              ]
+            }
+          },
+          "oneOf": [
+            {
+              "properties": {
+                "phase": {
+                  "enum": [
+                    "STARTED",
+                    "CONTINUED",
+                    "DOSE_CHANGED",
+                    "RESUMED"
+                  ]
+                }
+              },
+              "required": [
+                "dose",
+                "dose_unit"
+              ]
+            },
+            {
+              "properties": {
+                "phase": {
+                  "enum": [
+                    "ORDERED",
+                    "HELD",
+                    "STOPPED",
+                    "COMPLETED"
+                  ]
+                }
+              },
+              "allOf": [
+                {
+                  "not": {
+                    "required": [
+                      "dose"
+                    ]
+                  }
+                },
+                {
+                  "not": {
+                    "required": [
+                      "dose_unit"
+                    ]
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        "evidence_qualification": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "explicit_assertion",
+            "target_scope",
+            "adequate_method",
+            "adequate_timing",
+            "adequate_reliability"
+          ],
+          "properties": {
+            "explicit_assertion": {
+              "enum": [
+                "TRUE",
+                "FALSE",
+                "UNKNOWN"
+              ]
+            },
+            "target_scope": {
+              "enum": [
+                "TRUE",
+                "FALSE",
+                "UNKNOWN"
+              ]
+            },
+            "adequate_method": {
+              "enum": [
+                "TRUE",
+                "FALSE",
+                "UNKNOWN"
+              ]
+            },
+            "adequate_timing": {
+              "enum": [
+                "TRUE",
+                "FALSE",
+                "UNKNOWN"
+              ]
+            },
+            "adequate_reliability": {
+              "enum": [
+                "TRUE",
+                "FALSE",
+                "UNKNOWN"
+              ]
+            }
+          }
+        },
+        "alternative_representation_group_id": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^ARG-[0-9]{8}$"
+            },
+            {
+              "const": null
+            }
+          ]
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "event_kind": {
+                "enum": [
+                  "ACTION",
+                  "SUPPORT"
+                ]
+              }
+            },
+            "required": [
+              "event_kind"
+            ]
+          },
+          "then": {
+            "required": [
+              "action_lifecycle"
+            ]
+          },
+          "else": {
+            "not": {
+              "required": [
+                "action_lifecycle"
+              ]
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "event_kind": {
+                "const": "OBSERVATION"
+              }
+            },
+            "required": [
+              "event_kind"
+            ]
+          },
+          "then": {
+            "required": [
+              "evidence_qualification",
+              "alternative_representation_group_id"
+            ]
+          },
+          "else": {
+            "allOf": [
+              {
+                "not": {
+                  "required": [
+                    "evidence_qualification"
+                  ]
+                }
+              },
+              {
+                "not": {
+                  "required": [
+                    "alternative_representation_group_id"
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "typedValue": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "canonical"
+      ],
+      "properties": {
+        "kind": {
+          "enum": [
+            "NUMBER",
+            "BOOLEAN",
+            "CODE",
+            "NULL"
+          ]
+        },
+        "canonical": {
+          "type": "string"
+        }
+      },
+      "oneOf": [
+        {
+          "properties": {
+            "kind": {
+              "const": "NUMBER"
+            },
+            "canonical": {
+              "pattern": "^-?(?:0|[1-9][0-9]*)(?:\\.[0-9]+)?(?:[eE][+-]?[0-9]+)?$"
+            }
+          },
+          "required": [
+            "kind",
+            "canonical"
+          ]
+        },
+        {
+          "properties": {
+            "kind": {
+              "const": "BOOLEAN"
+            },
+            "canonical": {
+              "enum": [
+                "true",
+                "false"
+              ]
+            }
+          },
+          "required": [
+            "kind",
+            "canonical"
+          ]
+        },
+        {
+          "properties": {
+            "kind": {
+              "const": "CODE"
+            },
+            "canonical": {
+              "enum": [
+                "ABNORMAL",
+                "ABSENT",
+                "COMPLETED",
+                "CONTINUED",
+                "DOSE_CHANGED",
+                "HELD",
+                "HIGH",
+                "IMPROVED",
+                "LOW",
+                "MEDIUM",
+                "NEGATIVE",
+                "NORMAL",
+                "ORDERED",
+                "POSITIVE",
+                "PRESENT",
+                "RESUMED",
+                "STARTED",
+                "STOPPED",
+                "UNCHANGED",
+                "UNKNOWN",
+                "WORSENED"
+              ]
+            }
+          },
+          "required": [
+            "kind",
+            "canonical"
+          ]
+        },
+        {
+          "properties": {
+            "kind": {
+              "const": "NULL"
+            },
+            "canonical": {
+              "const": "null"
+            }
+          },
+          "required": [
+            "kind",
+            "canonical"
+          ]
+        }
+      ]
+    },
+    "nonnegativeDose": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "canonical"
+      ],
+      "properties": {
+        "kind": {
+          "const": "NUMBER"
+        },
+        "canonical": {
+          "type": "string",
+          "pattern": "^(?:0|[1-9][0-9]*)(?:\\.[0-9]+)?(?:[eE][+-]?[0-9]+)?$"
+        }
+      }
+    }
+  }
+}

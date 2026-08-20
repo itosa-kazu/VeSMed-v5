@@ -1,0 +1,286 @@
+{
+  "architecture_version": "NCF-ARCH-1.0.0",
+  "model_fixture": "C:\\Users\\wangw\\Documents\\vesmed\\research\\new_clinical_framework_case_study\\runtime_v2\\examples\\neutral_factorial_model.json",
+  "overall_status": "FAIL",
+  "probes": [
+    {
+      "details": {
+        "disposition": "FAIL_CLOSED",
+        "message": "stale recursive event requires complete replay or smoothing; available_at precedes current state_time"
+      },
+      "gates": "G03/G05",
+      "probe_id": "stale_event_recursive_equivalence",
+      "status": "PASS"
+    },
+    {
+      "details": {
+        "distinct": true,
+        "sample_at_0_available_at_5": 0.20229755183760326,
+        "sample_at_5_available_at_5": 0.3604595103675207
+      },
+      "gates": "G01/G03/G13",
+      "probe_id": "delayed_sample_is_not_current_measurement",
+      "status": "PASS"
+    },
+    {
+      "details": {
+        "behaviorally_equivalent_within_scope": true,
+        "declared_scope_tolerance": 1e-09,
+        "event_ids_A_then_B": {
+          "PROCESS_A": 0.8612466146519933,
+          "PROCESS_B": 0.8437731562615203,
+          "PROCESS_C": 0.11020284091817739
+        },
+        "event_ids_B_then_A": {
+          "PROCESS_A": 0.8612466146519933,
+          "PROCESS_B": 0.8437731562615203,
+          "PROCESS_C": 0.11020284091817742
+        },
+        "exactly_equal": false,
+        "max_abs_difference": 2.7755575615628914e-17
+      },
+      "gates": "G03/G05/G06",
+      "probe_id": "common_source_event_id_invariance",
+      "status": "PASS"
+    },
+    {
+      "details": {
+        "forward_state_hash": "086f9d39a221e7628bcdbd2d465cf50e4061b7b22bde73a957d7e43060173f86",
+        "reverse_state_hash": "086f9d39a221e7628bcdbd2d465cf50e4061b7b22bde73a957d7e43060173f86",
+        "same_canonical_bytes": true
+      },
+      "gates": "G03/G05/G16",
+      "probe_id": "same_event_set_input_order_is_canonical",
+      "status": "PASS"
+    },
+    {
+      "details": {
+        "high_posterior": 0.8115250277670384,
+        "high_reliability_shift": 0.6277208807587762,
+        "low_posterior": 0.18827141105547576,
+        "low_reliability_shift": 0.004467264047213537
+      },
+      "gates": "G06",
+      "probe_id": "reliability_changes_inference",
+      "status": "PASS"
+    },
+    {
+      "details": {
+        "baseline_p_active": 0.18380414700826223,
+        "masked_p_active": 0.18380414700826223,
+        "masked_shift": 0.0,
+        "unmasked_p_active": 0.8115250277670384,
+        "unmasked_shift": 0.6277208807587762
+      },
+      "gates": "G06/G09",
+      "probe_id": "active_support_masks_observation_likelihood",
+      "status": "PASS"
+    },
+    {
+      "details": {
+        "listed": true,
+        "model_misfit": 1.0,
+        "unexplained_result_ids": [
+          "impossible-mapped-source"
+        ]
+      },
+      "gates": "G12",
+      "probe_id": "mapped_misfit_has_provenance",
+      "status": "PASS"
+    },
+    {
+      "details": {
+        "disposition": "SEMANTIC_COLLISION_REJECTED",
+        "message": "factor/source member collision with changed evidence: source:corrected-result:OBS_A_LOAD"
+      },
+      "gates": "G03/G06/G16",
+      "probe_id": "observation_fingerprint_includes_unit",
+      "status": "PASS"
+    },
+    {
+      "details": {
+        "disposition": "FAIL_CLOSED",
+        "message": "retrospective action lifecycle event requires complete replay or smoothing; occurred_time precedes available_at"
+      },
+      "gates": "G01/G02/G09/G11",
+      "probe_id": "delayed_action_exposure_uses_occurrence",
+      "status": "PASS"
+    },
+    {
+      "details": {
+        "disposition": "FAIL_CLOSED",
+        "message": "retrospective action lifecycle event requires complete replay or smoothing; occurred_time precedes available_at"
+      },
+      "gates": "G01/G02/G07/G09/G11/G13",
+      "probe_id": "delayed_action_backfills_factual_dynamics",
+      "status": "PASS"
+    },
+    {
+      "details": {
+        "action_source_event_ids": [
+          "transport-event-id"
+        ],
+        "processed_event_ids": [
+          "transport-event-id"
+        ],
+        "transport_event_referenced": true,
+        "upstream_source_result_id": "upstream-source-result-id"
+      },
+      "gates": "G02/G03/G16",
+      "probe_id": "action_source_event_id_provenance",
+      "status": "PASS"
+    },
+    {
+      "details": {
+        "disposition": "FAIL_CLOSED",
+        "message": "retrospective action lifecycle event requires complete replay or smoothing; occurred_time precedes available_at"
+      },
+      "gates": "G01/G02/G13",
+      "probe_id": "ambiguous_partial_order_no_false_response",
+      "status": "PASS"
+    },
+    {
+      "details": {
+        "reasons": [
+          "Neutral structural action effect has no patient-level causal identification evidence."
+        ],
+        "status": "UNIDENTIFIABLE"
+      },
+      "gates": "G09/G11/G17",
+      "probe_id": "active_unidentifiable_action_marks_forecast",
+      "status": "PASS"
+    },
+    {
+      "details": {
+        "exception_type": "NameError",
+        "message": "name '_clamp01' is not defined",
+        "traceback": "Traceback (most recent call last):\n  File \"C:\\Users\\wangw\\Documents\\vesmed\\research\\new_clinical_framework_case_study\\runtime_v2\\evidence\\semantic_redteam_probe.py\", line 899, in main\n    passed, details = probe()\n                      ^^^^^^^\n  File \"C:\\Users\\wangw\\Documents\\vesmed\\research\\new_clinical_framework_case_study\\runtime_v2\\evidence\\semantic_redteam_probe.py\", line 617, in probe_process_activation_is_dynamic_and_action_controllable\n    natural = runtime.rollout(\n              ^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\wangw\\Documents\\vesmed\\research\\new_clinical_framework_case_study\\runtime_v2\\engine.py\", line 2954, in rollout\n    local_semantics = self._apply_activation_local_semantics(\n                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\wangw\\Documents\\vesmed\\research\\new_clinical_framework_case_study\\runtime_v2\\engine.py\", line 2709, in _apply_activation_local_semantics\n    p_before = _clamp01(float(trace.get(\"p_active_before\", 0.0)))\n               ^^^^^^^^\nNameError: name '_clamp01' is not defined. Did you mean: '_clamp'?\n"
+      },
+      "gates": "G07/G11/G13",
+      "probe_id": "process_activation_is_dynamic_and_action_controllable",
+      "status": "ERROR"
+    },
+    {
+      "details": {
+        "abstention_status": "partial_answer_only",
+        "mapping_gap": 0.8666666666666667,
+        "plan_status": null,
+        "selected_policy_id": null,
+        "unmodeled_process": 0.9999864291087226
+      },
+      "gates": "G12/G17",
+      "probe_id": "ood_is_operative_for_planning",
+      "status": "PASS"
+    },
+    {
+      "details": {
+        "policy_results": null,
+        "robust_dominance_proven": null,
+        "selected_policy_id": null
+      },
+      "gates": "G17",
+      "probe_id": "partial_identification_not_point_optimized",
+      "status": "PASS"
+    },
+    {
+      "details": {
+        "disposition": "REJECTED_EFFECT_BOUNDS_AT_MODEL_LOAD",
+        "message": "ACTION_REDUCE_A: identified_set unit must equal scope objective declared_coordinate_burden"
+      },
+      "gates": "G17",
+      "probe_id": "partial_effect_bounds_are_not_mislabeled_as_outcome_bounds",
+      "status": "PASS"
+    },
+    {
+      "details": {
+        "decision_value_interval": {
+          "basis": "externally_supplied_complete_outcome_identified_set",
+          "lower": 0.0,
+          "unit": "declared_coordinate_burden",
+          "upper": 3.0
+        },
+        "declared_model_point_contained": true,
+        "declared_model_total_objective": 1.7225524039319318
+      },
+      "gates": "G17",
+      "probe_id": "natural_forecast_identified_set_contains_declared_model_point",
+      "status": "PASS"
+    },
+    {
+      "details": {
+        "disposition": "REJECTED_AT_MODEL_LOAD",
+        "message": "PROCESS_A: mode priors cannot be negative"
+      },
+      "gates": "G08/G16",
+      "probe_id": "invalid_mode_prior_rejected_early",
+      "status": "PASS"
+    },
+    {
+      "details": {
+        "disposition": "REJECTED_AT_MODEL_LOAD",
+        "message": "scope.horizon.value must be a finite number"
+      },
+      "gates": "G16/G17",
+      "probe_id": "nan_scope_horizon_rejected_early",
+      "status": "PASS"
+    },
+    {
+      "details": {
+        "disposition": "REJECTED_BY_RUNTIME",
+        "message": "frozen architecture schema violation at $.as_of.undeclared_nested_field: additional property is forbidden"
+      },
+      "gates": "G16",
+      "probe_id": "frozen_nested_state_schema_is_enforced",
+      "status": "PASS"
+    },
+    {
+      "details": {
+        "clock_time": null,
+        "disposition": "NULL_ALLOWED_BY_FROZEN_SCHEMA"
+      },
+      "gates": "G16",
+      "probe_id": "clock_time_matches_frozen_datetime_format",
+      "status": "PASS"
+    },
+    {
+      "details": {
+        "diagnostic_marginals": {
+          "PROCESS_A": 0.18380414700826223,
+          "PROCESS_B": 0.16389693108163447,
+          "PROCESS_C": 0.09999999999999998
+        },
+        "factor_messages": [
+          {
+            "factor_id": "DISPOSITION:record-only-event",
+            "factor_type": "constraint",
+            "log_likelihood_by_hypothesis": {
+              "disposition:record_only_event": 0.0,
+              "provenance:event:record-only-event:93db7b7c88ebf18c68adfd33adaa0cc2f333fb284c02cc65889566f0908760c8": 0.0,
+              "provenance:inference_member:37dab7994eceaf02edc151831228f09e159e6ddbfbe6e1a4a88e6a339986d5fc": 0.0,
+              "provenance:member:UNRANKABLE_FREE_TEXT:37dab7994eceaf02edc151831228f09e159e6ddbfbe6e1a4a88e6a339986d5fc": 0.0,
+              "provenance:source_payload:ac35f600af32a0d937304fb696cf040fc4418f6b5c0b7f0f9ff1068cfd9bb80e": 0.0,
+              "provenance:temporal:sample=0.0,0.0;result=0.0;recorded=0.0;available=0.0": 0.0
+            },
+            "reliability": 0.0,
+            "source_result_ids": [
+              "record-only-source"
+            ],
+            "variable_ids": [
+              "DISPOSITION:record_only_event"
+            ]
+          }
+        ],
+        "retained_in_event_lineage": true
+      },
+      "gates": "G01/G03/G06",
+      "probe_id": "record_only_event_is_losslessly_nonrankable",
+      "status": "PASS"
+    }
+  ],
+  "schema_version": "ncf.runtime.semantic-redteam.v1",
+  "summary": {
+    "ERROR": 1,
+    "FAIL": 0,
+    "PASS": 22
+  }
+}

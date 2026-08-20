@@ -1,0 +1,1065 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "protocol_id": "NCF-PHEP",
+  "protocol_version": "1.1.0",
+  "status": "FROZEN_BEFORE_PRIMARY_CASE_SEARCH_OR_SELECTION",
+  "architecture_version": "NCF-ARCH-1.0.0",
+  "gate_contract_version": "1.1.0",
+  "scope_id": "adult-icu-acute-hemodynamic-collapse-generic-v1",
+  "selection": {
+    "sources": [
+      "PubMed",
+      "PubMed Central"
+    ],
+    "queries": [
+      {
+        "query_id": "Q1",
+        "query": "((\"hemodynamic collapse\"[Title/Abstract] OR shock[Title/Abstract] OR hypotension[Title/Abstract]) AND (\"case report\"[Title/Abstract] OR Case Reports[Publication Type]) AND (adult[MeSH Terms] OR adult[Title/Abstract]) AND (ICU[Title/Abstract] OR \"intensive care\"[Title/Abstract] OR vasopressor*[Title/Abstract]))",
+        "sort": "pub date",
+        "retmax": 100
+      },
+      {
+        "query_id": "Q2",
+        "query": "((\"case report\"[Title/Abstract] OR Case Reports[Publication Type]) AND (shock[Title/Abstract] OR \"hemodynamic instability\"[Title/Abstract]) AND (multiorgan[Title/Abstract] OR \"multi-organ\"[Title/Abstract] OR ICU[Title/Abstract] OR \"intensive care\"[Title/Abstract]))",
+        "sort": "pub date",
+        "retmax": 100
+      }
+    ],
+    "require_complete_identifier_snapshot_before_screening": true,
+    "minimum_eligible_candidates": 3,
+    "insufficient_candidate_verdict": "HARNESS_INCOMPLETE",
+    "selection_digest_preimage": "NCF-PRIMARY-SELECTION-v1 + newline + frozen_query_contract_sha256 + newline + raw_ordered_identifier_projection_sha256 + newline + canonical_eligible_id_set_sha256 + newline + canonical_case_id",
+    "selection_hash_excludes_executor_metadata": true,
+    "selection_rule": "lexicographically_smallest_sha256",
+    "manual_skip_or_substitution_forbidden": true,
+    "eligibility": {
+      "single_adult_primary_case": true,
+      "open_full_text_snapshot_required": true,
+      "acute_icu_level_hemodynamic_collapse": true,
+      "minimum_guaranteed_availability_epochs_before_terminal_verification": 5,
+      "minimum_additional_organ_domains": 2,
+      "minimum_concurrent_process_target_candidates": 2,
+      "performed_action_with_later_response": true,
+      "explicit_reliable_negative": true,
+      "delayed_result_or_response": true,
+      "reported_final_diagnosis_with_direct_or_convergent_basis": true,
+      "must_not_be_in_presealed_exclusion_set": true,
+      "must_not_require_invented_time_to_meet_criteria": true
+    },
+    "raw_search_validation": {
+      "raw_response_schema": "holdout/schemas/primary_raw_search_response.schema.json",
+      "snapshot_schema": "holdout/schemas/primary_case_search_snapshot.schema.json",
+      "executable": "holdout/tools/validate_primary_search_snapshot.py",
+      "test_source": "holdout/tools/test_validate_primary_search_snapshot.py",
+      "provider": "NCBI_PUBMED_ESEARCH_JSON",
+      "raw_path_prefix": "holdout/evidence/primary_search_raw/",
+      "ordered_case_ids_projection": "PMID:<idlist item>, exact source order",
+      "raw_hash_mismatch_or_incomplete_page_verdict": "HARNESS_INCOMPLETE",
+      "retrieval_manifest_schema": "holdout/schemas/primary_search_retrieval_manifest.schema.json",
+      "compiler": "holdout/tools/compile_primary_search_snapshot.py",
+      "compiler_test_source": "holdout/tools/test_compile_primary_search_snapshot.py",
+      "compiler_network_access": false,
+      "request_url_policy": "canonical HTTPS NCBI ESearch URL; fixed parameter order; RFC3986 percent-encoding",
+      "raw_payload_path_prefix": "holdout/evidence/primary_search_raw/payloads/",
+      "retrieved_count_must_equal_idlist_length": true
+    },
+    "opaque_concurrent_process_candidate_contract": {
+      "minimum_required_target_count": 2,
+      "model_blind": true,
+      "disease_name_blind": true,
+      "same_preterminal_epoch_coactivity_required": true,
+      "independent_source_assertion_per_target_required": true,
+      "minimum_temporally_separated_source_witnesses_per_target": 2,
+      "trackable_trajectory_per_target_required": true,
+      "duplicate_observations_of_same_process_count_once": true,
+      "claims_schema": "holdout/schemas/primary_opaque_concurrent_process_candidate_claims.schema.json",
+      "packet_schema": "holdout/schemas/primary_opaque_concurrent_process_candidate_packet.schema.json",
+      "sealed_packet_schema": "holdout/schemas/primary_sealed_opaque_concurrent_process_candidate_packet.schema.json",
+      "compiler_validator": "holdout/tools/compile_opaque_concurrent_process_candidates.py",
+      "test_source": "holdout/tools/test_compile_opaque_concurrent_process_candidates.py",
+      "raw_data_class": "opaque_concurrent_process_candidate_packet",
+      "sealed_data_class": "sealed_opaque_concurrent_process_candidate_packet",
+      "evaluator_access": "FORBIDDEN",
+      "disallowed_compiler_inputs": [
+        "model_pack",
+        "runtime",
+        "runtime_output",
+        "oracle_contents",
+        "expected_diagnosis",
+        "terminal_outcome",
+        "scoring_output"
+      ],
+      "insufficient_target_count_effect": "CASE_INELIGIBLE"
+    }
+  },
+  "source_contract": {
+    "immutable_source_snapshot_required": true,
+    "source_sha256_required": true,
+    "prose_tables_figures_captions_supplements_in_denominator": true,
+    "atomic_assertion_and_exact_locator_required": true,
+    "duplicate_renderings_share_group": true,
+    "nonmention_semantics": "UNKNOWN_NEVER_NEGATIVE",
+    "reliable_negative_requires": [
+      "explicit_assertion",
+      "target_scope",
+      "adequate_method",
+      "adequate_timing",
+      "reliability"
+    ],
+    "author_diagnosis_hypothesis_retrospective_interpretation_outcome_are_nonrankable_typed_records": true
+  },
+  "availability_contract": {
+    "publication_order_is_not_clinical_availability": true,
+    "exact_clock_only_if_reported": true,
+    "preserve_intervals_and_partial_order": true,
+    "release_rule": "release only at first cut whose source-supported latest_possible_availability is no later than the cut",
+    "unknown_availability": "do_not_release_for_stagewise_ranking_raise_data_epistemic_residual",
+    "same_reported_batch_same_cut": true,
+    "forbid_single_event_microcuts_for_artificial_resolution": true,
+    "separate": [
+      "occurred_or_sample",
+      "action_start",
+      "result_generated",
+      "recorded",
+      "clinician_available"
+    ],
+    "final_diagnosis_and_terminal_outcome": "verification_only_after_replay",
+    "compiler": {
+      "executable": "holdout/tools/compile_availability_epochs.py",
+      "input_schema": "holdout/schemas/primary_availability_ledger.schema.json",
+      "test_source": "holdout/tools/test_compile_availability_epochs.py",
+      "interval_release": "latest_possible_epoch",
+      "unknown_or_unbounded_partial_order": "WITHHOLD_TO_MEASUREMENT_UNCERTAINTY"
+    }
+  },
+  "complex_case_coverage": {
+    "real_case_must_exercise": [
+      "recursive_updates",
+      "at_least_two_local_domains",
+      "concurrent_process_target_from_oracle",
+      "delayed_information",
+      "reliable_negative_evidence",
+      "performed_action_lifecycle_with_response",
+      "prospective_pre_next_cut_forecasts"
+    ],
+    "case_independent_counterexamples_cannot_substitute_for_missing_real_case_coverage": true
+  },
+  "roles": {
+    "scout": {
+      "allowed_input_data_classes": [
+        "protocol",
+        "broad_scope",
+        "identifier_only_exclusions",
+        "combined_preprimary_seal"
+      ],
+      "allowed_output_data_classes": [
+        "public_search_results",
+        "search_retrieval_manifest",
+        "search_snapshot",
+        "immutable_candidate_source_snapshot",
+        "candidate_source_evidence_index"
+      ],
+      "forbidden_data_classes": [
+        "model_pack",
+        "model_registry",
+        "runtime_source",
+        "runtime_output",
+        "oracle_contents",
+        "expected_diagnosis"
+      ],
+      "case_identity_exposure": "PERMITTED",
+      "network_access_policy": "REQUIRED_NCBI_HTTPS_GET_ONLY"
+    },
+    "screener": {
+      "allowed_input_data_classes": [
+        "protocol",
+        "identifier_only_exclusions",
+        "public_search_results",
+        "search_retrieval_manifest",
+        "search_snapshot",
+        "immutable_candidate_source_snapshot",
+        "candidate_source_evidence_index"
+      ],
+      "allowed_output_data_classes": [
+        "candidate_screening",
+        "deterministic_selection_result",
+        "immutable_selected_source",
+        "immutable_source_manifest",
+        "opaque_concurrent_process_candidate_packet"
+      ],
+      "forbidden_data_classes": [
+        "model_pack",
+        "model_registry",
+        "runtime_source",
+        "runtime_output",
+        "oracle_contents",
+        "expected_diagnosis"
+      ],
+      "case_identity_exposure": "PERMITTED",
+      "network_access_policy": "FORBIDDEN"
+    },
+    "extractor": {
+      "allowed_input_data_classes": [
+        "deterministic_selection_result",
+        "immutable_selected_source",
+        "immutable_source_manifest",
+        "extraction_schema",
+        "protocol"
+      ],
+      "allowed_output_data_classes": [
+        "source_inventory",
+        "event_ledger",
+        "diagnosis_neutral_mapper_packet",
+        "availability_ledger"
+      ],
+      "forbidden_data_classes": [
+        "model_pack",
+        "model_registry",
+        "runtime_source",
+        "runtime_output",
+        "scoring_output"
+      ],
+      "case_identity_exposure": "PERMITTED",
+      "network_access_policy": "FORBIDDEN"
+    },
+    "source_auditor": {
+      "allowed_input_data_classes": [
+        "candidate_screening",
+        "deterministic_selection_result",
+        "immutable_selected_source",
+        "immutable_source_manifest",
+        "source_inventory",
+        "event_ledger",
+        "availability_ledger",
+        "diagnosis_neutral_mapper_packet",
+        "opaque_concurrent_process_candidate_packet",
+        "protocol"
+      ],
+      "allowed_output_data_classes": [
+        "source_audit",
+        "sealed_source_inventory",
+        "sealed_event_ledger",
+        "sealed_availability_ledger",
+        "sealed_diagnosis_neutral_mapper_packet",
+        "sealed_opaque_concurrent_process_candidate_packet"
+      ],
+      "forbidden_data_classes": [
+        "model_pack",
+        "runtime_output",
+        "scoring_output"
+      ],
+      "case_identity_exposure": "PERMITTED",
+      "network_access_policy": "FORBIDDEN"
+    },
+    "concept_mapper": {
+      "allowed_input_data_classes": [
+        "sealed_diagnosis_neutral_mapper_packet",
+        "sanitized_id_type_unit_registry",
+        "protocol"
+      ],
+      "allowed_output_data_classes": [
+        "sealed_concept_map",
+        "concept_mapping_report"
+      ],
+      "forbidden_data_classes": [
+        "case_identity",
+        "event_values",
+        "chronology",
+        "hypotheses",
+        "diagnosis",
+        "outcome",
+        "likelihoods",
+        "priors",
+        "couplings",
+        "model_pack",
+        "runtime_output"
+      ],
+      "case_identity_exposure": "FORBIDDEN",
+      "network_access_policy": "FORBIDDEN"
+    },
+    "oracle_adjudicator": {
+      "allowed_input_data_classes": [
+        "immutable_selected_source",
+        "sealed_source_inventory",
+        "sealed_event_ledger",
+        "sealed_availability_ledger",
+        "sealed_opaque_concurrent_process_candidate_packet",
+        "sanitized_process_name_description_registry",
+        "protocol"
+      ],
+      "allowed_output_data_classes": [
+        "oracle_contents",
+        "oracle_seal_hash_only"
+      ],
+      "forbidden_data_classes": [
+        "model_numeric_parameters",
+        "model_pack",
+        "runtime_output",
+        "scoring_output"
+      ],
+      "case_identity_exposure": "PERMITTED",
+      "network_access_policy": "FORBIDDEN"
+    },
+    "evaluator": {
+      "allowed_input_data_classes": [
+        "evaluator_sanitized_runtime_ledger",
+        "sealed_concept_map",
+        "model_pack",
+        "runtime",
+        "scoring_contract",
+        "protocol",
+        "combined_preprimary_seal",
+        "oracle_seal_hash_only",
+        "sanitized_id_type_unit_registry"
+      ],
+      "allowed_output_data_classes": [
+        "runtime_output",
+        "replay_seal",
+        "mapped_observation_consumption",
+        "all_sealed_artifacts_after_replay"
+      ],
+      "forbidden_data_classes": [
+        "oracle_contents",
+        "final_diagnosis_before_replay_seal",
+        "terminal_outcome_before_replay_seal",
+        "future_events_at_old_cut",
+        "case_identity",
+        "pmid",
+        "pmcid",
+        "doi",
+        "source_title",
+        "source_locator",
+        "opaque_concurrent_process_candidate_packet",
+        "sealed_opaque_concurrent_process_candidate_packet"
+      ],
+      "case_identity_exposure": "FORBIDDEN",
+      "network_access_policy": "FORBIDDEN"
+    },
+    "scorer_auditor": {
+      "allowed_input_data_classes": [
+        "all_sealed_artifacts_after_replay",
+        "mapped_observation_consumption",
+        "oracle_contents",
+        "source_audit",
+        "concept_mapping_report",
+        "sealed_source_inventory",
+        "sealed_event_ledger",
+        "sealed_availability_ledger",
+        "sealed_opaque_concurrent_process_candidate_packet"
+      ],
+      "allowed_output_data_classes": [
+        "audit_report"
+      ],
+      "forbidden_data_classes": [
+        "artifact_modification"
+      ],
+      "case_identity_exposure": "PERMITTED",
+      "network_access_policy": "FORBIDDEN"
+    }
+  },
+  "role_manifest": {
+    "schema_version": "NCF-PRIMARY-ROLE-MANIFEST-1.1.0",
+    "schema_id": "ncf.primary-role-execution-manifest.v1.1",
+    "aggregate_schema_version": "NCF-PRIMARY-ROLE-MANIFEST-SET-1.0.0",
+    "aggregate_schema_id": "ncf.primary-role-manifest-set.v1",
+    "required_roles": [
+      "scout",
+      "screener",
+      "extractor",
+      "source_auditor",
+      "concept_mapper",
+      "oracle_adjudicator",
+      "evaluator",
+      "scorer_auditor"
+    ],
+    "required_for_every_role": true,
+    "exact_input_output_paths_sha256_bytes_and_schema_id": true,
+    "observed_data_classes_must_equal_input_data_classes": true,
+    "case_identity_exposure_policy_enforced": true,
+    "forbidden_access_attestations": true,
+    "canonical_relative_in_root_non_symlink_paths_only": true,
+    "input_output_path_overlap_forbidden": true,
+    "content_addressed_prompt_command_tool_trace_and_parent_packet_required": true,
+    "producer_consumer_exact_output_input_binding_required": true,
+    "complete_manifest_set_and_acyclic_dag_required": true,
+    "presealed_root_data_classes": [
+      "protocol",
+      "broad_scope",
+      "identifier_only_exclusions",
+      "combined_preprimary_seal",
+      "extraction_schema",
+      "sanitized_id_type_unit_registry",
+      "sanitized_process_name_description_registry",
+      "model_pack",
+      "runtime",
+      "scoring_contract"
+    ],
+    "data_class_schema_ids": {
+      "all_sealed_artifacts_after_replay": "ncf.data.all-sealed-artifacts-after-replay.v1",
+      "audit_report": "ncf.data.audit-report.v1",
+      "availability_ledger": "ncf.data.availability-ledger.v1",
+      "broad_scope": "ncf.data.broad-scope.v1",
+      "candidate_screening": "ncf.data.candidate-screening.v1",
+      "candidate_source_evidence_index": "ncf.data.candidate-source-evidence-index.v1",
+      "combined_preprimary_seal": "ncf.data.combined-preprimary-seal.v1",
+      "concept_mapping_report": "ncf.data.concept-mapping-report.v1",
+      "deterministic_selection_result": "ncf.data.deterministic-selection-result.v1",
+      "diagnosis_neutral_mapper_packet": "ncf.data.diagnosis-neutral-mapper-packet.v1",
+      "event_ledger": "ncf.data.event-ledger.v1",
+      "evaluator_sanitized_runtime_ledger": "ncf.evaluator-sanitized-runtime-ledger.v1",
+      "extraction_schema": "ncf.data.extraction-schema.v1",
+      "identifier_only_exclusions": "ncf.data.identifier-only-exclusions.v1",
+      "immutable_candidate_source_snapshot": "ncf.data.immutable-candidate-source-snapshot.v1",
+      "immutable_selected_source": "ncf.data.immutable-selected-source.v1",
+      "immutable_source_manifest": "ncf.data.immutable-source-manifest.v1",
+      "mapped_observation_consumption": "ncf.mapped-observation-consumption.v1",
+      "model_pack": "ncf.data.model-pack.v1",
+      "oracle_contents": "ncf.data.oracle-contents.v1",
+      "oracle_seal_hash_only": "ncf.data.oracle-seal-hash-only.v1",
+      "opaque_concurrent_process_candidate_packet": "ncf.opaque-concurrent-process-candidate-packet.v1",
+      "protocol": "ncf.data.protocol.v1",
+      "public_search_results": "ncf.data.public-search-results.v1",
+      "replay_seal": "ncf.data.replay-seal.v1",
+      "runtime": "ncf.data.runtime.v1",
+      "runtime_output": "ncf.data.runtime-output.v1",
+      "sanitized_id_type_unit_registry": "ncf.data.sanitized-id-type-unit-registry.v1",
+      "sanitized_process_name_description_registry": "ncf.data.sanitized-process-name-description-registry.v1",
+      "scoring_contract": "ncf.data.scoring-contract.v1",
+      "sealed_availability_ledger": "ncf.data.sealed-availability-ledger.v1",
+      "sealed_concept_map": "ncf.data.sealed-concept-map.v1",
+      "sealed_diagnosis_neutral_mapper_packet": "ncf.data.sealed-diagnosis-neutral-mapper-packet.v1",
+      "sealed_event_ledger": "ncf.data.sealed-event-ledger.v1",
+      "sealed_opaque_concurrent_process_candidate_packet": "ncf.sealed-opaque-concurrent-process-candidate-packet.v1",
+      "sealed_source_inventory": "ncf.data.sealed-source-inventory.v1",
+      "search_retrieval_manifest": "ncf.data.search-retrieval-manifest.v1",
+      "search_snapshot": "ncf.data.search-snapshot.v1",
+      "source_audit": "ncf.data.source-audit.v1",
+      "source_inventory": "ncf.data.source-inventory.v1"
+    },
+    "producer_consumer_edges": [
+      {
+        "producer_role": "scout",
+        "data_class": "public_search_results",
+        "consumer_roles": [
+          "screener"
+        ]
+      },
+      {
+        "producer_role": "scout",
+        "data_class": "search_retrieval_manifest",
+        "consumer_roles": [
+          "screener"
+        ]
+      },
+      {
+        "producer_role": "scout",
+        "data_class": "search_snapshot",
+        "consumer_roles": [
+          "screener"
+        ]
+      },
+      {
+        "producer_role": "scout",
+        "data_class": "immutable_candidate_source_snapshot",
+        "consumer_roles": [
+          "screener"
+        ]
+      },
+      {
+        "producer_role": "scout",
+        "data_class": "candidate_source_evidence_index",
+        "consumer_roles": [
+          "screener"
+        ]
+      },
+      {
+        "producer_role": "screener",
+        "data_class": "candidate_screening",
+        "consumer_roles": [
+          "source_auditor"
+        ]
+      },
+      {
+        "producer_role": "screener",
+        "data_class": "deterministic_selection_result",
+        "consumer_roles": [
+          "extractor",
+          "source_auditor"
+        ]
+      },
+      {
+        "producer_role": "screener",
+        "data_class": "immutable_selected_source",
+        "consumer_roles": [
+          "extractor",
+          "source_auditor",
+          "oracle_adjudicator"
+        ]
+      },
+      {
+        "producer_role": "screener",
+        "data_class": "immutable_source_manifest",
+        "consumer_roles": [
+          "extractor",
+          "source_auditor"
+        ]
+      },
+      {
+        "producer_role": "screener",
+        "data_class": "opaque_concurrent_process_candidate_packet",
+        "consumer_roles": [
+          "source_auditor"
+        ]
+      },
+      {
+        "producer_role": "extractor",
+        "data_class": "source_inventory",
+        "consumer_roles": [
+          "source_auditor"
+        ]
+      },
+      {
+        "producer_role": "extractor",
+        "data_class": "event_ledger",
+        "consumer_roles": [
+          "source_auditor"
+        ]
+      },
+      {
+        "producer_role": "extractor",
+        "data_class": "availability_ledger",
+        "consumer_roles": [
+          "source_auditor"
+        ]
+      },
+      {
+        "producer_role": "extractor",
+        "data_class": "diagnosis_neutral_mapper_packet",
+        "consumer_roles": [
+          "source_auditor"
+        ]
+      },
+      {
+        "producer_role": "source_auditor",
+        "data_class": "source_audit",
+        "consumer_roles": [
+          "scorer_auditor"
+        ]
+      },
+      {
+        "producer_role": "source_auditor",
+        "data_class": "sealed_source_inventory",
+        "consumer_roles": [
+          "oracle_adjudicator",
+          "scorer_auditor"
+        ]
+      },
+      {
+        "producer_role": "source_auditor",
+        "data_class": "sealed_event_ledger",
+        "consumer_roles": [
+          "oracle_adjudicator",
+          "scorer_auditor"
+        ]
+      },
+      {
+        "producer_role": "source_auditor",
+        "data_class": "sealed_availability_ledger",
+        "consumer_roles": [
+          "oracle_adjudicator",
+          "scorer_auditor"
+        ]
+      },
+      {
+        "producer_role": "source_auditor",
+        "data_class": "sealed_diagnosis_neutral_mapper_packet",
+        "consumer_roles": [
+          "concept_mapper"
+        ]
+      },
+      {
+        "producer_role": "source_auditor",
+        "data_class": "sealed_opaque_concurrent_process_candidate_packet",
+        "consumer_roles": [
+          "oracle_adjudicator",
+          "scorer_auditor"
+        ]
+      },
+      {
+        "producer_role": "concept_mapper",
+        "data_class": "sealed_concept_map",
+        "consumer_roles": [
+          "evaluator"
+        ]
+      },
+      {
+        "producer_role": "concept_mapper",
+        "data_class": "concept_mapping_report",
+        "consumer_roles": [
+          "scorer_auditor"
+        ]
+      },
+      {
+        "producer_role": "oracle_adjudicator",
+        "data_class": "oracle_contents",
+        "consumer_roles": [
+          "scorer_auditor"
+        ]
+      },
+      {
+        "producer_role": "oracle_adjudicator",
+        "data_class": "oracle_seal_hash_only",
+        "consumer_roles": [
+          "evaluator"
+        ]
+      },
+      {
+        "producer_role": "evaluator",
+        "data_class": "all_sealed_artifacts_after_replay",
+        "consumer_roles": [
+          "scorer_auditor"
+        ]
+      },
+      {
+        "producer_role": "evaluator",
+        "data_class": "mapped_observation_consumption",
+        "consumer_roles": [
+          "scorer_auditor"
+        ]
+      }
+    ],
+    "shared_filesystem_is_not_os_enforced_isolation": true,
+    "missing_prompt_tool_or_input_lineage_verdict": "HARNESS_INCOMPLETE",
+    "structured_tool_access_trace_required": true,
+    "tool_access_trace_schema_version": "NCF-PRIMARY-ROLE-TOOL-ACCESS-TRACE-1.0.0",
+    "tool_access_trace_schema_id": "ncf.primary-role-tool-access-trace.v1",
+    "observed_access_must_be_mechanically_derived_from_trace": true,
+    "all_allowed_input_output_data_classes_required_exactly_once": true,
+    "presealed_root_inputs_must_bind_exact_combined_seal_artifacts": true,
+    "presealed_root_asset_paths": {
+      "protocol": "holdout/PRIMARY_HOLDOUT_EXECUTION_PROTOCOL_v1.json",
+      "broad_scope": "holdout/generic_model/MODEL_SCOPE.md",
+      "identifier_only_exclusions": "holdout/PRIMARY_HOLDOUT_EXCLUSIONS.json",
+      "combined_preprimary_seal": "holdout/evidence/PRE_PRIMARY_HOLDOUT_SEAL.json",
+      "extraction_schema": "architecture_final_v1.schema.json",
+      "sanitized_id_type_unit_registry": "holdout/generic_model/mapper_sanitized_registry.json",
+      "sanitized_process_name_description_registry": "holdout/generic_model/oracle_sanitized_process_registry.json",
+      "model_pack": "holdout/generic_model/model_pack.json",
+      "runtime": "runtime_v2/evidence/manifest.json",
+      "scoring_contract": "holdout/PRIMARY_HOLDOUT_SCORING_v1.json"
+    },
+    "role_specific_network_access_must_be_mechanically_traced": true,
+    "nonterminal_outputs_must_be_consumed_or_exactly_packaged": true,
+    "evaluator_identity_forbidden_and_sanitized_runtime_ledger_required": true,
+    "all_sealed_after_replay_inventory_schema_id": "ncf.data.all-sealed-artifacts-after-replay.v1",
+    "source_authored_action_lifecycle_phases": [
+      "ORDERED",
+      "STARTED",
+      "CONTINUED",
+      "DOSE_CHANGED",
+      "HELD",
+      "RESUMED",
+      "STOPPED",
+      "COMPLETED"
+    ],
+    "source_authored_washout_forbidden": true,
+    "washout_must_be_derived_by_frozen_runtime": true,
+    "action_result_must_be_separate_observation": true,
+    "action_dose_semantics": "NORMALIZED_INTENSITY_ZERO_TO_MODEL_DOSE_REFERENCE",
+    "clinical_free_text_dose_units_forbidden": true,
+    "observation_evidence_qualification_required": true,
+    "support_masking_must_be_derived_by_frozen_runtime": true,
+    "external_producer_edges": [
+      {
+        "producer_id": "evaluator-sanitized-runtime-ledger-compiler-v1",
+        "data_class": "evaluator_sanitized_runtime_ledger",
+        "consumer_roles": [
+          "evaluator"
+        ],
+        "producer_kind": "SEALED_EXECUTABLE_OUTPUT",
+        "assignment_proof_schema_id": "ncf.evaluator-sanitized-runtime-ledger-assignment-proof.v1",
+        "assignment_proof_schema_path": "holdout/schemas/evaluator_sanitized_runtime_ledger_assignment_proof.schema.json",
+        "replay_verification_schema_id": "ncf.evaluator-sanitized-runtime-ledger-replay-verification.v1",
+        "replay_verification_schema_path": "holdout/schemas/evaluator_sanitized_runtime_ledger_replay_verification.schema.json"
+      }
+    ],
+    "sealed_executable_output_producer_proof_required": true
+  },
+  "mapper_packet": {
+    "allowed_fields": [
+      "source_concept_id",
+      "definition",
+      "value_type",
+      "unit",
+      "method_class",
+      "reliability_semantics",
+      "source_group_semantics",
+      "concept_kind"
+    ],
+    "forbidden_fields": [
+      "case_id",
+      "value",
+      "occurred_time",
+      "sample_time",
+      "result_at",
+      "recorded_at",
+      "available_at",
+      "cut_id",
+      "hypothesis",
+      "diagnosis",
+      "outcome",
+      "response",
+      "source_locator",
+      "expected_process"
+    ],
+    "mapper_cannot_set_rankability_or_weights": true
+  },
+  "oracle": {
+    "must_be_sealed_before_first_runtime_output": true,
+    "evaluator_may_receive_only_oracle_hash": true,
+    "required_fields": [
+      "reported_final_diagnosis",
+      "diagnostic_evidence_strength",
+      "target_process_ids",
+      "expected_coactive_process_ids",
+      "expected_organ_domains",
+      "decisive_event_ids",
+      "decisive_cut_definition",
+      "directional_assertions",
+      "incompatible_alternatives",
+      "clinically_consequential_event_ids",
+      "verification_only_outcomes"
+    ],
+    "published_diagnosis_is_not_automatically_ground_truth": true
+  },
+  "opaque_transport_id_contract": {
+    "contract_id": "NCF-OPAQUE-TRANSPORT-ID-1.0.0",
+    "case_blind": true,
+    "role_selected_payload_forbidden": true,
+    "run_id": {
+      "format": "RUN-<combined_preprimary_seal.payload_sha256>",
+      "regex": "^RUN-[0-9a-f]{64}$",
+      "digest_source": "combined_preprimary_seal.payload_sha256",
+      "full_digest_required": true
+    },
+    "sequential_ids": {
+      "opaque_event_id": {
+        "prefix": "EV-",
+        "regex": "^EV-[0-9]{8}$",
+        "order": "canonical_sanitized_event_ledger_row_order"
+      },
+      "opaque_action_id": {
+        "prefix": "ACT-",
+        "regex": "^ACT-[0-9]{8}$",
+        "order": "first_occurrence_in_canonical_sanitized_event_ledger_order"
+      },
+      "opaque_source_concept_token": {
+        "prefix": "SC-",
+        "regex": "^SC-[0-9]{8}$",
+        "order": "first_occurrence_in_canonical_sanitized_event_ledger_order"
+      },
+      "alternative_representation_group_id": {
+        "prefix": "ARG-",
+        "regex": "^ARG-[0-9]{8}$",
+        "order": "first_occurrence_in_canonical_sanitized_event_ledger_order"
+      }
+    },
+    "sequence_start": 1,
+    "decimal_width": 8,
+    "zero_padded": true,
+    "independent_validator_recomputation_required": true,
+    "missing_duplicate_or_noncanonical_id_verdict": "HARNESS_INCOMPLETE",
+    "reordering_with_retained_old_ids_forbidden": true,
+    "arbitrary_hash_or_payload_derived_suffix_forbidden": true,
+    "concept_map_order_must_equal_source_token_first_occurrence_order": true
+  },
+  "primary_execution_asset_contract": {
+    "event_ledger_replay": {
+      "executable": "holdout/tools/event_ledger_replay.py",
+      "test_source": "holdout/tools/test_event_ledger_replay.py"
+    },
+    "structural_gate_harness": {
+      "executable": "holdout/tools/structural_gate_harness.py",
+      "test_source": "holdout/tools/test_structural_gate_harness.py",
+      "evidence_schema": "holdout/tools/structural_gate_evidence.schema.json",
+      "results_schema": "holdout/tools/structural_gate_results.schema.json"
+    },
+    "preprimary_binding_scope": "generator_source_tests_and_output_schemas_only",
+    "generated_primary_results_bound_preprimary": false,
+    "opaque_concurrent_process_candidate_compiler": {
+      "executable": "holdout/tools/compile_opaque_concurrent_process_candidates.py",
+      "test_source": "holdout/tools/test_compile_opaque_concurrent_process_candidates.py",
+      "claims_schema": "holdout/schemas/primary_opaque_concurrent_process_candidate_claims.schema.json",
+      "packet_schema": "holdout/schemas/primary_opaque_concurrent_process_candidate_packet.schema.json",
+      "sealed_packet_schema": "holdout/schemas/primary_sealed_opaque_concurrent_process_candidate_packet.schema.json"
+    },
+    "producer_replay_verifier": {
+      "executable": "holdout/tools/producer_replay_verifier.py",
+      "test_source": "holdout/tools/test_producer_replay_verifier.py"
+    },
+    "primary_case_gate_evaluator": {
+      "executable": "holdout/tools/primary_case_gate_evaluator.py",
+      "test_source": "holdout/tools/test_primary_case_gate_evaluator.py",
+      "input_schema": "holdout/schemas/primary_case_gate_evaluator_input.schema.json",
+      "output_schema": "holdout/schemas/primary_case_gate_evaluation.schema.json",
+      "report_candidate_schema": "holdout/schemas/primary_report_candidate.schema.json",
+      "runtime_integration_test_source": "holdout/tools/test_primary_case_gate_evaluator_runtime.py"
+    },
+    "primary_case_gate_evidence_compiler": {
+      "executable": "holdout/tools/compile_primary_case_gate_evidence.py",
+      "test_source": "holdout/tools/test_compile_primary_case_gate_evidence.py",
+      "output_schema": "holdout/schemas/primary_gate_evidence.schema.json"
+    },
+    "primary_runtime_replay_executor": {
+      "executable": "holdout/tools/primary_runtime_replay_executor.py",
+      "test_source": "holdout/tools/test_primary_runtime_replay_executor.py",
+      "input_manifest_schema": "holdout/schemas/primary_runtime_replay_input_manifest.schema.json",
+      "runtime_output_schema": "holdout/schemas/primary_runtime_output.schema.json",
+      "replay_seal_schema": "holdout/schemas/primary_runtime_replay_seal.schema.json",
+      "mapped_observation_consumption_schema": "holdout/schemas/mapped_observation_consumption.schema.json",
+      "input_data_classes": [
+        "evaluator_sanitized_runtime_ledger",
+        "sealed_concept_map",
+        "model_pack",
+        "runtime",
+        "scoring_contract",
+        "protocol",
+        "combined_preprimary_seal",
+        "oracle_seal_hash_only",
+        "sanitized_id_type_unit_registry"
+      ],
+      "role_manifest_and_dag_validation": "EXTERNAL_NOT_EXECUTOR_INPUT",
+      "execution_role": "evaluator"
+    },
+    "evaluator_sanitized_runtime_ledger_compiler": {
+      "producer_id": "evaluator-sanitized-runtime-ledger-compiler-v1",
+      "executable": "holdout/tools/compile_evaluator_sanitized_runtime_ledger.py",
+      "test_source": "holdout/tools/test_compile_evaluator_sanitized_runtime_ledger.py",
+      "input_schema": "holdout/schemas/evaluator_sanitized_runtime_ledger_compiler_input.schema.json",
+      "output_schema": "holdout/schemas/evaluator_sanitized_runtime_ledger.schema.json",
+      "assignment_proof_schema": "holdout/schemas/evaluator_sanitized_runtime_ledger_assignment_proof.schema.json",
+      "execution_scope": "EXTERNAL_AFTER_ROLE_DAG_CONCEPT_MAP_SEAL_BEFORE_EVALUATOR",
+      "input_data_classes": [
+        "sealed_event_ledger",
+        "sealed_availability_ledger",
+        "sealed_concept_map",
+        "sanitized_id_type_unit_registry",
+        "combined_preprimary_seal"
+      ],
+      "output_data_classes": [
+        "evaluator_sanitized_runtime_ledger",
+        "evaluator_sanitized_runtime_ledger_assignment_proof"
+      ],
+      "transport_id_assignment": {
+        "opaque_run_id": "RUN_PREFIX_PLUS_FULL_COMBINED_PREPRIMARY_PAYLOAD_SHA256",
+        "opaque_event_id": "CANONICAL_LEDGER_ROW_ORDER_DECIMAL8_START1",
+        "opaque_source_concept_token": "CANONICAL_LEDGER_FIRST_OCCURRENCE_DECIMAL8_START1",
+        "opaque_action_id": "CANONICAL_LEDGER_FIRST_OCCURRENCE_DECIMAL8_START1",
+        "alternative_representation_group_id": "CANONICAL_LEDGER_FIRST_OCCURRENCE_DECIMAL8_START1"
+      },
+      "gate_minting": "FORBIDDEN_UPSTREAM_ARTIFACT_PRODUCER_ONLY"
+    },
+    "evaluator_sanitized_runtime_ledger_replay_verifier": {
+      "executable": "holdout/tools/verify_evaluator_sanitized_runtime_ledger.py",
+      "test_source": "holdout/tools/test_verify_evaluator_sanitized_runtime_ledger.py",
+      "output_schema": "holdout/schemas/evaluator_sanitized_runtime_ledger_replay_verification.schema.json"
+    }
+  },
+  "cut_execution_order": [
+    "reveal_newly_guaranteed_available_events",
+    "recursive_update_and_seal_canonical_state",
+    "run_all_heads_on_same_state_bytes",
+    "seal_no_new_action_and_current_policy_forecasts",
+    "open_next_cut"
+  ],
+  "failure_classes": [
+    "ARCHITECTURE",
+    "IMPLEMENTATION",
+    "MODEL_CONTENT",
+    "DATA_EVIDENCE",
+    "UNIDENTIFIABLE",
+    "HARNESS_INTEGRITY"
+  ],
+  "required_preprimary_bindings": [
+    "architecture_document",
+    "architecture_wire_schema",
+    "gate_contract_v1_1_and_seal",
+    "runtime_tree_manifest_and_seal",
+    "generic_model_tree_validation_and_seal",
+    "execution_protocol_md_and_json",
+    "scoring_contract",
+    "selection_tool",
+    "role_manifest_schema",
+    "role_manifest_set_schema",
+    "role_tool_access_trace_schema",
+    "evaluator_sanitized_runtime_ledger_schema",
+    "identifier_only_exclusions",
+    "final_30_gate_scorer",
+    "final_result_schema",
+    "final_scorer_test_source",
+    "availability_epoch_compiler",
+    "availability_ledger_schema",
+    "availability_compiler_test_source",
+    "protocol_validator",
+    "protocol_validator_test_source",
+    "search_snapshot_schema",
+    "screening_schema",
+    "mapped_observation_consumption_schema",
+    "final_gate_evidence_schema",
+    "preprimary_combined_seal_tool",
+    "preprimary_combined_seal_test_source",
+    "selection_tool_test_source",
+    "raw_search_response_schema",
+    "raw_search_snapshot_validator",
+    "raw_search_snapshot_validator_test_source",
+    "raw_search_retrieval_manifest_schema",
+    "raw_search_snapshot_compiler",
+    "raw_search_snapshot_compiler_test_source",
+    "screening_evidence_schema",
+    "screening_validator",
+    "screening_validator_test_source",
+    "event_ledger_replay_tool",
+    "event_ledger_replay_test_source",
+    "structural_gate_harness_tool",
+    "structural_gate_harness_test_source",
+    "structural_gate_evidence_schema",
+    "structural_gate_results_schema",
+    "all_sealed_artifacts_after_replay_schema",
+    "sealed_concept_map_schema",
+    "opaque_concurrent_process_candidate_claims_schema",
+    "opaque_concurrent_process_candidate_packet_schema",
+    "sealed_opaque_concurrent_process_candidate_packet_schema",
+    "opaque_concurrent_process_candidate_compiler_tool",
+    "opaque_concurrent_process_candidate_compiler_test_source",
+    "producer_replay_verifier_tool",
+    "producer_replay_verifier_test_source",
+    "primary_case_gate_evaluator_tool",
+    "primary_case_gate_evaluator_test_source",
+    "primary_case_gate_evaluator_input_schema",
+    "primary_case_gate_evaluation_output_schema",
+    "primary_case_report_candidate_schema",
+    "primary_case_gate_evidence_compiler_tool",
+    "primary_case_gate_evidence_compiler_test_source",
+    "primary_runtime_replay_executor_tool",
+    "primary_runtime_replay_executor_test_source",
+    "primary_runtime_replay_input_manifest_schema",
+    "primary_runtime_output_schema",
+    "primary_runtime_replay_seal_schema",
+    "evaluator_sanitized_runtime_ledger_compiler_tool",
+    "evaluator_sanitized_runtime_ledger_compiler_test_source",
+    "evaluator_sanitized_runtime_ledger_compiler_input_schema",
+    "evaluator_sanitized_runtime_ledger_compiler_output_schema",
+    "evaluator_sanitized_runtime_ledger_assignment_proof_schema",
+    "evaluator_sanitized_runtime_ledger_replay_verifier_tool",
+    "evaluator_sanitized_runtime_ledger_replay_verifier_test_source",
+    "evaluator_sanitized_runtime_ledger_replay_verifier_output_schema",
+    "primary_case_gate_evaluator_runtime_integration_test_source"
+  ],
+  "mapping_consumption_contract": {
+    "per_mapped_observation_required": {
+      "method_requirement_status": [
+        "SATISFIED",
+        "FAILED",
+        "UNKNOWN"
+      ],
+      "required_provenance_fields_present": "array",
+      "required_provenance_fields_missing": "array",
+      "unit_normalization_status": [
+        "SATISFIED",
+        "FAILED",
+        "NOT_APPLICABLE"
+      ],
+      "reliability_status": [
+        "RELIABLE",
+        "LOW",
+        "UNKNOWN"
+      ],
+      "reliability_basis_required": [
+        "explicit_assertion",
+        "target_scope",
+        "adequate_method",
+        "adequate_timing"
+      ],
+      "rankability_disposition": [
+        "CONSUME",
+        "WITHHOLD_TO_MEASUREMENT_UNCERTAINTY",
+        "RECORD_ONLY"
+      ],
+      "support_masking_assessment": {
+        "active_action_ids_at_sample": "array",
+        "masking_risk": [
+          "NONE",
+          "POSSIBLE",
+          "PRESENT",
+          "UNKNOWN"
+        ],
+        "conditioned_factor_available": "boolean",
+        "disposition": [
+          "CONSUME_UNMASKED",
+          "CONSUME_CONDITIONED",
+          "WITHHOLD_TO_MEASUREMENT_UNCERTAINTY"
+        ]
+      },
+      "alternative_representation": {
+        "group_id": "string_or_null",
+        "selected_source_result_ids": "array",
+        "suppressed_source_result_ids": "array"
+      }
+    },
+    "hard_rules": [
+      "FAILED or UNKNOWN method requirement cannot enter factor_messages",
+      "FAILED unit normalization cannot enter factor_messages",
+      "LOW or UNKNOWN reliability cannot enter factor_messages in the primary verdict",
+      "support-masked observation without conditioned factor cannot enter factor_messages",
+      "every withheld source_result_id enters unexplained_observations with reason unknown_measurement_condition and contributes to or explicitly explains measurement_uncertainty",
+      "reliable negative is rankable only when explicit_assertion, target_scope, adequate_method, adequate_timing and reliability are all true",
+      "only selected alternative representation may enter factor_messages"
+    ],
+    "required_execution_evidence": [
+      "mapped_observation_contract_by_event.json",
+      "consumed_withheld_residualized_event_ids.json",
+      "reliability_modulation_probe_by_event.json",
+      "support_masking_disposition_by_event.json",
+      "alternative_representation_suppression.json",
+      "factor_message_source_crosscheck.json"
+    ]
+  },
+  "final_verdict_execution": {
+    "executable": "holdout/tools/final_primary_holdout_scorer.py",
+    "result_schema": "holdout/schemas/primary_holdout_final_result.schema.json",
+    "test_source": "holdout/tools/test_final_primary_holdout_scorer.py",
+    "exact_frozen_gate_count": 30,
+    "positive_verdict_requires": "all 30 hard gates PASS and every complex_case_coverage.real_case_must_exercise item PASS",
+    "harness_incomplete_if": [
+      "missing gate",
+      "duplicate gate",
+      "unknown gate",
+      "malformed gate row",
+      "missing gate evidence",
+      "NOT_EXECUTED",
+      "EVIDENCE_MISSING",
+      "NOT_APPLICABLE",
+      "missing or malformed complex coverage evidence",
+      "unsealed or non-allowlisted evidence producer",
+      "source artifact hash/byte/path/symlink mismatch",
+      "bare passed boolean or non-source-derived assertion",
+      "manual auditor PASS claim"
+    ],
+    "failed_if": [
+      "all evidence is structurally complete and any hard gate FAIL",
+      "all evidence is structurally complete and any complex real-case coverage item FAIL"
+    ],
+    "correct_diagnosis_cannot_override": true,
+    "evidence_schema": "holdout/schemas/primary_gate_evidence.schema.json",
+    "evidence_integrity": [
+      "evidence/source/producer refs are canonical in-root non-symlink paths with exact sha256 and bytes",
+      "subject kind/id and claimed result match gate or coverage row",
+      "automated producer tool ref matches exact combined-sealed allowlisted generator and subject scope",
+      "producer artifact is content-addressed and matches the allowed generator artifact schema",
+      "each assertion binds a producer artifact JSON pointer and includes observed, expected, operator",
+      "scorer re-extracts observed and recomputes every deterministic operator",
+      "bare passed booleans are forbidden",
+      "manual independent auditor may establish FAIL only; manual PASS is HARNESS_INCOMPLETE"
+    ]
+  }
+}

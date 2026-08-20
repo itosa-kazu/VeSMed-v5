@@ -1,0 +1,45 @@
+============================================================================================================
+V5 joint SDE treatment vector-field simulation
+============================================================================================================
+N_PARTICLES=260, horizon=30d, dt=1.0, kappa=0.55, noise_scale=0.06
+Treatment policies, including same-disease bundles and timed stages, are ranked by RMST over the horizon. Candidate disease/combo is taken from each case's expected manifold(s).
+Manifold discovery: 1 root distillation files from C:\Users\wangw\Documents\vesmed\distillations\v5_*.json
+Case filter: COMPLEMENT_MEDIATED_TMA_APS_ANTIGBM_OVERLAP_PMC10448002
+Cases loaded for this run: 1
+
+------------------------------------------------------------------------------------------------------------
+COMPLEMENT_MEDIATED_TMA_APS_ANTIGBM_OVERLAP_PMC10448002  candidate=D-COMPLEMENT-MEDIATED-TMA
+source: PMID 37637585 / PMC10448002 / https://pmc.ncbi.nlm.nih.gov/articles/PMC10448002/
+start latent days: D-COMPLEMENT-MEDIATED-TMA=day0.0
+
+Top treatment vector fields by RMST:
+   1. RMST= 29.48d [p25=29.47, p75=29.49] gain= +1.36d  D-COMPLEMENT-MEDIATED-TMA:renal_replacement_therapy + D-COMPLEMENT-MEDIATED-TMA:eculizumab + D-COMPLEMENT-MEDIATED-TMA:ravulizumab + D-COMPLEMENT-MEDIATED-TMA:blood_pressure_control
+   2. RMST= 29.45d [p25=29.44, p75=29.47] gain= +1.34d  D-COMPLEMENT-MEDIATED-TMA:renal_replacement_therapy + D-COMPLEMENT-MEDIATED-TMA:eculizumab + D-COMPLEMENT-MEDIATED-TMA:blood_pressure_control + D-COMPLEMENT-MEDIATED-TMA:trigger_context_control
+   3. RMST= 29.45d [p25=29.44, p75=29.47] gain= +1.34d  D-COMPLEMENT-MEDIATED-TMA:renal_replacement_therapy + D-COMPLEMENT-MEDIATED-TMA:ravulizumab + D-COMPLEMENT-MEDIATED-TMA:blood_pressure_control + D-COMPLEMENT-MEDIATED-TMA:trigger_context_control
+   4. RMST= 29.42d [p25=29.41, p75=29.43] gain= +1.30d  D-COMPLEMENT-MEDIATED-TMA:renal_replacement_therapy + D-COMPLEMENT-MEDIATED-TMA:plasma_exchange_or_plasma_infusion_bridge + D-COMPLEMENT-MEDIATED-TMA:blood_pressure_control + D-COMPLEMENT-MEDIATED-TMA:trigger_context_control
+   5. RMST= 29.42d [p25=29.40, p75=29.43] gain= +1.30d  D-COMPLEMENT-MEDIATED-TMA:renal_replacement_therapy + D-COMPLEMENT-MEDIATED-TMA:blood_pressure_control + D-COMPLEMENT-MEDIATED-TMA:trigger_context_control
+   6. RMST= 29.42d [p25=29.40, p75=29.43] gain= +1.30d  D-COMPLEMENT-MEDIATED-TMA:renal_replacement_therapy + D-COMPLEMENT-MEDIATED-TMA:eculizumab + D-COMPLEMENT-MEDIATED-TMA:plasma_exchange_or_plasma_infusion_bridge + D-COMPLEMENT-MEDIATED-TMA:blood_pressure_control
+   7. RMST= 29.42d [p25=29.40, p75=29.43] gain= +1.30d  D-COMPLEMENT-MEDIATED-TMA:renal_replacement_therapy + D-COMPLEMENT-MEDIATED-TMA:ravulizumab + D-COMPLEMENT-MEDIATED-TMA:plasma_exchange_or_plasma_infusion_bridge + D-COMPLEMENT-MEDIATED-TMA:blood_pressure_control
+   8. RMST= 29.41d [p25=29.40, p75=29.43] gain= +1.30d  D-COMPLEMENT-MEDIATED-TMA:renal_replacement_therapy + D-COMPLEMENT-MEDIATED-TMA:eculizumab + D-COMPLEMENT-MEDIATED-TMA:blood_pressure_control
+Best vs no treatment: D-COMPLEMENT-MEDIATED-TMA:renal_replacement_therapy + D-COMPLEMENT-MEDIATED-TMA:eculizumab + D-COMPLEMENT-MEDIATED-TMA:ravulizumab + D-COMPLEMENT-MEDIATED-TMA:blood_pressure_control  gain=+1.36d over 30d
+Axis movement at day 7 vs no treatment:
+  mortality_hazard_in_D-COMPLEMENT-MEDIATED-TMA treated= 0.0003036  untreated=  0.001325  delta= -0.001022
+  acute_kidney_injury_hazard                    treated=  0.001645  untreated=   0.00721  delta= -0.005564
+  mean_arterial_pressure                        treated=     88.92  untreated=     112.2  delta=    -23.25
+  platelet_count                                treated=     172.3  untreated=     144.7  delta=    +27.56
+  hemoglobin                                    treated=     13.01  untreated=      12.2  delta=   +0.8148
+  serum_ldh                                     treated=     386.4  untreated=      1177  delta=      -791
+
+============================================================================================================
+Notes:
+  - reshape_landscape changes disease trajectory targets including mortality_hazard when distilled.
+  - latent_mechanisms / mechanism_edges let treatments change hidden disease engines and propagate to downstream axes.
+  - push_state adds an explicit treatment force to axes such as MAP, oxygen saturation, hemoglobin, fever, or potassium.
+  - sigma_modulation changes diffusion amplitude for specified axes.
+  - required_context_axes/effect_modifiers can scale treatment force by susceptibility, active coverage, source control, contraindications, or toxicity context when distilled.
+  - same-disease bundle generation combines complementary treatment lanes and avoids duplicate alternatives such as two antibiotics or TPE plus plasma-infusion bridge.
+  - timed-stage policies can start slower add-ons later, shown as labels such as rituximab@day1 or anakinra@day2.
+  - hazard_drift/event_transition couplings can let treatment-moved axes push event hazards or mortality_hazard; old couplings without coupling_type remain covariance-only.
+  - This is treatment runtime v0.1; it has timed stages but does not yet branch on simulated follow-up response.
+
+[done] wrote C:\Users\wangw\Documents\vesmed\distillations\joint_sde_treatment_result.txt

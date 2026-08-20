@@ -1,0 +1,304 @@
+{
+  "model_id": "hav_takotsubo_generic_blind_v0",
+  "schema_version": "new_clinical_dynamic_map.model.v0",
+  "status": "EXPERIMENTAL_UNCALIBRATED",
+  "purpose": "A generic, auditable hypothesis package for testing branch, mode, factor-graph, action-memory, and open-world behavior. It is not a diagnostic device or a treatment policy.",
+  "blind_scope": {
+    "allowed_medical_inputs": [
+      "acute hepatitis A / acute hepatocellular injury",
+      "acute liver failure",
+      "Takotsubo syndrome / stress cardiomyopathy",
+      "acute myocarditis",
+      "acute coronary syndrome",
+      "generic shock / unknown cardiac process"
+    ],
+    "forbidden_inputs": [
+      "case event files",
+      "case-specific laboratory or imaging values",
+      "PMC7005653 full text or extracted timeline",
+      "VeSMed V5 distillations or runtime outputs",
+      "expected rank, forecast, or action result"
+    ],
+    "parameter_provenance": "generic_medical_knowledge_only",
+    "calibration_claim": "none"
+  },
+  "state_contract": {
+    "state": [
+      "branch_posterior",
+      "branch_local_coordinate_distribution",
+      "mode_posterior",
+      "stable_background_distribution",
+      "action_memory_distribution",
+      "history_summary",
+      "unknown_branch_mass",
+      "lineage"
+    ],
+    "single_state_for_queries": ["diagnosis", "no_new_action_forecast", "action_conditioned_forecast"],
+    "invariants": [
+      "known branch posterior mass plus unknown branch mass equals one",
+      "only performed actions can alter dynamics or action memory",
+      "an observation is consumed only after its availability time",
+      "absence, negative, not assessed, and pending are distinct",
+      "branch-local coordinates are not compared across branches without an explicit bridge",
+      "support exposure may alter physiology and observation generation but is not evidence of disease identity"
+    ]
+  },
+  "ordinal_scale_registry": {
+    "activity_5": ["minimal", "low", "moderate", "high", "very_high"],
+    "injury_6": ["none", "trace", "mild", "moderate", "marked", "extreme"],
+    "function_5": ["preserved", "mildly_impaired", "moderately_impaired", "severely_impaired", "critical"],
+    "trend_5": ["rapidly_falling", "falling", "stable", "rising", "rapidly_rising"],
+    "support_5": ["none", "low", "moderate", "high", "maximal_or_device"],
+    "likelihood_representation": {
+      "type": "interval_categorical_probability",
+      "rule": "Intervals express deliberately broad expert hypotheses; midpoint use is forbidden unless a sensitivity run over all admitted values is also reported.",
+      "default_floor": 0.02,
+      "default_ceiling": 0.70
+    }
+  },
+  "modes": {
+    "compensated": {
+      "meaning": "Abnormal process is present while observable organ output remains broadly maintained.",
+      "generic_drift": "injury may rise or plateau; reserve is consumed slowly",
+      "allowed_next": ["compensated", "strained", "recovering"]
+    },
+    "strained": {
+      "meaning": "Reserve is being consumed and measured function is vulnerable to additional load.",
+      "generic_drift": "small latent changes may produce larger observable changes",
+      "allowed_next": ["compensated", "strained", "decompensated", "recovering"]
+    },
+    "decompensated": {
+      "meaning": "Organ output or systemic perfusion is not maintained without substantial support.",
+      "generic_drift": "failure coordinates dominate; abrupt jumps are permitted",
+      "allowed_next": ["decompensated", "strained", "recovering"]
+    },
+    "recovering": {
+      "meaning": "Injury burden and/or support requirement is falling, with hysteresis and residual vulnerability.",
+      "generic_drift": "recovery momentum is positive but relapse remains possible",
+      "allowed_next": ["recovering", "compensated", "strained", "decompensated"]
+    }
+  },
+  "topology": {
+    "root": "open_clinical_process",
+    "nodes": [
+      {"id": "open_clinical_process", "kind": "root"},
+      {"id": "hepatic_injury_family", "kind": "shared_parent"},
+      {"id": "acute_hepatocellular_injury", "kind": "candidate_branch"},
+      {"id": "acute_liver_failure", "kind": "candidate_branch"},
+      {"id": "cardiac_injury_or_dysfunction_family", "kind": "shared_parent"},
+      {"id": "takotsubo_syndrome", "kind": "candidate_branch"},
+      {"id": "acute_myocarditis", "kind": "candidate_branch"},
+      {"id": "acute_coronary_syndrome", "kind": "candidate_branch"},
+      {"id": "hemodynamic_instability_family", "kind": "shared_parent"},
+      {"id": "generic_shock_unknown_cardiac_process", "kind": "candidate_branch"},
+      {"id": "unknown_open_world", "kind": "unknown_branch"}
+    ],
+    "parent_edges": [
+      ["open_clinical_process", "hepatic_injury_family"],
+      ["hepatic_injury_family", "acute_hepatocellular_injury"],
+      ["hepatic_injury_family", "acute_liver_failure"],
+      ["open_clinical_process", "cardiac_injury_or_dysfunction_family"],
+      ["cardiac_injury_or_dysfunction_family", "takotsubo_syndrome"],
+      ["cardiac_injury_or_dysfunction_family", "acute_myocarditis"],
+      ["cardiac_injury_or_dysfunction_family", "acute_coronary_syndrome"],
+      ["open_clinical_process", "hemodynamic_instability_family"],
+      ["hemodynamic_instability_family", "generic_shock_unknown_cardiac_process"],
+      ["open_clinical_process", "unknown_open_world"]
+    ],
+    "legal_activation_edges": [
+      {"from": "acute_hepatocellular_injury", "to": "acute_liver_failure", "type": "possible_progression", "causal_status": "not_identified"},
+      {"from": "any_known_branch", "to": "generic_shock_unknown_cardiac_process", "type": "possible_concurrent_activation", "causal_status": "not_identified"},
+      {"from": "any_known_branch", "to": "unknown_open_world", "type": "residual_explanation", "causal_status": "not_causal"}
+    ],
+    "composition_rule": "The state may carry posterior mass on single branches and explicitly registered concurrent branch sets. Concurrency is not represented by inventing a disease-specific fused branch.",
+    "registered_concurrent_sets": [
+      ["acute_hepatocellular_injury", "takotsubo_syndrome"],
+      ["acute_hepatocellular_injury", "acute_myocarditis"],
+      ["acute_hepatocellular_injury", "acute_coronary_syndrome"],
+      ["acute_liver_failure", "takotsubo_syndrome"],
+      ["acute_liver_failure", "acute_myocarditis"],
+      ["acute_liver_failure", "acute_coronary_syndrome"]
+    ],
+    "bridge_cost_policy": {
+      "same_leaf_different_mode": "lowest",
+      "siblings_with_shared_parent": "moderate",
+      "registered_concurrent_activation": "moderate_to_high",
+      "different_families_without_registered_bridge": "undefined",
+      "unknown_open_world": "not embedded in known-branch Euclidean space"
+    }
+  },
+  "branch_local_charts": {
+    "acute_hepatocellular_injury": {
+      "coordinates": ["hepatocyte_injury_burden", "hepatic_inflammatory_activity", "hepatic_function_loss", "hepatic_recovery_momentum", "systemic_stress_load"],
+      "mode_sensitive": ["hepatic_function_loss", "hepatic_recovery_momentum"]
+    },
+    "acute_liver_failure": {
+      "coordinates": ["hepatocyte_injury_burden", "hepatic_synthetic_failure", "hepatic_metabolic_failure", "encephalopathy_process", "systemic_stress_load", "hepatic_recovery_momentum"],
+      "mode_sensitive": ["hepatic_synthetic_failure", "hepatic_metabolic_failure", "encephalopathy_process"]
+    },
+    "takotsubo_syndrome": {
+      "coordinates": ["stress_mediator_activity", "transient_myocardial_stunning", "myocardial_injury_burden", "pump_function_loss", "cardiac_recovery_momentum"],
+      "mode_sensitive": ["pump_function_loss", "cardiac_recovery_momentum"]
+    },
+    "acute_myocarditis": {
+      "coordinates": ["myocardial_inflammatory_activity", "myocardial_injury_burden", "electrical_instability", "pump_function_loss", "cardiac_recovery_momentum"],
+      "mode_sensitive": ["electrical_instability", "pump_function_loss"]
+    },
+    "acute_coronary_syndrome": {
+      "coordinates": ["coronary_supply_demand_mismatch", "ischemic_myocardial_injury", "myocardial_injury_burden", "regional_contractile_loss", "pump_function_loss"],
+      "mode_sensitive": ["ischemic_myocardial_injury", "pump_function_loss"]
+    },
+    "generic_shock_unknown_cardiac_process": {
+      "coordinates": ["systemic_perfusion_deficit", "pump_function_loss", "vascular_tone_loss", "effective_circulating_volume_deficit", "support_dependence", "unexplained_cardiac_process_activity"],
+      "mode_sensitive": ["systemic_perfusion_deficit", "support_dependence"]
+    },
+    "unknown_open_world": {
+      "coordinates": ["unexplained_residual_burden", "novelty_persistence", "support_dependence"],
+      "mode_sensitive": ["unexplained_residual_burden", "support_dependence"]
+    }
+  },
+  "typed_factor_graph": {
+    "latent_nodes": [
+      {"id": "hepatocyte_injury_burden", "type": "latent_activity", "scale": "activity_5"},
+      {"id": "hepatic_synthetic_failure", "type": "latent_activity", "scale": "activity_5"},
+      {"id": "hepatic_metabolic_failure", "type": "latent_activity", "scale": "activity_5"},
+      {"id": "myocardial_injury_burden", "type": "latent_activity", "scale": "activity_5"},
+      {"id": "transient_myocardial_stunning", "type": "latent_activity", "scale": "activity_5"},
+      {"id": "myocardial_inflammatory_activity", "type": "latent_activity", "scale": "activity_5"},
+      {"id": "ischemic_myocardial_injury", "type": "latent_activity", "scale": "activity_5"},
+      {"id": "pump_function_loss", "type": "latent_activity", "scale": "activity_5"},
+      {"id": "systemic_perfusion_deficit", "type": "latent_activity", "scale": "activity_5"},
+      {"id": "recovery_momentum", "type": "latent_trend", "scale": "trend_5"},
+      {"id": "support_masking", "type": "action_memory_latent", "scale": "support_5"}
+    ],
+    "observation_nodes": [
+      {"id": "ast_ordinal", "type": "rankable_observation", "scale": "injury_6", "parents": ["hepatocyte_injury_burden"], "context": ["assay", "sampling_time", "nonhepatic_ast_sources", "hemolysis_quality"]},
+      {"id": "alt_ordinal", "type": "rankable_observation", "scale": "injury_6", "parents": ["hepatocyte_injury_burden"], "context": ["assay", "sampling_time", "hepatic_reserve"]},
+      {"id": "derived_transaminase_ordinal", "type": "derived_observation", "scale": "injury_6", "parents": ["hepatocyte_injury_burden"], "derived_from": ["ast_ordinal", "alt_ordinal"]},
+      {"id": "inr_impairment_ordinal", "type": "rankable_observation", "scale": "function_5", "parents": ["hepatic_synthetic_failure"], "context": ["anticoagulant_exposure", "vitamin_k_context", "assay"]},
+      {"id": "glucose_control_impairment_ordinal", "type": "rankable_observation", "scale": "function_5", "parents": ["hepatic_metabolic_failure", "support_masking"], "context": ["nutrition", "glucose_administration", "endocrine_context"]},
+      {"id": "bilirubin_ordinal", "type": "rankable_observation", "scale": "injury_6", "parents": ["hepatocyte_injury_burden", "hepatic_synthetic_failure"], "context": ["hemolysis_context", "cholestatic_context", "assay"]},
+      {"id": "troponin_ordinal", "type": "rankable_observation", "scale": "injury_6", "parents": ["myocardial_injury_burden"], "context": ["assay", "sampling_time", "renal_clearance", "systemic_stress"]},
+      {"id": "ejection_fraction_impairment_ordinal", "type": "rankable_observation", "scale": "function_5", "parents": ["pump_function_loss", "support_masking"], "context": ["imaging_method", "loading_conditions", "rhythm", "support_settings"]},
+      {"id": "wall_motion_pattern", "type": "rankable_observation", "scale": ["none", "single_territory_regional", "multi_territory_regional", "circumferential_pattern", "diffuse_global", "indeterminate"], "parents": ["transient_myocardial_stunning", "myocardial_inflammatory_activity", "ischemic_myocardial_injury"], "context": ["imaging_method", "reader_uncertainty", "image_quality"]},
+      {"id": "arterial_pressure_impairment_ordinal", "type": "rankable_observation", "scale": "function_5", "parents": ["pump_function_loss", "systemic_perfusion_deficit", "support_masking"], "context": ["circulatory_support", "measurement_method", "baseline_pressure"]},
+      {"id": "perfusion_marker_ordinal", "type": "rankable_observation", "scale": "injury_6", "parents": ["systemic_perfusion_deficit", "support_masking"], "context": ["sampling_time", "clearance", "resuscitation_context"]},
+      {"id": "support_intensity_ordinal", "type": "action_context_observation", "scale": "support_5", "parents": ["support_masking"], "identity_evidence": false}
+    ],
+    "anti_double_count_groups": [
+      {
+        "id": "transaminase_shared_latent",
+        "members": ["ast_ordinal", "alt_ordinal", "derived_transaminase_ordinal"],
+        "rule": "Infer hepatocyte_injury_burden once. If AST and ALT are present, derived_transaminase is deterministic summary metadata and contributes zero additional likelihood."
+      },
+      {
+        "id": "cardiac_injury_shared_latent",
+        "members": ["troponin_ordinal", "wall_motion_pattern", "ejection_fraction_impairment_ordinal"],
+        "rule": "Use conditional emissions from shared myocardial-injury and pump-function latents; do not add three independent disease scores."
+      },
+      {
+        "id": "hemodynamic_shared_latent",
+        "members": ["arterial_pressure_impairment_ordinal", "perfusion_marker_ordinal", "support_intensity_ordinal"],
+        "rule": "Pressure and perfusion are conditionally related through perfusion/support latents; support intensity changes context but is not diagnostic identity evidence."
+      }
+    ],
+    "branch_latent_expectations": {
+      "acute_hepatocellular_injury": {"hepatocyte_injury_burden": ["moderate", "very_high"], "hepatic_synthetic_failure": ["minimal", "moderate"], "pump_function_loss": ["minimal", "moderate"]},
+      "acute_liver_failure": {"hepatocyte_injury_burden": ["moderate", "very_high"], "hepatic_synthetic_failure": ["moderate", "very_high"], "hepatic_metabolic_failure": ["moderate", "very_high"]},
+      "takotsubo_syndrome": {"transient_myocardial_stunning": ["moderate", "very_high"], "myocardial_injury_burden": ["low", "high"], "pump_function_loss": ["moderate", "very_high"]},
+      "acute_myocarditis": {"myocardial_inflammatory_activity": ["moderate", "very_high"], "myocardial_injury_burden": ["low", "very_high"], "pump_function_loss": ["low", "very_high"]},
+      "acute_coronary_syndrome": {"ischemic_myocardial_injury": ["moderate", "very_high"], "myocardial_injury_burden": ["low", "very_high"], "pump_function_loss": ["minimal", "very_high"]},
+      "generic_shock_unknown_cardiac_process": {"systemic_perfusion_deficit": ["moderate", "very_high"], "pump_function_loss": ["minimal", "very_high"], "support_masking": ["minimal", "very_high"]},
+      "unknown_open_world": {"unexplained_residual_burden": ["low", "very_high"], "novelty_persistence": ["low", "very_high"]}
+    },
+    "likelihood_policy": {
+      "family": "wide_ordinal_conditional_emission",
+      "required_sensitivity_runs": ["low_end", "midpoint", "high_end", "leave_one_redundancy_group_out"],
+      "forbidden": ["case-fitted cutpoints", "candidate-specific observation bonuses", "multiplying deterministic derived values as independent observations", "treating a performed action as a disease label"]
+    }
+  },
+  "dynamics": {
+    "transition_form": "branch_mode_action_conditioned_hybrid_transition",
+    "coordinate_update": "xi_next = bounded(xi + branch_mode_drift + performed_action_effect + stochastic_residual)",
+    "mode_transition_guards": {
+      "compensated_to_strained": ["reserve_consumption rises", "function_loss persists or rises"],
+      "strained_to_decompensated": ["function_loss or perfusion_deficit enters high range", "support dependence rises"],
+      "decompensated_to_recovering": ["injury burden no longer rises", "recovery momentum rises", "support requirement is stable or falling"],
+      "recovering_to_strained_or_decompensated": ["injury reactivates", "support is withdrawn faster than reserve recovers"]
+    },
+    "hysteresis": {
+      "required": true,
+      "rule": "Exit from decompensated mode requires stronger and more persistent recovery evidence than the evidence that triggered entry."
+    },
+    "action_catalog": {
+      "NoNewAction": {"kind": "null_intervention", "identity_evidence": false},
+      "GeneralSupport": {"kind": "support_abstract", "targets": ["systemic_perfusion_deficit", "support_masking"], "identity_evidence": false},
+      "CirculatorySupport": {"kind": "support_abstract", "targets": ["pump_function_loss", "systemic_perfusion_deficit", "support_masking"], "identity_evidence": false},
+      "RespiratorySupport": {"kind": "support_abstract", "targets": ["systemic_perfusion_deficit", "support_masking"], "identity_evidence": false},
+      "EtiologyDirectedHepaticAction": {"kind": "experimental_action_class", "targets": ["hepatocyte_injury_burden"], "identity_evidence": false},
+      "EtiologyDirectedCardiacAction": {"kind": "experimental_action_class", "targets": ["myocardial_injury_burden", "transient_myocardial_stunning", "myocardial_inflammatory_activity", "ischemic_myocardial_injury"], "identity_evidence": false}
+    },
+    "action_effect_intervals": [
+      {"action": "GeneralSupport", "effect": "may reduce measured perfusion deficit while increasing support masking", "sign": "nonworsening_expected", "magnitude": ["minimal", "moderate"], "causal_status": "not_identified"},
+      {"action": "CirculatorySupport", "effect": "may improve measured pressure/perfusion without resolving upstream cardiac injury", "sign": "mixed_by_coordinate", "magnitude": ["low", "high"], "causal_status": "not_identified"},
+      {"action": "RespiratorySupport", "effect": "may alter systemic stress and measurement context", "sign": "mixed_by_coordinate", "magnitude": ["minimal", "moderate"], "causal_status": "not_identified"},
+      {"action": "EtiologyDirectedHepaticAction", "effect": "hypothesized reduction of hepatic injury drift only when mechanism-compatible", "sign": "unknown_to_nonworsening", "magnitude": ["minimal", "high"], "causal_status": "not_identified"},
+      {"action": "EtiologyDirectedCardiacAction", "effect": "hypothesized branch-dependent change in cardiac injury or dysfunction drift", "sign": "unknown", "magnitude": ["minimal", "high"], "causal_status": "not_identified"}
+    ],
+    "constraints": [
+      "planned action has exactly zero physiologic effect",
+      "performed action effect starts no earlier than performed time",
+      "support changes observation context and action memory even if surface measurements normalize",
+      "an action may not directly set branch posterior or diagnosis",
+      "counterfactual output must be a range across admitted action effects and branch/mode uncertainty",
+      "if action response direction differs within an unresolved branch mixture, return UNIDENTIFIABLE rather than a point direction",
+      "no action class in this file is a clinical recommendation"
+    ]
+  },
+  "unknown_branch": {
+    "branch_id": "unknown_open_world",
+    "prior_rule": "nonzero floor independent of candidate names",
+    "update_inputs": ["known-branch posterior predictive residual", "persistent incompatible trend", "unmodeled observation type", "illegal transition under all known branches"],
+    "abstention_rule": "Do not threshold to a diagnosis. Expose unknown mass and residual decomposition; downstream evaluation may pre-register a decision rule.",
+    "emission_model": "heavy_tailed_low_information",
+    "dynamics": "broad random walk with support-dependence memory",
+    "forbidden": ["renaming unknown as the expected answer", "forcing unknown mass to zero", "using case identifier as novelty evidence"]
+  },
+  "history_summary": {
+    "tracked": [
+      "ordinal latent trend distributions",
+      "time since last direction change",
+      "cumulative support exposure",
+      "residual and delayed action effects",
+      "last mode transition",
+      "branch activation/deactivation lineage",
+      "pending result availability"
+    ],
+    "collision_guard": "Two histories with the same latest observations but different trend or support histories must remain distinguishable when registered forecasts differ."
+  },
+  "unidentified_causal_edges": [
+    "acute hepatocellular injury -> acute liver failure for an individual",
+    "hepatic process -> stress cardiomyopathy or other cardiac process",
+    "generic physiologic stress -> Takotsubo syndrome",
+    "any abstract etiologic action -> latent mechanism reduction",
+    "any support action -> survival or recovery",
+    "observed troponin/wall-motion pattern -> unique cardiac etiology",
+    "observed transaminase pattern -> unique hepatic etiology",
+    "co-occurrence of hepatic and cardiac branches -> causal direction"
+  ],
+  "audit_requirements": {
+    "required_outputs_per_cut": [
+      "input state hash",
+      "consumed event digests",
+      "branch and mode posterior",
+      "unknown mass",
+      "latent posterior summary",
+      "redundancy-group likelihood contribution",
+      "no-new-action forecast interval",
+      "action-conditioned forecast interval",
+      "constraint or UNIDENTIFIABLE flags"
+    ],
+    "required_ablations": ["no_mode", "flat_topology", "independent_observations", "snapshot_only", "no_action_memory", "no_unknown_branch"],
+    "acceptance_boundary": "This configuration can support structural and case-consistency tests only; it cannot establish clinical calibration, comparative effectiveness, or individualized causal effects."
+  }
+}

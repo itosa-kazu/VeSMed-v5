@@ -1,0 +1,691 @@
+{
+  "schema_version": "new-clinical-framework.case-event-stream.v1",
+  "case_id": "PMC7005653",
+  "source": {
+    "pmcid": "PMC7005653",
+    "pmid": "32039396",
+    "doi": "10.1016/j.jhepr.2019.10.004",
+    "title": "Fulminant hepatitis A complicated by Takotsubo syndrome successfully treated with standard volume plasma exchange",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7005653/",
+    "source_kind": "peer_reviewed_case_report",
+    "license": "CC BY-NC-ND",
+    "authoritative_sections": [
+      "Case report",
+      "Figure 1 caption",
+      "Figure 2 caption",
+      "Discussion (author interpretation only)"
+    ]
+  },
+  "patient_context": {
+    "age_years": 61,
+    "sex_reported": "female",
+    "baseline_description": "reported as previously healthy",
+    "care_setting": "transfer from another institution to a liver ICU"
+  },
+  "timeline_contract": {
+    "day_zero": "arrival at the reporting hospital liver ICU",
+    "relative_day_values_are_exact_only_when_the_article_states_a_day": true,
+    "within_day_order_is_encoded_only_when_the_article_states_or_narrates_a_sequence": true,
+    "unknown_clock_times_are_not_replaced_by_decimal_days": true,
+    "occurrence_and_availability_are_separate": true,
+    "availability_rule": "A replay may consume an event only at or after first_available_cut_id. An interval is not permission to expose the result at its lower bound.",
+    "early_workup_caveat": "The article places biopsy and viral serology results in the initial workup before its day-2 paragraph, but does not report collection, completion, or result-release timestamps. C2 is an ordinal evidence cut, not a fabricated clock time."
+  },
+  "phase_cuts": [
+    {
+      "cut_id": "C0_external_presentation",
+      "order": 0,
+      "time_label": "immediately before ICU transfer",
+      "chronometric_status": "relative_to_transfer_only"
+    },
+    {
+      "cut_id": "C1_icu_admission",
+      "order": 1,
+      "time_label": "ICU day 0 admission",
+      "relative_day": 0,
+      "chronometric_status": "reported_anchor"
+    },
+    {
+      "cut_id": "C2_early_workup_results",
+      "order": 2,
+      "time_label": "early workup results available; exact time not reported",
+      "relative_day_range": [0, 2],
+      "chronometric_status": "ordinal_cut_not_clock_time"
+    },
+    {
+      "cut_id": "C3_day2_neurologic_deterioration",
+      "order": 3,
+      "time_label": "ICU day 2, after progression to grade IV encephalopathy",
+      "relative_day": 2,
+      "chronometric_status": "reported_day_within_day_clock_unknown"
+    },
+    {
+      "cut_id": "C4_day2_cardiac_workup",
+      "order": 4,
+      "time_label": "ICU day 2, after cardiac re-evaluation and catheterization",
+      "relative_day": 2,
+      "chronometric_status": "reported_sequence_within_day"
+    },
+    {
+      "cut_id": "C5_day2_shock_pre_plasma_exchange",
+      "order": 5,
+      "time_label": "ICU day 2, within the following hours, before plasma exchange",
+      "relative_day": 2,
+      "chronometric_status": "reported_sequence_within_day"
+    },
+    {
+      "cut_id": "C6_day2_plasma_exchange_initiation",
+      "order": 6,
+      "time_label": "ICU day 2, plasma exchange initiated after transplant contraindication",
+      "relative_day": 2,
+      "chronometric_status": "reported_sequence_within_day"
+    },
+    {
+      "cut_id": "C7_after_three_session_course",
+      "order": 7,
+      "time_label": "after three plasma-exchange sessions over the next three days",
+      "relative_day_range": [2, 5],
+      "chronometric_status": "course_interval_only"
+    },
+    {
+      "cut_id": "C8_day9_extubation",
+      "order": 8,
+      "time_label": "ICU day 9",
+      "relative_day": 9,
+      "chronometric_status": "reported_day"
+    },
+    {
+      "cut_id": "C9_day14_ward_transfer",
+      "order": 9,
+      "time_label": "ICU day 14",
+      "relative_day": 14,
+      "chronometric_status": "reported_day"
+    }
+  ],
+  "events": [
+    {
+      "event_id": "E001_pretransfer_symptoms",
+      "event_class": "observation",
+      "occurrence": {
+        "relative_day_range": [-7, 0],
+        "precision": "preceding_week",
+        "clock_time_reported": false
+      },
+      "availability": {
+        "first_available_cut_id": "C0_external_presentation",
+        "mechanism": "patient_history"
+      },
+      "order_constraints": {
+        "before": ["E002_external_labs", "E003_transfer_to_liver_icu"]
+      },
+      "observations": [
+        {"axis_id": "fatigue_presence", "value": 1, "value_type": "binary", "source_mode": "patient_report"},
+        {"axis_id": "nausea_presence", "value": 1, "value_type": "binary", "source_mode": "patient_report"}
+      ],
+      "provenance": {"section": "Case report", "paragraph": 1, "support": "Symptoms were reported for the preceding week."}
+    },
+    {
+      "event_id": "E002_external_labs",
+      "event_class": "observation",
+      "occurrence": {
+        "anchor": "external_institution_presentation",
+        "relative_day_range": [-1, 0],
+        "precision": "before_immediate_transfer",
+        "clock_time_reported": false
+      },
+      "availability": {
+        "first_available_cut_id": "C0_external_presentation",
+        "mechanism": "laboratory_result_before_transfer"
+      },
+      "order_constraints": {"before": ["E003_transfer_to_liver_icu"]},
+      "observations": [
+        {"axis_id": "serum_ast", "value": 12760, "unit": "IU/L", "value_type": "measurement"},
+        {"axis_id": "serum_alt", "value": 11864, "unit": "IU/L", "value_type": "measurement"},
+        {"axis_id": "total_bilirubin", "value": 5.3, "unit": "mg/dL", "value_type": "measurement"},
+        {"axis_id": "prothrombin_time_inr", "value": 3.5, "unit": "ratio", "value_type": "measurement"}
+      ],
+      "provenance": {"section": "Case report", "paragraph": 1, "support": "Numerical laboratory values were reported before transfer."}
+    },
+    {
+      "event_id": "E003_transfer_to_liver_icu",
+      "event_class": "action",
+      "occurrence": {
+        "anchor": "transfer_to_reporting_hospital",
+        "relative_day": 0,
+        "precision": "immediate_after_external_assessment",
+        "clock_time_reported": false
+      },
+      "availability": {"first_available_cut_id": "C0_external_presentation", "mechanism": "care_transition"},
+      "order_constraints": {"after": ["E002_external_labs"], "before": ["E004_admission_bedside_state"]},
+      "action": {"action_type": "interfacility_transfer", "destination": "liver_icu"},
+      "provenance": {"section": "Case report", "paragraph": 1, "support": "The transfer was described as immediate."}
+    },
+    {
+      "event_id": "E004_admission_bedside_state",
+      "event_class": "observation",
+      "occurrence": {"relative_day": 0, "precision": "icu_admission", "clock_time_reported": false},
+      "availability": {"first_available_cut_id": "C1_icu_admission", "mechanism": "bedside_assessment"},
+      "order_constraints": {"after": ["E003_transfer_to_liver_icu"]},
+      "observations": [
+        {"axis_id": "hemodynamic_instability_presence", "value": 0, "value_type": "binary", "source_mode": "clinician_assessment"},
+        {"axis_id": "hepatic_encephalopathy_grade", "value": 0, "unit": "grade", "value_type": "ordinal"},
+        {"axis_id": "jaundice_presence", "value": 1, "value_type": "binary"},
+        {"axis_id": "other_physical_exam_abnormality_reported", "value": 0, "value_type": "binary", "scope": "paper_summary_only"},
+        {"axis_id": "recent_travel_history_presence", "value": 0, "value_type": "binary"},
+        {"axis_id": "sexual_risk_behavior_history_presence", "value": 0, "value_type": "binary"},
+        {"axis_id": "drug_use_history_presence", "value": 0, "value_type": "binary"}
+      ],
+      "provenance": {"section": "Case report", "paragraph": 1, "support": "Admission stability, absent encephalopathy, jaundice, and negative histories were explicitly reported."}
+    },
+    {
+      "event_id": "E005_admission_laboratory_state",
+      "event_class": "observation",
+      "occurrence": {"relative_day": 0, "precision": "initial_blood_analysis", "clock_time_reported": false},
+      "availability": {"first_available_cut_id": "C1_icu_admission", "mechanism": "initial_laboratory_results"},
+      "order_constraints": {"after": ["E003_transfer_to_liver_icu"], "before": ["E012_day2_neurologic_deterioration"]},
+      "observations": [
+        {"axis_id": "serum_ast", "value": 5206, "unit": "IU/L", "value_type": "measurement"},
+        {"axis_id": "serum_alt", "value": 7829, "unit": "IU/L", "value_type": "measurement"},
+        {"axis_id": "gamma_glutamyl_transferase", "value": 256, "unit": "IU/L", "value_type": "measurement"},
+        {"axis_id": "alkaline_phosphatase", "value": 164, "unit": "IU/L", "value_type": "measurement"},
+        {"axis_id": "total_bilirubin", "value": 6.9, "unit": "mg/dL", "value_type": "measurement"},
+        {"axis_id": "prothrombin_time_inr", "value": 3.9, "unit": "ratio", "value_type": "measurement"},
+        {"axis_id": "serum_ammonia", "value": 86, "unit": "umol/L", "value_type": "measurement", "reported_reference": "normal <33"}
+      ],
+      "provenance": {"section": "Case report", "paragraph": 1, "support": "Numerical initial ICU laboratory values were explicitly reported."}
+    },
+    {
+      "event_id": "E006_admission_imaging_and_cardiac_state",
+      "event_class": "observation",
+      "occurrence": {"relative_day": 0, "precision": "initial_evaluation", "clock_time_reported": false},
+      "availability": {"first_available_cut_id": "C1_icu_admission", "mechanism": "initial_imaging_and_cardiac_results"},
+      "order_constraints": {"before": ["E018_day2_ecg_and_troponin", "E019_day2_echocardiogram"]},
+      "observations": [
+        {"axis_id": "abdominal_ultrasound_abnormality_presence", "value": 0, "value_type": "binary"},
+        {"axis_id": "ecg_abnormality_presence", "value": 0, "value_type": "binary"},
+        {"axis_id": "left_ventricular_ejection_fraction", "value": 52, "unit": "%", "value_type": "measurement"},
+        {"axis_id": "serum_troponin_i_abnormality_presence", "value": 0, "value_type": "binary", "numeric_value_not_reported": true}
+      ],
+      "provenance": {"section": "Case report", "paragraph": 1, "support": "Initial ultrasound, ECG, echocardiogram, and troponin status were reported."}
+    },
+    {
+      "event_id": "E007_transjugular_liver_biopsy",
+      "event_class": "action",
+      "occurrence": {
+        "relative_day_range": [0, 2],
+        "precision": "initial_workup_exact_time_unreported",
+        "clock_time_reported": false
+      },
+      "availability": {"first_available_cut_id": "C2_early_workup_results", "mechanism": "procedure_known_by_early_workup_cut"},
+      "order_constraints": {"after": ["E003_transfer_to_liver_icu"], "before": ["E009_liver_biopsy_result"]},
+      "action": {"action_type": "diagnostic_procedure", "procedure": "transjugular_liver_biopsy"},
+      "provenance": {"section": "Case report", "paragraph": 1, "support": "The procedure is reported, but no exact day or clock time is given."}
+    },
+    {
+      "event_id": "E008_hepatotropic_viral_serology_collection",
+      "event_class": "action",
+      "occurrence": {
+        "relative_day_range": [0, 2],
+        "precision": "initial_workup_exact_time_unreported",
+        "clock_time_reported": false
+      },
+      "availability": {"first_available_cut_id": "C2_early_workup_results", "mechanism": "test_collection_inferred_from_reported_results", "inference_level": "minimal_operational_inference"},
+      "order_constraints": {"before": ["E010_viral_serology_results"]},
+      "action": {"action_type": "diagnostic_test_collection", "test_family": "hepatotropic_and_hiv_serologies"},
+      "provenance": {"section": "Case report", "paragraph": 1, "support": "Results are reported; collection timing is not."}
+    },
+    {
+      "event_id": "E009_liver_biopsy_result",
+      "event_class": "observation",
+      "occurrence": {
+        "relative_day_range": [0, 2],
+        "precision": "specimen_time_not_reported_beyond_initial_workup",
+        "clock_time_reported": false
+      },
+      "availability": {
+        "first_available_cut_id": "C2_early_workup_results",
+        "release_time_status": "not_reported",
+        "conservative_replay_rule": "not_available_at_C1"
+      },
+      "order_constraints": {"after": ["E007_transjugular_liver_biopsy"], "before": ["E011_acute_hepatitis_a_hypothesis"]},
+      "observations": [
+        {"axis_id": "hepatic_cholestatic_histology_presence", "value": 1, "value_type": "binary"},
+        {"axis_id": "hepatic_necroinflammatory_histology_presence", "value": 1, "value_type": "binary"},
+        {"axis_id": "periportal_hepatic_necrosis_presence", "value": 1, "value_type": "binary"},
+        {"axis_id": "portal_plasma_cell_presence", "value": 1, "value_type": "binary", "source_mode": "figure_caption"}
+      ],
+      "provenance": {"section": "Case report and Figure 1A caption", "paragraph": 1, "support": "Histologic features were reported without a result-release timestamp."}
+    },
+    {
+      "event_id": "E010_viral_serology_results",
+      "event_class": "observation",
+      "occurrence": {
+        "relative_day_range": [0, 2],
+        "precision": "specimen_time_not_reported_beyond_initial_workup",
+        "clock_time_reported": false
+      },
+      "availability": {
+        "first_available_cut_id": "C2_early_workup_results",
+        "release_time_status": "not_reported",
+        "conservative_replay_rule": "not_available_at_C1"
+      },
+      "order_constraints": {"after": ["E008_hepatotropic_viral_serology_collection"], "before": ["E011_acute_hepatitis_a_hypothesis"]},
+      "observations": [
+        {"axis_id": "hepatitis_a_igm_seropositivity", "value": 1, "value_type": "binary"},
+        {"axis_id": "hepatitis_b_serology_positivity_reported", "value": 0, "value_type": "binary"},
+        {"axis_id": "hepatitis_c_serology_positivity_reported", "value": 0, "value_type": "binary"},
+        {"axis_id": "hepatitis_e_serology_positivity_reported", "value": 0, "value_type": "binary"},
+        {"axis_id": "hiv_serology_positivity_reported", "value": 0, "value_type": "binary"}
+      ],
+      "provenance": {"section": "Case report", "paragraph": 1, "support": "HAV IgM was positive; HCV, HBV, HEV, and HIV results were reported negative."}
+    },
+    {
+      "event_id": "E011_acute_hepatitis_a_hypothesis",
+      "event_class": "clinical_hypothesis",
+      "occurrence": {
+        "relative_day_range": [0, 2],
+        "precision": "after_early_workup_results_exact_time_unreported",
+        "clock_time_reported": false
+      },
+      "availability": {"first_available_cut_id": "C2_early_workup_results", "mechanism": "documented_clinical_diagnosis"},
+      "order_constraints": {"after": ["E009_liver_biopsy_result", "E010_viral_serology_results"], "before": ["E012_day2_neurologic_deterioration"]},
+      "hypothesis": {
+        "label": "severe acute hepatitis A",
+        "status": "documented_by_treating_team",
+        "supporting_event_ids": ["E002_external_labs", "E005_admission_laboratory_state", "E009_liver_biopsy_result", "E010_viral_serology_results"]
+      },
+      "provenance": {"section": "Case report", "paragraph": 1, "support": "The diagnosis is stated after biopsy and serology results."}
+    },
+    {
+      "event_id": "E012_day2_neurologic_deterioration",
+      "event_class": "observation",
+      "occurrence": {
+        "relative_day": 2,
+        "precision": "progression_over_a_few_hours",
+        "clock_time_reported": false
+      },
+      "availability": {"first_available_cut_id": "C3_day2_neurologic_deterioration", "mechanism": "bedside_assessment"},
+      "order_constraints": {"after": ["E004_admission_bedside_state"], "before": ["E013_intubation_sedation_analgesia", "E017_emergent_transplant_consideration"]},
+      "observations": [
+        {"axis_id": "hepatic_encephalopathy_grade", "value": 4, "unit": "grade", "value_type": "ordinal"},
+        {"axis_id": "rapid_encephalopathy_progression_presence", "value": 1, "value_type": "binary", "reported_duration": "a few hours"}
+      ],
+      "provenance": {"section": "Case report", "paragraph": 2, "support": "Day 2 progression to grade IV within hours was explicit."}
+    },
+    {
+      "event_id": "E013_intubation_sedation_analgesia",
+      "event_class": "action",
+      "occurrence": {"relative_day": 2, "precision": "after_grade_iv_encephalopathy", "clock_time_reported": false},
+      "availability": {"first_available_cut_id": "C3_day2_neurologic_deterioration", "mechanism": "care_action"},
+      "order_constraints": {"after": ["E012_day2_neurologic_deterioration"]},
+      "action": {
+        "action_type": "critical_care_support",
+        "components": ["endotracheal_intubation", "sedation", "analgesia"]
+      },
+      "provenance": {"section": "Case report", "paragraph": 2, "support": "All three actions were explicitly reported."}
+    },
+    {
+      "event_id": "E014_day2_laboratory_state",
+      "event_class": "observation",
+      "occurrence": {"relative_day": 2, "precision": "at_time_of_neurologic_deterioration", "clock_time_reported": false},
+      "availability": {"first_available_cut_id": "C3_day2_neurologic_deterioration", "mechanism": "laboratory_results"},
+      "order_constraints": {"after": ["E012_day2_neurologic_deterioration"], "before": ["E018_day2_ecg_and_troponin"]},
+      "observations": [
+        {"axis_id": "serum_ast", "value": 893, "unit": "IU/L", "value_type": "measurement"},
+        {"axis_id": "serum_alt", "value": 3922, "unit": "IU/L", "value_type": "measurement"},
+        {"axis_id": "total_bilirubin", "value": 14.1, "unit": "mg/dL", "value_type": "measurement"},
+        {"axis_id": "prothrombin_time_inr", "value": 2.7, "unit": "ratio", "value_type": "measurement"},
+        {"axis_id": "serum_ammonia", "value": 132, "unit": "umol/L", "value_type": "measurement"}
+      ],
+      "provenance": {"section": "Case report", "paragraph": 2, "support": "Numerical day-2 laboratory values were explicitly reported."}
+    },
+    {
+      "event_id": "E015_day2_transcranial_doppler",
+      "event_class": "observation",
+      "occurrence": {"relative_day": 2, "precision": "during_neurologic_reassessment", "clock_time_reported": false},
+      "availability": {"first_available_cut_id": "C3_day2_neurologic_deterioration", "mechanism": "transcranial_doppler_result"},
+      "order_constraints": {"after": ["E012_day2_neurologic_deterioration"], "before": ["E016_intracranial_hypertension_hypothesis"]},
+      "observations": [
+        {"axis_id": "cerebral_arterial_pulsatility_index_min", "value": 1.5, "unit": "index", "value_type": "measurement"},
+        {"axis_id": "cerebral_arterial_pulsatility_index_max", "value": 1.8, "unit": "index", "value_type": "measurement"},
+        {"axis_id": "diffuse_cerebral_arterial_pulsatility_elevation_presence", "value": 1, "value_type": "binary"}
+      ],
+      "provenance": {"section": "Case report", "paragraph": 2, "support": "The 1.5-1.8 range and diffuse distribution were reported."}
+    },
+    {
+      "event_id": "E016_intracranial_hypertension_hypothesis",
+      "event_class": "clinical_hypothesis",
+      "occurrence": {"relative_day": 2, "precision": "after_tcd", "clock_time_reported": false},
+      "availability": {"first_available_cut_id": "C3_day2_neurologic_deterioration", "mechanism": "documented_interpretation"},
+      "order_constraints": {"after": ["E015_day2_transcranial_doppler"]},
+      "hypothesis": {
+        "label": "intracranial hypertension",
+        "status": "suggested_not_directly_measured",
+        "supporting_event_ids": ["E012_day2_neurologic_deterioration", "E015_day2_transcranial_doppler"]
+      },
+      "provenance": {"section": "Case report", "paragraph": 2, "support": "The Doppler pattern was described as suggestive, not definitive."}
+    },
+    {
+      "event_id": "E017_emergent_transplant_consideration",
+      "event_class": "decision",
+      "occurrence": {"relative_day": 2, "precision": "after_neurologic_deterioration_before_cardiac_reassessment", "clock_time_reported": false},
+      "availability": {"first_available_cut_id": "C3_day2_neurologic_deterioration", "mechanism": "documented_team_decision"},
+      "order_constraints": {"after": ["E012_day2_neurologic_deterioration", "E015_day2_transcranial_doppler"], "before": ["E018_day2_ecg_and_troponin"]},
+      "decision": {
+        "decision_type": "consider_intervention",
+        "intervention": "emergent_liver_transplantation",
+        "basis_reported": ["Hospital Clinic criteria", "King's College criteria"],
+        "status": "under_consideration"
+      },
+      "provenance": {"section": "Case report", "paragraph": 2, "support": "Emergent transplantation was considered before cardiac re-evaluation."}
+    },
+    {
+      "event_id": "E018_day2_ecg_and_troponin",
+      "event_class": "observation",
+      "occurrence": {"relative_day": 2, "precision": "new_cardiac_reassessment", "clock_time_reported": false},
+      "availability": {"first_available_cut_id": "C4_day2_cardiac_workup", "mechanism": "ecg_and_laboratory_results"},
+      "order_constraints": {"after": ["E017_emergent_transplant_consideration"], "before": ["E019_day2_echocardiogram"]},
+      "observations": [
+        {"axis_id": "precordial_st_segment_depression_presence", "value": 1, "value_type": "binary", "distribution": "V1-V6", "severity_reported": "mild"},
+        {"axis_id": "serum_troponin_i", "value": 11.19, "unit": "ng/mL", "value_type": "measurement", "reported_reference": "normal <0.05"}
+      ],
+      "provenance": {"section": "Case report", "paragraph": 2, "support": "New ECG and numerical troponin results were reported."}
+    },
+    {
+      "event_id": "E019_day2_echocardiogram",
+      "event_class": "observation",
+      "occurrence": {"relative_day": 2, "precision": "after_new_ecg_and_troponin", "clock_time_reported": false},
+      "availability": {"first_available_cut_id": "C4_day2_cardiac_workup", "mechanism": "echocardiogram_result"},
+      "order_constraints": {"after": ["E018_day2_ecg_and_troponin"], "before": ["E020_takotsubo_compatible_hypothesis", "E021_cardiac_catheterization_and_ventriculography"]},
+      "observations": [
+        {"axis_id": "left_ventricular_ejection_fraction", "value": 32, "unit": "%", "value_type": "measurement"},
+        {"axis_id": "left_ventricular_mid_basal_hypokinesia_presence", "value": 1, "value_type": "binary"},
+        {"axis_id": "severe_myocardial_systolic_dysfunction_presence", "value": 1, "value_type": "binary"}
+      ],
+      "provenance": {"section": "Case report", "paragraph": 2, "support": "Echo pattern and EF 32% were explicitly reported."}
+    },
+    {
+      "event_id": "E020_takotsubo_compatible_hypothesis",
+      "event_class": "clinical_hypothesis",
+      "occurrence": {"relative_day": 2, "precision": "after_echocardiogram_before_catheter_confirmation", "clock_time_reported": false},
+      "availability": {"first_available_cut_id": "C4_day2_cardiac_workup", "mechanism": "documented_interpretation"},
+      "order_constraints": {"after": ["E019_day2_echocardiogram"], "before": ["E021_cardiac_catheterization_and_ventriculography"]},
+      "hypothesis": {
+        "label": "Takotsubo syndrome",
+        "status": "compatible_pattern_pending_confirmation",
+        "supporting_event_ids": ["E018_day2_ecg_and_troponin", "E019_day2_echocardiogram"]
+      },
+      "provenance": {"section": "Case report", "paragraph": 2, "support": "The article calls the echo pattern compatible before catheter confirmation."}
+    },
+    {
+      "event_id": "E021_cardiac_catheterization_and_ventriculography",
+      "event_class": "action",
+      "occurrence": {"relative_day": 2, "precision": "after_echocardiogram", "clock_time_reported": false},
+      "availability": {"first_available_cut_id": "C4_day2_cardiac_workup", "mechanism": "diagnostic_procedure"},
+      "order_constraints": {"after": ["E020_takotsubo_compatible_hypothesis"], "before": ["E022_catheterization_results"]},
+      "action": {"action_type": "diagnostic_procedure", "components": ["coronary_angiography", "left_ventriculography"]},
+      "provenance": {"section": "Case report", "paragraph": 2, "support": "Catheterization and ventriculography were explicitly performed."}
+    },
+    {
+      "event_id": "E022_catheterization_results",
+      "event_class": "observation",
+      "occurrence": {"relative_day": 2, "precision": "same_procedure_episode", "clock_time_reported": false},
+      "availability": {"first_available_cut_id": "C4_day2_cardiac_workup", "mechanism": "procedure_result"},
+      "order_constraints": {"after": ["E021_cardiac_catheterization_and_ventriculography"], "before": ["E023_takotsubo_confirmed_hypothesis"]},
+      "observations": [
+        {"axis_id": "obstructive_coronary_artery_abnormality_presence", "value": 0, "value_type": "binary"},
+        {"axis_id": "left_ventricular_mid_ventricular_hypokinesia_presence", "value": 1, "value_type": "binary"},
+        {"axis_id": "severe_left_ventricular_function_depression_presence", "value": 1, "value_type": "binary"}
+      ],
+      "provenance": {"section": "Case report and Figure 1B caption", "paragraph": 2, "support": "Normal coronary arteries and mid-ventricular dysfunction were reported."}
+    },
+    {
+      "event_id": "E023_takotsubo_confirmed_hypothesis",
+      "event_class": "clinical_hypothesis",
+      "occurrence": {"relative_day": 2, "precision": "after_catheterization_results", "clock_time_reported": false},
+      "availability": {"first_available_cut_id": "C4_day2_cardiac_workup", "mechanism": "documented_clinical_diagnosis"},
+      "order_constraints": {"after": ["E022_catheterization_results"], "before": ["E024_hypotension"]},
+      "hypothesis": {
+        "label": "Takotsubo syndrome",
+        "status": "documented_as_confirmed",
+        "supporting_event_ids": ["E018_day2_ecg_and_troponin", "E019_day2_echocardiogram", "E022_catheterization_results"]
+      },
+      "provenance": {"section": "Case report", "paragraph": 2, "support": "The authors state confirmation by catheterization and ventriculography."}
+    },
+    {
+      "event_id": "E024_hypotension",
+      "event_class": "observation",
+      "occurrence": {"relative_day": 2, "precision": "within_the_next_few_hours", "clock_time_reported": false},
+      "availability": {"first_available_cut_id": "C5_day2_shock_pre_plasma_exchange", "mechanism": "bedside_assessment"},
+      "order_constraints": {"after": ["E023_takotsubo_confirmed_hypothesis"], "before": ["E025_inotropic_and_vasopressor_support"]},
+      "observations": [
+        {"axis_id": "hypotension_presence", "value": 1, "value_type": "binary", "numeric_blood_pressure_not_reported": true}
+      ],
+      "provenance": {"section": "Case report", "paragraph": 2, "support": "Hypotension developed within the next few hours; no numerical pressure was given."}
+    },
+    {
+      "event_id": "E025_inotropic_and_vasopressor_support",
+      "event_class": "action",
+      "occurrence": {"relative_day": 2, "precision": "after_hypotension", "clock_time_reported": false},
+      "availability": {"first_available_cut_id": "C5_day2_shock_pre_plasma_exchange", "mechanism": "care_action"},
+      "order_constraints": {"after": ["E024_hypotension"], "before": ["E027_transplant_contraindication_decision"]},
+      "action": {
+        "action_type": "hemodynamic_support",
+        "components": [
+          {"agent": "dobutamine", "dose": "not_reported"},
+          {"agent": "noradrenaline", "dose": "low_dose_exact_value_not_reported"}
+        ]
+      },
+      "provenance": {"section": "Case report", "paragraph": 2, "support": "Dobutamine and low-dose noradrenaline were initiated."}
+    },
+    {
+      "event_id": "E026_cardiogenic_shock_hypothesis",
+      "event_class": "clinical_hypothesis",
+      "occurrence": {"relative_day": 2, "precision": "after_hypotension_and_support_initiation", "clock_time_reported": false},
+      "availability": {"first_available_cut_id": "C5_day2_shock_pre_plasma_exchange", "mechanism": "documented_clinical_diagnosis"},
+      "order_constraints": {"after": ["E024_hypotension", "E025_inotropic_and_vasopressor_support"], "before": ["E027_transplant_contraindication_decision"]},
+      "hypothesis": {
+        "label": "cardiogenic shock with severe cardiac dysfunction",
+        "status": "documented_by_treating_team",
+        "supporting_event_ids": ["E019_day2_echocardiogram", "E022_catheterization_results", "E024_hypotension", "E025_inotropic_and_vasopressor_support"]
+      },
+      "provenance": {"section": "Case report", "paragraph": 2, "support": "Cardiogenic shock is the stated reason transplantation was contraindicated."}
+    },
+    {
+      "event_id": "E027_transplant_contraindication_decision",
+      "event_class": "decision",
+      "occurrence": {"relative_day": 2, "precision": "after_cardiogenic_shock_recognition", "clock_time_reported": false},
+      "availability": {"first_available_cut_id": "C5_day2_shock_pre_plasma_exchange", "mechanism": "documented_team_decision"},
+      "order_constraints": {"after": ["E026_cardiogenic_shock_hypothesis"], "before": ["E028_plasma_exchange_initiation"]},
+      "decision": {
+        "decision_type": "contraindicate_intervention",
+        "intervention": "liver_transplantation",
+        "reason": "cardiogenic shock with severe cardiac dysfunction"
+      },
+      "provenance": {"section": "Case report", "paragraph": 2, "support": "The contraindication and reason were explicitly reported."}
+    },
+    {
+      "event_id": "E028_plasma_exchange_initiation",
+      "event_class": "action",
+      "occurrence": {"relative_day": 2, "precision": "after_transplant_contraindication_decision", "clock_time_reported": false},
+      "availability": {"first_available_cut_id": "C6_day2_plasma_exchange_initiation", "mechanism": "care_action"},
+      "order_constraints": {"after": ["E027_transplant_contraindication_decision"], "before": ["E029_plasma_exchange_course"]},
+      "action": {
+        "action_type": "therapeutic_plasma_exchange",
+        "role_reported": "salvage_therapy",
+        "session_number": 1,
+        "session_exact_day_assignment_status": "first_session_started_after_day2_shock; exact clock time not reported"
+      },
+      "provenance": {"section": "Case report", "paragraph": 2, "support": "Plasma exchange was started after transplantation was ruled out."}
+    },
+    {
+      "event_id": "E029_plasma_exchange_course",
+      "event_class": "action",
+      "occurrence": {
+        "relative_day_range": [2, 5],
+        "precision": "three_consecutive_sessions_during_next_three_days",
+        "clock_time_reported": false,
+        "individual_session_days_reported": false
+      },
+      "availability": {"first_available_cut_id": "C7_after_three_session_course", "mechanism": "completed_course_known"},
+      "order_constraints": {"after": ["E028_plasma_exchange_initiation"], "before": ["E030_progressive_multisystem_improvement"]},
+      "action": {
+        "action_type": "therapeutic_plasma_exchange_course",
+        "session_count": 3,
+        "plasma_volume_per_session": 1.5,
+        "plasma_volume_unit": "plasma_volumes",
+        "reported_equivalent": "6.5% of ideal body weight",
+        "replacement_solution": "methylene-blue-inactivated fresh frozen plasma",
+        "individual_session_calendar_days": "not_reported"
+      },
+      "provenance": {"section": "Case report", "paragraph": 2, "support": "Three sessions, dose, replacement fluid, and course duration were reported."}
+    },
+    {
+      "event_id": "E030_progressive_multisystem_improvement",
+      "event_class": "outcome",
+      "occurrence": {
+        "relative_day_range": [2, 9],
+        "precision": "progressive_after_treatment_exact_measurement_days_not_reported",
+        "clock_time_reported": false
+      },
+      "availability": {"first_available_cut_id": "C7_after_three_session_course", "mechanism": "serial_clinical_and_test_observation"},
+      "order_constraints": {"after": ["E029_plasma_exchange_course"], "before": ["E032_day9_extubation"]},
+      "outcome": {
+        "status": "improved",
+        "components": [
+          "cardiac_function_rapidly_normalized",
+          "aminotransferases_sustained_decrease",
+          "serum_ammonia_decreased",
+          "prothrombin_time_inr_decreased",
+          "transcranial_doppler_pulsatility_index_normalized"
+        ],
+        "numerical_intermediate_values": "not_reported_in_case_text",
+        "causal_attribution": "temporal_association_reported; individual treatment effect not identifiable from a single case"
+      },
+      "provenance": {"section": "Case report", "paragraph": 2, "support": "Progressive clinical, cardiac, hepatic, ammonia, INR, and Doppler improvement were described."}
+    },
+    {
+      "event_id": "E031_post_course_bilirubin_rebound_and_normalization",
+      "event_class": "outcome",
+      "occurrence": {
+        "relative_day_range": [5, 14],
+        "precision": "after_stopping_plasma_exchange_before_final_normalization",
+        "clock_time_reported": false
+      },
+      "availability": {"first_available_cut_id": "C9_day14_ward_transfer", "mechanism": "retrospective_course_summary"},
+      "order_constraints": {"after": ["E029_plasma_exchange_course"], "before": ["E034_day14_ward_transfer_outcome"]},
+      "outcome": {
+        "trajectory": ["transient_total_bilirubin_increase", "subsequent_total_bilirubin_normalization"],
+        "exact_peak_value": "not_reported_in_text",
+        "exact_peak_day": "not_reported_in_text"
+      },
+      "provenance": {"section": "Case report and Figure 2", "paragraph": 2, "support": "A transient post-treatment bilirubin rise followed by normalization was reported."}
+    },
+    {
+      "event_id": "E032_day9_extubation",
+      "event_class": "action",
+      "occurrence": {"relative_day": 9, "precision": "reported_day", "clock_time_reported": false},
+      "availability": {"first_available_cut_id": "C8_day9_extubation", "mechanism": "care_action"},
+      "order_constraints": {"after": ["E030_progressive_multisystem_improvement"], "before": ["E033_day9_liberation_from_invasive_ventilation"]},
+      "action": {"action_type": "extubation"},
+      "provenance": {"section": "Case report", "paragraph": 2, "support": "Extubation on ICU day 9 was explicit."}
+    },
+    {
+      "event_id": "E033_day9_liberation_from_invasive_ventilation",
+      "event_class": "outcome",
+      "occurrence": {"relative_day": 9, "precision": "reported_day", "clock_time_reported": false},
+      "availability": {"first_available_cut_id": "C8_day9_extubation", "mechanism": "post_action_clinical_state"},
+      "order_constraints": {"after": ["E032_day9_extubation"], "before": ["E034_day14_ward_transfer_outcome"]},
+      "outcome": {
+        "status": "liberated_from_invasive_mechanical_ventilation",
+        "post_extubation_respiratory_details": "not_reported"
+      },
+      "provenance": {"section": "Case report", "paragraph": 2, "support": "No respiratory details beyond successful extubation were reported."}
+    },
+    {
+      "event_id": "E034_day14_ward_transfer_outcome",
+      "event_class": "outcome",
+      "occurrence": {"relative_day": 14, "precision": "reported_day", "clock_time_reported": false},
+      "availability": {"first_available_cut_id": "C9_day14_ward_transfer", "mechanism": "documented_disposition"},
+      "order_constraints": {"after": ["E031_post_course_bilirubin_rebound_and_normalization", "E033_day9_liberation_from_invasive_ventilation"]},
+      "outcome": {
+        "disposition": "transferred_from_icu_to_regular_ward",
+        "acute_liver_failure_status": "resolved_as_reported",
+        "cardiac_function_status": "normalized_as_reported",
+        "hospital_discharge_status": "not_reported_in_article"
+      },
+      "provenance": {"section": "Case report", "paragraph": 2, "support": "Day-14 transfer to the ward followed reported liver and cardiac recovery; this was not hospital discharge."}
+    },
+    {
+      "event_id": "E035_author_plasma_exchange_interpretation",
+      "event_class": "clinical_hypothesis",
+      "occurrence": {"anchor": "post_case_author_interpretation", "precision": "publication_level_not_bedside_event", "clock_time_reported": false},
+      "availability": {"first_available_cut_id": null, "mechanism": "publication_discussion", "excluded_from_realtime_replay": true},
+      "order_constraints": {"after": ["E034_day14_ward_transfer_outcome"]},
+      "hypothesis": {
+        "label": "plasma exchange may accelerate cardiac recovery and support liver recovery",
+        "status": "author_hypothesis_not_identified_individual_causal_effect",
+        "supporting_event_ids": ["E029_plasma_exchange_course", "E030_progressive_multisystem_improvement"]
+      },
+      "provenance": {"section": "Discussion", "paragraph": 4, "support": "The article frames accelerated cardiac recovery as a hypothesis and calls for further confirmation."}
+    }
+  ],
+  "layer_index": {
+    "observations": [
+      "E001_pretransfer_symptoms",
+      "E002_external_labs",
+      "E004_admission_bedside_state",
+      "E005_admission_laboratory_state",
+      "E006_admission_imaging_and_cardiac_state",
+      "E009_liver_biopsy_result",
+      "E010_viral_serology_results",
+      "E012_day2_neurologic_deterioration",
+      "E014_day2_laboratory_state",
+      "E015_day2_transcranial_doppler",
+      "E018_day2_ecg_and_troponin",
+      "E019_day2_echocardiogram",
+      "E022_catheterization_results",
+      "E024_hypotension"
+    ],
+    "actions": [
+      "E003_transfer_to_liver_icu",
+      "E007_transjugular_liver_biopsy",
+      "E008_hepatotropic_viral_serology_collection",
+      "E013_intubation_sedation_analgesia",
+      "E021_cardiac_catheterization_and_ventriculography",
+      "E025_inotropic_and_vasopressor_support",
+      "E028_plasma_exchange_initiation",
+      "E029_plasma_exchange_course",
+      "E032_day9_extubation"
+    ],
+    "clinical_hypotheses": [
+      "E011_acute_hepatitis_a_hypothesis",
+      "E016_intracranial_hypertension_hypothesis",
+      "E020_takotsubo_compatible_hypothesis",
+      "E023_takotsubo_confirmed_hypothesis",
+      "E026_cardiogenic_shock_hypothesis",
+      "E035_author_plasma_exchange_interpretation"
+    ],
+    "decisions": [
+      "E017_emergent_transplant_consideration",
+      "E027_transplant_contraindication_decision"
+    ],
+    "outcomes": [
+      "E030_progressive_multisystem_improvement",
+      "E031_post_course_bilirubin_rebound_and_normalization",
+      "E033_day9_liberation_from_invasive_ventilation",
+      "E034_day14_ward_transfer_outcome"
+    ]
+  },
+  "replay_invariants": [
+    "Do not expose E009-E011 at C1; their exact release times are not reported.",
+    "Do not expose any day-2 cardiac evidence at C3; it becomes available only at C4.",
+    "Do not expose hypotension, pressor support, or transplant contraindication at C4; they become available at C5.",
+    "Do not expose plasma-exchange initiation at C5; it becomes available at C6 after the contraindication decision.",
+    "Do not assign the three plasma-exchange sessions to exact calendar days; only the ordered course interval is known.",
+    "Do not convert falling AST/ALT on day 2 into hepatic recovery: bilirubin, ammonia, encephalopathy, and INR show ongoing severe dysfunction.",
+    "Do not encode a clinical hypothesis or author interpretation as an observed axis.",
+    "Do not infer individual causal efficacy of plasma exchange from temporal improvement in this single case.",
+    "Do not call C8 hospital discharge; it is transfer from ICU to a regular ward."
+  ]
+}

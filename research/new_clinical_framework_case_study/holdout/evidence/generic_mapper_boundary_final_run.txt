@@ -1,0 +1,78 @@
+{
+  "case_blind": true,
+  "interpretation": {
+    "mapper_execution_boundary": "The runtime honors reliability and a mapper-supplied rankable=false support-masking disposition. The role-isolated mapper must still prove that it assigns those fields correctly for the selected primary case.",
+    "record_only_factor": "The retained zero-likelihood DISPOSITION message is provenance, not an operative clinical likelihood factor.",
+    "status_boundary": "This artifact passes the frozen generic/runtime interface only; it does not claim that a primary mapper role execution has occurred."
+  },
+  "model_pack_sha256": "0e5efd52be6911244d2653a865032cfe351d038790df7853f8feef8f78203bb1",
+  "primary_holdout_inspected": false,
+  "probe_bindings": {
+    "reliability": {
+      "evidence": {
+        "prior": 0.08234822785233956,
+        "reliability_0_01": 0.08456975058719354,
+        "reliability_1": 0.6209564890225442
+      },
+      "probe_id": "GM11-RELIABILITY-OPERATIVE",
+      "status": "PASS"
+    },
+    "runtime_probe_artifact_sha256": "19ea77805aeb87c7e095d266498516c9013944505e6672a887602bab20fff8d8",
+    "support_masking": {
+      "evidence": {
+        "factor_message_count": 1,
+        "factor_messages": [
+          {
+            "factor_id": "DISPOSITION:tox-support-masked",
+            "factor_type": "measurement",
+            "log_likelihood_by_hypothesis": {
+              "disposition:record_only_nonrankable": 0.0,
+              "provenance:event:tox-support-masked:ca1acedc9d72885fd6a6ddbed2190f74f55f2ae2db6a3da2390ca7489025422c": 0.0,
+              "provenance:inference_member:f8b3730e58cab038b004497b93afc3e0e80843bd6e614e3d1817db24ba28a8f6": 0.0,
+              "provenance:member:confirmed_toxic_exposure_presence:378bf7fcdf2684b23b4126c48ec3197167b3f9bd5c8dbcbc03b025b5139d353d": 0.0,
+              "provenance:source_payload:bd0b291bbbf68f1c5773800b673b5065e4c147ef785392e2e6e634d0497397a1": 0.0,
+              "provenance:temporal:sample=0.0,0.0;result=0.0;recorded=0.0;available=0.0": 0.0
+            },
+            "reliability": 0.0,
+            "source_result_ids": [
+              "source:tox-support-masked"
+            ],
+            "variable_ids": [
+              "DISPOSITION:record_only_nonrankable"
+            ]
+          }
+        ],
+        "max_activation_marginal_abs_diff": 0.0,
+        "unexplained_observations": [
+          {
+            "candidate_process_ids": [
+              "P_TOXICOLOGIC_DRIVER"
+            ],
+            "reason": "unknown_measurement_condition",
+            "result_id": "source:tox-support-masked",
+            "surprisal": null
+          }
+        ]
+      },
+      "probe_id": "GM11-SUPPORT-MASKED-FAIL-CLOSED",
+      "status": "PASS"
+    }
+  },
+  "registry_bindings": {
+    "mapper_sanitized_registry": {
+      "path": "holdout/generic_model/mapper_sanitized_registry.json",
+      "sha256": "3c76f69fc381ffa818fac72087327806bce0b17d97f717aab2857d42a982092e"
+    },
+    "oracle_sanitized_process_registry": {
+      "path": "holdout/generic_model/oracle_sanitized_process_registry.json",
+      "sha256": "f35db0544ac65ac19dcf8ae0bfc7ab0e9b00412b984a48f47ff65072152a74fd"
+    }
+  },
+  "runtime_source_hashes": {
+    "runtime_v2/architecture_wire.py": "36fcd7a7ce9669dd6cf9779300d21bff973e56b222ec4f9c982d7ddb0d3c68ae",
+    "runtime_v2/engine.py": "57a264ea86526e991b5e1fb938e43ecdca89482ed945c80643c92cbfb4929984",
+    "runtime_v2/schema.py": "1754e5976b7dc0b0213aa9d73a14c156a3e107492a444455b3ecc0c813649540"
+  },
+  "schema_version": "ncf.generic-model-mapper-boundary-probe.v1.1",
+  "status": "RUNTIME_BOUNDARY_PASS_MAPPER_EXECUTION_REQUIRED"
+}

@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "ncf.primary-event-ledger-audit.v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "status", "selected_source_manifest", "source_inventory",
+    "event_ledger", "raw_availability_ledger", "compiled_guaranteed_availability",
+    "availability_compiler_proof", "combined_preprimary_seal", "inventory_exact", "event_inventory_exact",
+    "raw_available_at_forbidden", "compiled_timing_exact", "counts", "event_inventory_sha256"
+  ],
+  "properties": {
+    "schema_version": {"const": "NCF-PRIMARY-EVENT-LEDGER-AUDIT-1.0.0"},
+    "status": {"const": "PASS"},
+    "selected_source_manifest": {"$ref": "#/$defs/contentRef"},
+    "source_inventory": {"$ref": "#/$defs/contentRef"},
+    "event_ledger": {"$ref": "#/$defs/contentRef"},
+    "raw_availability_ledger": {"$ref": "#/$defs/contentRef"},
+    "compiled_guaranteed_availability": {"$ref": "#/$defs/contentRef"},
+    "availability_compiler_proof": {"$ref": "#/$defs/contentRef"},
+    "combined_preprimary_seal": {"$ref": "#/$defs/contentRef"},
+    "inventory_exact": {"const": true},
+    "event_inventory_exact": {"const": true},
+    "raw_available_at_forbidden": {"const": true},
+    "compiled_timing_exact": {"const": true},
+    "counts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source_artifacts", "events", "released_events", "withheld_events", "cuts"],
+      "properties": {
+        "source_artifacts": {"type": "integer", "minimum": 1},
+        "events": {"type": "integer", "minimum": 1},
+        "released_events": {"type": "integer", "minimum": 0},
+        "withheld_events": {"type": "integer", "minimum": 0},
+        "cuts": {"type": "integer", "minimum": 0}
+      }
+    },
+    "event_inventory_sha256": {"$ref": "#/$defs/sha256"}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "contentRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256", "bytes"],
+      "properties": {
+        "path": {"type": "string", "minLength": 1, "pattern": "^(?![A-Za-z]:)(?![/\\\\])(?!.*(?:^|/)\\.\\.(?:/|$)).+$"},
+        "sha256": {"$ref": "#/$defs/sha256"},
+        "bytes": {"type": "integer", "minimum": 1}
+      }
+    }
+  }
+}

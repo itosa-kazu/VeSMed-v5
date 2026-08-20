@@ -1,0 +1,286 @@
+{
+  "schema_version": "new-clinical-runtime.model.v2.0",
+  "model_id": "neutral-factorial-structure-demo-v2",
+  "status": "STRUCTURAL_FIXTURE_NOT_MEDICAL_MODEL",
+  "scope": {
+    "scope_id": "neutral-structural-contract-scope",
+    "scope_version": "1.0",
+    "population_id": "abstract-neutral-fixtures",
+    "horizon": {"value": 5.0, "unit": "model_step"},
+    "outcome_ids": ["declared_coordinate_burden"],
+    "distance_metric_id": "topology-shortest-path-v1",
+    "tolerance": 1e-9
+  },
+  "posterior_factorization": {
+    "representation": "conditional_active_mean_field_over_process_local_state",
+    "local_state_semantics": "q(x,m|process_active)",
+    "assumption_ids": [
+      "process-local-state-conditionally-independent-of-other-process-activation-given-own-active",
+      "activation-transition-nonselective-with-respect-to-local-state"
+    ],
+    "error_tolerance": {
+      "reference": "scope.tolerance",
+      "epsilon": 1e-9
+    },
+    "unsupported_correlations_policy": "OUT_OF_SCOPE"
+  },
+  "inference": {
+    "max_exact_processes": 12,
+    "activation_status_thresholds": {
+      "inactive_upper": 0.1,
+      "possible_lower": 0.1,
+      "active_lower": 0.65
+    }
+  },
+  "epistemic": {
+    "unknown_prior": 0.12,
+    "unmapped_event_log_bayes_factor": 1.1,
+    "mapping_beta_prior": [1.0, 1.0]
+  },
+  "processes": [
+    {
+      "process_id": "PROCESS_A",
+      "organ_or_domain": "DOMAIN_A",
+      "activation_prior": 0.18,
+      "coordinates": [
+        {
+          "coordinate_id": "a_burden",
+          "bounds": [0.0, 1.0],
+          "prior_mean": 0.2,
+          "prior_uncertainty": 0.8,
+          "objective_weight": 1.0
+        }
+      ],
+      "modes": [
+        {"mode_id": "compensated", "prior": 0.65, "coordinate_drift": {"a_burden": 0.0}},
+        {"mode_id": "decompensated", "prior": 0.20, "coordinate_drift": {"a_burden": 0.05}},
+        {"mode_id": "recovering", "prior": 0.15, "coordinate_drift": {"a_burden": -0.05}}
+      ]
+    },
+    {
+      "process_id": "PROCESS_B",
+      "organ_or_domain": "DOMAIN_B",
+      "activation_prior": 0.16,
+      "coordinates": [
+        {
+          "coordinate_id": "b_burden",
+          "bounds": [0.0, 1.0],
+          "prior_mean": 0.2,
+          "prior_uncertainty": 0.8,
+          "objective_weight": 1.0
+        }
+      ],
+      "modes": [
+        {"mode_id": "compensated", "prior": 0.70, "coordinate_drift": {"b_burden": 0.0}},
+        {"mode_id": "decompensated", "prior": 0.20, "coordinate_drift": {"b_burden": 0.06}},
+        {"mode_id": "recovering", "prior": 0.10, "coordinate_drift": {"b_burden": -0.04}}
+      ]
+    },
+    {
+      "process_id": "PROCESS_C",
+      "organ_or_domain": "DOMAIN_C",
+      "activation_prior": 0.10,
+      "coordinates": [
+        {
+          "coordinate_id": "c_burden",
+          "bounds": [0.0, 1.0],
+          "prior_mean": 0.1,
+          "prior_uncertainty": 0.9,
+          "objective_weight": 1.0
+        }
+      ],
+      "modes": [
+        {"mode_id": "compensated", "prior": 0.75, "coordinate_drift": {"c_burden": 0.0}},
+        {"mode_id": "decompensated", "prior": 0.15, "coordinate_drift": {"c_burden": 0.04}},
+        {"mode_id": "recovering", "prior": 0.10, "coordinate_drift": {"c_burden": -0.03}}
+      ]
+    }
+  ],
+  "coactivation_interactions": [
+    {"process_a": "PROCESS_A", "process_b": "PROCESS_B", "log_potential_when_coactive": 0.15}
+  ],
+  "observations": [
+    {
+      "concept_id": "OBS_A_MARKER",
+      "factor_id": "FACTOR_A_MARKER",
+      "emissions": [
+        {
+          "process_id": "PROCESS_A",
+          "active_likelihood": {"family": "bernoulli", "p_true": 0.95},
+          "inactive_likelihood": {"family": "bernoulli", "p_true": 0.05}
+        }
+      ],
+      "unknown_likelihood": {"family": "bernoulli", "p_true": 0.30},
+      "reference_likelihood": {"family": "bernoulli", "p_true": 0.30}
+    },
+    {
+      "concept_id": "OBS_B_MARKER",
+      "factor_id": "FACTOR_B_MARKER",
+      "emissions": [
+        {
+          "process_id": "PROCESS_B",
+          "active_likelihood": {"family": "bernoulli", "p_true": 0.95},
+          "inactive_likelihood": {"family": "bernoulli", "p_true": 0.05}
+        }
+      ],
+      "unknown_likelihood": {"family": "bernoulli", "p_true": 0.30},
+      "reference_likelihood": {"family": "bernoulli", "p_true": 0.30}
+    },
+    {
+      "concept_id": "OBS_A_LOAD",
+      "factor_id": "FACTOR_A_LOAD",
+      "emissions": [
+        {
+          "process_id": "PROCESS_A",
+          "active_likelihood": {"family": "gaussian", "mean": 0.75, "sd": 0.20},
+          "inactive_likelihood": {"family": "gaussian", "mean": 0.15, "sd": 0.20},
+          "coordinate_update": {
+            "coordinate_id": "a_burden",
+            "mapping": {"type": "identity"},
+            "gain": 0.8
+          }
+        }
+      ]
+    },
+    {
+      "concept_id": "OBS_B_LOAD",
+      "factor_id": "FACTOR_B_LOAD",
+      "emissions": [
+        {
+          "process_id": "PROCESS_B",
+          "active_likelihood": {"family": "gaussian", "mean": 0.75, "sd": 0.20},
+          "inactive_likelihood": {"family": "gaussian", "mean": 0.15, "sd": 0.20},
+          "coordinate_update": {
+            "coordinate_id": "b_burden",
+            "mapping": {"type": "identity"},
+            "gain": 0.8
+          }
+        }
+      ]
+    },
+    {
+      "concept_id": "OBS_A_DIRECTION",
+      "factor_id": "FACTOR_A_DIRECTION",
+      "emissions": [
+        {
+          "process_id": "PROCESS_A",
+          "active_likelihood": {
+            "family": "categorical",
+            "probabilities": {"falling": 0.45, "stable": 0.20, "rising": 0.35}
+          },
+          "inactive_likelihood": {
+            "family": "categorical",
+            "probabilities": {"falling": 0.20, "stable": 0.60, "rising": 0.20}
+          },
+          "mode_likelihoods": {
+            "compensated": {
+              "family": "categorical",
+              "probabilities": {"falling": 0.15, "stable": 0.70, "rising": 0.15}
+            },
+            "decompensated": {
+              "family": "categorical",
+              "probabilities": {"falling": 0.05, "stable": 0.15, "rising": 0.80}
+            },
+            "recovering": {
+              "family": "categorical",
+              "probabilities": {"falling": 0.80, "stable": 0.15, "rising": 0.05}
+            }
+          }
+        }
+      ]
+    },
+    {
+      "concept_id": "OBS_B_DIRECTION",
+      "factor_id": "FACTOR_B_DIRECTION",
+      "emissions": [
+        {
+          "process_id": "PROCESS_B",
+          "active_likelihood": {
+            "family": "categorical",
+            "probabilities": {"falling": 0.35, "stable": 0.20, "rising": 0.45}
+          },
+          "inactive_likelihood": {
+            "family": "categorical",
+            "probabilities": {"falling": 0.20, "stable": 0.60, "rising": 0.20}
+          },
+          "mode_likelihoods": {
+            "compensated": {
+              "family": "categorical",
+              "probabilities": {"falling": 0.15, "stable": 0.70, "rising": 0.15}
+            },
+            "decompensated": {
+              "family": "categorical",
+              "probabilities": {"falling": 0.05, "stable": 0.15, "rising": 0.80}
+            },
+            "recovering": {
+              "family": "categorical",
+              "probabilities": {"falling": 0.80, "stable": 0.15, "rising": 0.05}
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "topology": {
+    "distance_scale": 1.5,
+    "inference_coupling": 0.18,
+    "planning_coupling": 0.70,
+    "edges": [
+      {"source": "PROCESS_A", "target": "PROCESS_B", "distance": 1.0},
+      {"source": "PROCESS_B", "target": "PROCESS_C", "distance": 3.0}
+    ],
+    "planning_bridges": [
+      {
+        "source_process_id": "PROCESS_A",
+        "source_coordinate_id": "a_burden",
+        "target_process_id": "PROCESS_B",
+        "target_coordinate_id": "b_burden",
+        "scale": 1.0
+      }
+    ]
+  },
+  "process_couplings": [
+    {
+      "source_process_id": "PROCESS_A",
+      "source_coordinate_id": "a_burden",
+      "target_process_id": "PROCESS_B",
+      "target_coordinate_id": "b_burden",
+      "strength_per_step": 0.02
+    }
+  ],
+  "mode_couplings": [
+    {
+      "source_process_id": "PROCESS_A",
+      "source_mode_id": "decompensated",
+      "target_process_id": "PROCESS_B",
+      "target_mode_id": "decompensated",
+      "log_potential_per_step": 0.4
+    }
+  ],
+  "actions": [
+    {
+      "action_id": "ACTION_REDUCE_A",
+      "dose_reference": 1.0,
+      "washout_steps": 2.0,
+      "action_cost": 0.04,
+      "causal_status": "UNIDENTIFIABLE",
+      "assumption_ids": ["declared-toy-action-effect"],
+      "identifiability_reason": "Neutral structural action effect has no patient-level causal identification evidence.",
+      "effects": [
+        {"process_id": "PROCESS_A", "coordinate_id": "a_burden", "delta_per_unit_step": -0.25}
+      ]
+    },
+    {
+      "action_id": "ACTION_REDUCE_C",
+      "dose_reference": 1.0,
+      "washout_steps": 1.0,
+      "action_cost": 0.03,
+      "causal_status": "UNIDENTIFIABLE",
+      "assumption_ids": ["declared-toy-action-effect"],
+      "identifiability_reason": "Neutral structural action effect has no patient-level causal identification evidence.",
+      "effects": [
+        {"process_id": "PROCESS_C", "coordinate_id": "c_burden", "delta_per_unit_step": -0.20}
+      ]
+    }
+  ]
+}

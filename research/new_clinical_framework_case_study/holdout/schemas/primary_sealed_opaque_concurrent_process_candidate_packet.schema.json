@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "ncf.sealed-opaque-concurrent-process-candidate-packet.v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "source_packet_ref",
+    "source_artifact_refs_verified",
+    "source_locators_verified",
+    "opaque_contract_verified",
+    "semantic_truth_not_established_by_hashes"
+  ],
+  "properties": {
+    "schema_version": {"const": "NCF-SEALED-OPAQUE-CONCURRENT-PROCESS-CANDIDATE-PACKET-1.0.0"},
+    "source_packet_ref": {"$ref": "#/$defs/artifactRef"},
+    "source_artifact_refs_verified": {"const": true},
+    "source_locators_verified": {"const": true},
+    "opaque_contract_verified": {"const": true},
+    "semantic_truth_not_established_by_hashes": {"const": true}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "artifactRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256", "bytes"],
+      "properties": {
+        "path": {"type": "string", "minLength": 1},
+        "sha256": {"$ref": "#/$defs/sha256"},
+        "bytes": {"type": "integer", "minimum": 1}
+      }
+    }
+  }
+}

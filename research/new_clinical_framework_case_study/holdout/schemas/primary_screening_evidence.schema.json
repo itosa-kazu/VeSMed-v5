@@ -1,0 +1,180 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "ncf.primary-screening-evidence.v1",
+  "title": "Primary screening evidence index or criterion evidence object",
+  "oneOf": [
+    {"$ref": "#/$defs/index"},
+    {"$ref": "#/$defs/criterionEvidence"}
+  ],
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "artifactRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256", "bytes"],
+      "properties": {
+        "path": {"type": "string", "minLength": 1},
+        "sha256": {"$ref": "#/$defs/sha256"},
+        "bytes": {"type": "integer", "minimum": 1}
+      }
+    },
+    "evidenceRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256", "bytes"],
+      "properties": {
+        "path": {"type": "string", "minLength": 1},
+        "sha256": {"$ref": "#/$defs/sha256"},
+        "bytes": {"type": "integer", "minimum": 1}
+      }
+    },
+    "assertion": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["assertion_id", "statement", "passed"],
+      "properties": {
+        "assertion_id": {"type": "string", "minLength": 1},
+        "statement": {"type": "string", "minLength": 1},
+        "passed": {"const": true}
+      }
+    },
+    "locator": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "locator_kind",
+        "byte_start",
+        "byte_end",
+        "excerpt_sha256",
+        "source_anchor",
+        "assertions"
+      ],
+      "properties": {
+        "locator_kind": {
+          "enum": ["EXACT_EXCERPT", "WHOLE_DOCUMENT_REVIEW"]
+        },
+        "byte_start": {"type": "integer", "minimum": 0},
+        "byte_end": {"type": "integer", "minimum": 1},
+        "excerpt_sha256": {"$ref": "#/$defs/sha256"},
+        "source_anchor": {"type": "string", "minLength": 1},
+        "assertions": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"$ref": "#/$defs/assertion"}
+        }
+      }
+    },
+    "criterionEvidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "canonical_case_id",
+        "criterion_id",
+        "claimed_result",
+        "source_artifact_ref",
+        "locators"
+      ],
+      "properties": {
+        "schema_version": {
+          "const": "NCF-PRIMARY-SCREENING-CRITERION-EVIDENCE-1.0.0"
+        },
+        "canonical_case_id": {"type": "string", "minLength": 1},
+        "criterion_id": {"type": "string", "minLength": 1},
+        "claimed_result": {"type": "boolean"},
+        "actual_count": {"type": "integer", "minimum": 0},
+        "source_artifact_ref": {"$ref": "#/$defs/artifactRef"},
+        "locators": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"$ref": "#/$defs/locator"}
+        }
+      }
+    },
+    "criterionIndexRow": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["criterion_id", "evidence_ref"],
+      "properties": {
+        "criterion_id": {"type": "string", "minLength": 1},
+        "evidence_ref": {"$ref": "#/$defs/evidenceRef"}
+      }
+    },
+    "candidateIndexRow": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["canonical_case_id", "identity_aliases", "opaque_concurrent_process_candidate_packet_ref", "criterion_evidence"],
+      "properties": {
+        "canonical_case_id": {"type": "string", "minLength": 1},
+        "identity_aliases": {"$ref": "#/$defs/identityAliases"},
+        "opaque_concurrent_process_candidate_packet_ref": {"$ref": "#/$defs/artifactRef"},
+        "criterion_evidence": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"$ref": "#/$defs/criterionIndexRow"}
+        }
+      }
+    },
+    "identityAliases": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "provider",
+        "aliases",
+        "source_document_id",
+        "raw_identity_response_ref",
+        "locators"
+      ],
+      "properties": {
+        "provider": {"const": "NCBI_ID_CONVERTER_JSON"},
+        "aliases": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^(PMID:[0-9]+|PMCID:PMC[0-9]+|DOI:.+)$"
+          }
+        },
+        "source_document_id": {
+          "type": "string",
+          "pattern": "^(PMID:[0-9]+|PMCID:PMC[0-9]+)$"
+        },
+        "raw_identity_response_ref": {"$ref": "#/$defs/artifactRef"},
+        "locators": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"$ref": "#/$defs/locator"}
+        }
+      }
+    },
+    "index": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "protocol_ref",
+        "search_snapshot_ref",
+        "screening_manifest_ref",
+        "exclusions_ref",
+        "candidates"
+      ],
+      "properties": {
+        "schema_version": {
+          "const": "NCF-PRIMARY-SCREENING-EVIDENCE-INDEX-1.1.0"
+        },
+        "protocol_ref": {"$ref": "#/$defs/artifactRef"},
+        "search_snapshot_ref": {"$ref": "#/$defs/artifactRef"},
+        "screening_manifest_ref": {"$ref": "#/$defs/artifactRef"},
+        "exclusions_ref": {"$ref": "#/$defs/artifactRef"},
+        "candidates": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/candidateIndexRow"}
+        }
+      }
+    }
+  }
+}

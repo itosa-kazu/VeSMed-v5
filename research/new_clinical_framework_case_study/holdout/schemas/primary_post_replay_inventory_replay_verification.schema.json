@@ -1,0 +1,78 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "ncf.primary-post-replay-inventory-replay-verification.v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "producer_id",
+    "status",
+    "compiler",
+    "compiler_input_manifest",
+    "closure",
+    "final_role_manifest_set",
+    "checks",
+    "fresh_replay",
+    "report_payload_sha256"
+  ],
+  "properties": {
+    "schema_version": {"const": "NCF-POST-REPLAY-INVENTORY-REPLAY-VERIFICATION-1.0.0"},
+    "producer_id": {"const": "post-replay-inventory-compiler-v1"},
+    "status": {"const": "PASS"},
+    "compiler": {"$ref": "#/$defs/contentRef"},
+    "compiler_input_manifest": {"$ref": "#/$defs/contentRef"},
+    "closure": {"$ref": "#/$defs/contentRef"},
+    "final_role_manifest_set": {"$ref": "#/$defs/contentRef"},
+    "checks": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "fresh_compiler_byte_exact",
+        "final_eight_role_manifest_set_valid",
+        "upstream_manifests_exact",
+        "evaluator_manifest_exact",
+        "scorer_consumes_exact_closure",
+        "executor_internal_bundle_exact",
+        "sanitizer_lineage_exact",
+        "oracle_contents_excluded",
+        "self_reference_absent"
+      ],
+      "properties": {
+        "fresh_compiler_byte_exact": {"const": true},
+        "final_eight_role_manifest_set_valid": {"const": true},
+        "upstream_manifests_exact": {"const": true},
+        "evaluator_manifest_exact": {"const": true},
+        "scorer_consumes_exact_closure": {"const": true},
+        "executor_internal_bundle_exact": {"const": true},
+        "sanitizer_lineage_exact": {"const": true},
+        "oracle_contents_excluded": {"const": true},
+        "self_reference_absent": {"const": true}
+      }
+    },
+    "fresh_replay": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["process_exit_code", "stdout_sha256", "recompiled_closure_sha256", "byte_exact"],
+      "properties": {
+        "process_exit_code": {"const": 0},
+        "stdout_sha256": {"$ref": "#/$defs/sha256"},
+        "recompiled_closure_sha256": {"$ref": "#/$defs/sha256"},
+        "byte_exact": {"const": true}
+      }
+    },
+    "report_payload_sha256": {"$ref": "#/$defs/sha256"}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "contentRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256", "bytes"],
+      "properties": {
+        "path": {"type": "string", "minLength": 1},
+        "sha256": {"$ref": "#/$defs/sha256"},
+        "bytes": {"type": "integer", "minimum": 1}
+      }
+    }
+  }
+}

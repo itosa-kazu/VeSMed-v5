@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "ncf.primary-search-retrieval-manifest.v1",
+  "title": "Offline compiler input for exact frozen PubMed response bytes",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "retrieved_at", "query_runs"],
+  "properties": {
+    "schema_version": {"const": "NCF-PRIMARY-SEARCH-RETRIEVAL-MANIFEST-1.0.0"},
+    "retrieved_at": {"type": "string", "format": "date-time"},
+    "query_runs": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 2,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["query_id", "request_url", "raw_payload_ref"],
+        "properties": {
+          "query_id": {"enum": ["Q1", "Q2"]},
+          "request_url": {"type": "string", "minLength": 1},
+          "raw_payload_ref": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["path", "sha256", "bytes"],
+            "properties": {
+              "path": {
+                "type": "string",
+                "pattern": "^holdout/evidence/primary_search_raw/payloads/[^/]+\\.json$"
+              },
+              "sha256": {"$ref": "#/$defs/sha256"},
+              "bytes": {"type": "integer", "minimum": 2}
+            }
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  }
+}

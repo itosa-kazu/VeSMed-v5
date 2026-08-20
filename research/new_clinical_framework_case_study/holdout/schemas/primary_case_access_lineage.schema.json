@@ -1,0 +1,92 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "ncf.primary-case-access-lineage.v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "status", "role_manifest_set", "event_ledger_audit",
+    "roles", "dag_edges", "role_count", "manifest_set_exact", "role_protocol_contracts_exact", "tool_traces_exact",
+    "dag_exact", "timing_valid", "availability_chain"
+  ],
+  "properties": {
+    "schema_version": {"const": "NCF-PRIMARY-CASE-ACCESS-LINEAGE-1.0.0"},
+    "status": {"const": "PASS"},
+    "role_manifest_set": {"$ref": "#/$defs/contentRef"},
+    "event_ledger_audit": {"$ref": "#/$defs/contentRef"},
+    "roles": {
+      "type": "array",
+      "minItems": 8,
+      "maxItems": 8,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["role", "run_id", "manifest", "tool_trace", "started_at", "finished_at"],
+        "properties": {
+          "role": {"$ref": "#/$defs/role"},
+          "run_id": {"type": "string", "minLength": 1},
+          "manifest": {"$ref": "#/$defs/contentRef"},
+          "tool_trace": {"$ref": "#/$defs/contentRef"},
+          "started_at": {"type": "string", "format": "date-time"},
+          "finished_at": {"type": "string", "format": "date-time"}
+        }
+      }
+    },
+    "dag_edges": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["producer_role", "consumer_role", "data_class", "artifact"],
+        "properties": {
+          "producer_role": {"$ref": "#/$defs/role"},
+          "consumer_role": {"$ref": "#/$defs/role"},
+          "data_class": {"type": "string", "minLength": 1},
+          "artifact": {"$ref": "#/$defs/contentRef"}
+        }
+      }
+    },
+    "role_count": {"const": 8},
+    "manifest_set_exact": {"const": true},
+    "role_protocol_contracts_exact": {"const": true},
+    "tool_traces_exact": {"const": true},
+    "dag_exact": {"const": true},
+    "timing_valid": {"const": true},
+    "availability_chain": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "raw_assertions_producer", "compiler_owner", "source_auditor_consumer", "proof_producer", "canonical_combined_preprimary_seal",
+        "sealed_compiled_output", "sealed_proof", "sanitizer_raw_timing_access_forbidden"
+      ],
+      "properties": {
+        "raw_assertions_producer": {"const": "extractor"},
+        "compiler_owner": {"const": "availability-epoch-compiler-v1"},
+        "source_auditor_consumer": {"const": "source_auditor"},
+        "proof_producer": {"const": "source_auditor"},
+        "canonical_combined_preprimary_seal": {"$ref": "#/$defs/contentRef"},
+        "sealed_compiled_output": {"$ref": "#/$defs/contentRef"},
+        "sealed_proof": {"$ref": "#/$defs/contentRef"},
+        "sanitizer_raw_timing_access_forbidden": {"const": true}
+      }
+    }
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "contentRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256", "bytes"],
+      "properties": {
+        "path": {"type": "string", "minLength": 1, "pattern": "^(?![A-Za-z]:)(?![/\\\\])(?!.*(?:^|/)\\.\\.(?:/|$)).+$"},
+        "sha256": {"$ref": "#/$defs/sha256"},
+        "bytes": {"type": "integer", "minimum": 1}
+      }
+    },
+    "role": {
+      "enum": [
+        "scout", "screener", "extractor", "source_auditor", "concept_mapper",
+        "oracle_adjudicator", "evaluator", "scorer_auditor"
+      ]
+    }
+  }
+}

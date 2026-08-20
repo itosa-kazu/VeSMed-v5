@@ -1,0 +1,89 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "ncf.primary-source-retrieval-manifest.v1",
+  "title": "Write-once exact-byte NCBI identity and PMC full-text capture manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "purpose",
+    "retrieved_at",
+    "combined_preprimary_payload_sha256",
+    "identifier_request_ref",
+    "entries",
+    "eligibility_assessed"
+  ],
+  "properties": {
+    "schema_version": {"const": "NCF-PRIMARY-SOURCE-RETRIEVAL-MANIFEST-1.0.0"},
+    "purpose": {"enum": ["SCREENING", "SELECTED"]},
+    "retrieved_at": {"type": "string", "format": "date-time"},
+    "combined_preprimary_payload_sha256": {"$ref": "#/$defs/sha256"},
+    "identifier_request_ref": {"$ref": "#/$defs/artifactRef"},
+    "entries": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "pmid",
+          "pmcid",
+          "identity_request_url",
+          "identity_payload_ref",
+          "fulltext_request_url",
+          "fulltext_payload_ref"
+        ],
+        "properties": {
+          "pmid": {"type": "string", "pattern": "^[1-9][0-9]*$"},
+          "pmcid": {"type": ["string", "null"], "pattern": "^PMC[1-9][0-9]*$"},
+          "identity_request_url": {
+            "type": "string",
+            "pattern": "^https://eutils\\.ncbi\\.nlm\\.nih\\.gov/entrez/eutils/efetch\\.fcgi\\?db=pubmed&id=[1-9][0-9]*&retmode=xml$"
+          },
+          "identity_payload_ref": {"$ref": "#/$defs/artifactRef"},
+          "fulltext_request_url": {
+            "type": ["string", "null"],
+            "pattern": "^https://eutils\\.ncbi\\.nlm\\.nih\\.gov/entrez/eutils/efetch\\.fcgi\\?db=pmc&id=PMC[1-9][0-9]*&retmode=xml$"
+          },
+          "fulltext_payload_ref": {
+            "oneOf": [
+              {"type": "null"},
+              {"$ref": "#/$defs/artifactRef"}
+            ]
+          }
+        },
+        "allOf": [
+          {
+            "if": {"properties": {"pmcid": {"type": "null"}}},
+            "then": {
+              "properties": {
+                "fulltext_request_url": {"type": "null"},
+                "fulltext_payload_ref": {"type": "null"}
+              }
+            },
+            "else": {
+              "properties": {
+                "fulltext_request_url": {"type": "string"},
+                "fulltext_payload_ref": {"$ref": "#/$defs/artifactRef"}
+              }
+            }
+          }
+        ]
+      }
+    },
+    "eligibility_assessed": {"const": false}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "artifactRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256", "bytes"],
+      "properties": {
+        "path": {"type": "string", "minLength": 1},
+        "sha256": {"$ref": "#/$defs/sha256"},
+        "bytes": {"type": "integer", "minimum": 1}
+      }
+    }
+  }
+}

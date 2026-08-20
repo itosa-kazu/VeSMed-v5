@@ -1,0 +1,133 @@
+{
+  "artifact_hashes": {
+    "build_generic_model_v1_1.py": "4fcb8b993010da9bd0ba330309b366d73f1111a5be0cef041596c06016719a6c",
+    "model_pack.json": "0e5efd52be6911244d2653a865032cfe351d038790df7853f8feef8f78203bb1",
+    "source_model_pack.json": "88b018ee8224d483dae24133080c4d0ffd3797ff1f97513bd5ef9b8c1ef80009"
+  },
+  "case_blind": true,
+  "checks": [
+    {
+      "check_id": "GM11-DETERMINISTIC-BUILD",
+      "evidence": {
+        "builder": "holdout/generic_model/build_generic_model_v1_1.py",
+        "pack_sha256": "0e5efd52be6911244d2653a865032cfe351d038790df7853f8feef8f78203bb1",
+        "source": "holdout/generic_model/archive/generic-model-1.0.0/model_pack.json",
+        "source_sha256": "88b018ee8224d483dae24133080c4d0ffd3797ff1f97513bd5ef9b8c1ef80009"
+      },
+      "status": "PASS"
+    },
+    {
+      "check_id": "GM11-RUNTIME-MODEL-SCHEMA",
+      "evidence": {
+        "model_version": "generic-model/1.1.0"
+      },
+      "status": "PASS"
+    },
+    {
+      "check_id": "GM11-CASE-BLIND-BOUNDARY",
+      "evidence": {
+        "allowed_inputs": [
+          "ARCHITECTURE_FINAL_v1.md",
+          "runtime_v2/DESIGN.md",
+          "runtime_v2 code, schemas, and tests",
+          "frozen broad scope supplied by coordinator"
+        ],
+        "case_assets_consumed_by_upgrade": false,
+        "case_blind": true,
+        "holdout_outcome_seen": false,
+        "holdout_timeline_seen": false,
+        "holdout_values_seen": false,
+        "source_model_version": "generic-model/1.0.0",
+        "specific_case_web_search_performed": false,
+        "upgrade_builder": "build_generic_model_v1_1.py"
+      },
+      "status": "PASS"
+    },
+    {
+      "check_id": "GM11-FINITE-NUMBERS",
+      "evidence": {
+        "nonfinite_paths": []
+      },
+      "status": "PASS"
+    },
+    {
+      "check_id": "GM11-COMMON-SOURCE-JOINT-FACTORS",
+      "evidence": {
+        "composition": "case-blind equal-weight mixture of active-process typed likelihoods; Gaussian mixtures are moment-matched; no synergy, calibration, or common-cause magnitude is claimed",
+        "failures": [],
+        "joint_distribution_rows": 880,
+        "multi_process_observations": 40
+      },
+      "status": "PASS"
+    },
+    {
+      "check_id": "GM11-PROCESS-ACTIVATION-KERNELS",
+      "evidence": {
+        "failures": [],
+        "processes": 13
+      },
+      "status": "PASS"
+    },
+    {
+      "check_id": "GM11-ACTIVATION-COUPLING-COVERAGE",
+      "evidence": {
+        "declared_pairs": 23,
+        "expected_pairs": 23,
+        "missing": [],
+        "unexpected": []
+      },
+      "status": "PASS"
+    },
+    {
+      "check_id": "GM11-ACTION-ACTIVATION-SCOPE",
+      "evidence": {
+        "activation_effect_targets": {
+          "ACTION_ADRENERGIC_DRIVER_SUPPRESSION": "P_ADRENERGIC_DRIVE",
+          "ACTION_CORONARY_REPERFUSION_CLASS": "P_MYOCARDIAL_ISCHEMIA",
+          "ACTION_HORMONAL_REPLACEMENT_SUPPORT": "P_HORMONAL_SUPPORT_FAILURE",
+          "ACTION_INFECTIOUS_SOURCE_CONTROL": "P_INFECTIOUS_BURDEN",
+          "ACTION_MECHANICAL_DECOMPRESSION": "P_OBSTRUCTIVE_LOAD",
+          "ACTION_RHYTHM_STABILIZATION": "P_ARRHYTHMIA",
+          "ACTION_TOXICOLOGIC_SOURCE_CONTROL": "P_TOXICOLOGIC_DRIVER"
+        },
+        "expected": {
+          "ACTION_ADRENERGIC_DRIVER_SUPPRESSION": "P_ADRENERGIC_DRIVE",
+          "ACTION_CORONARY_REPERFUSION_CLASS": "P_MYOCARDIAL_ISCHEMIA",
+          "ACTION_HORMONAL_REPLACEMENT_SUPPORT": "P_HORMONAL_SUPPORT_FAILURE",
+          "ACTION_INFECTIOUS_SOURCE_CONTROL": "P_INFECTIOUS_BURDEN",
+          "ACTION_MECHANICAL_DECOMPRESSION": "P_OBSTRUCTIVE_LOAD",
+          "ACTION_RHYTHM_STABILIZATION": "P_ARRHYTHMIA",
+          "ACTION_TOXICOLOGIC_SOURCE_CONTROL": "P_TOXICOLOGIC_DRIVER"
+        },
+        "failures": []
+      },
+      "status": "PASS"
+    },
+    {
+      "check_id": "GM11-POSTERIOR-CLOSURE-DECLARATION",
+      "evidence": {
+        "assumption_ids": [
+          "active-process-joint-is-not-full-state-joint",
+          "shared-local-conditional-across-active-configurations",
+          "no-dormant-local-state-posterior",
+          "entry-resets-to-declared-prior",
+          "partial-exit-preserves-survivor-active-conditional"
+        ],
+        "error_tolerance": {
+          "epsilon": 0.0,
+          "reference": "scope.tolerance"
+        },
+        "local_state_semantics": "q(x,m|process_active)",
+        "representation": "conditional_active_mean_field_over_process_local_state",
+        "unsupported_correlations_policy": "OUT_OF_SCOPE"
+      },
+      "status": "PASS"
+    }
+  ],
+  "model_id": "adult-icu-acute-hemodynamic-collapse-generic-v1",
+  "model_version": "generic-model/1.1.0",
+  "primary_holdout_inspected": false,
+  "schema_version": "ncf.generic-model-content-audit.v1",
+  "scope": "MODEL_CONTENT_ONLY_RUNTIME_BEHAVIOR_AND_SEAL_BINDING_SEPARATE",
+  "status": "PASS"
+}

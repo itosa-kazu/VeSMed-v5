@@ -1,0 +1,1963 @@
+{
+  "schema_version": "new-clinical-map.runtime-concept-map.v0.1",
+  "status": "BLIND_SEMANTIC_MAP_NO_VALUES",
+  "scope": {
+    "allowed_inputs": [
+      "concept_inventory.json concept IDs only",
+      "tma_generic_model.json",
+      "hav_takotsubo_generic_model.json"
+    ],
+    "forbidden_inputs": [
+      "cases/* events, values, outcomes, or diagnoses",
+      "PMC/PubMed articles",
+      "VeSMed V5 artifacts"
+    ],
+    "declaration": "Concept-ID semantics and blind topology only; no case value, direction, final diagnosis, expected answer, or outcome was used.",
+    "runtime_rule": "Only rankable_observation enters likelihood. context_or_action_only cannot identify a branch. record_only/unmapped contributes exactly zero likelihood."
+  },
+  "models": {
+    "PMC10448002": "blind-tma-differential-v0",
+    "PMC7005653": "hav_takotsubo_generic_blind_v0"
+  },
+  "mapping_contract": {
+    "diagnosis_neutral": true,
+    "value_direction_policy": "All value_direction fields are null; a separate typed encoder projects actual values.",
+    "derived_duplicate_policy": "Collapse/schedule same_factor_group_ids jointly; derived flags/summaries never add independent likelihood.",
+    "hypothesis_policy": "Hypothesis/diagnosis concepts remain record_only/unmapped.",
+    "ambiguous_bundle_policy": "Vague bundles remain record_only/unmapped until decomposed.",
+    "action_policy": "Only performed actions affect action memory; actions never supply disease identity."
+  },
+  "same_factor_groups": [
+    {
+      "id": "SG_TMA_HEMOGLOBIN_SERIES",
+      "case_id": "PMC10448002",
+      "members": [
+        "hemoglobin",
+        "hemoglobin_hematocrit_stability_over_following_24_hours"
+      ],
+      "rule": "One hemoglobin stream."
+    },
+    {
+      "id": "SG_TMA_PLATELET_SERIES",
+      "case_id": "PMC10448002",
+      "members": [
+        "platelet_count",
+        "platelet_count_trend_over_following_24_hours"
+      ],
+      "rule": "One platelet stream."
+    },
+    {
+      "id": "SG_TMA_CREATININE_SERIES",
+      "case_id": "PMC10448002",
+      "members": [
+        "serum_creatinine",
+        "serum_creatinine_elevation_presence",
+        "serum_creatinine_trend_at_discharge"
+      ],
+      "rule": "Raw value, abnormality flag, and trend are one creatinine stream."
+    },
+    {
+      "id": "SG_TMA_COMPLEMENT_COMPONENT_PANEL",
+      "case_id": "PMC10448002",
+      "members": [
+        "serum_complement_c3",
+        "serum_complement_c4"
+      ],
+      "rule": "C3/C4 instantiate one complement pattern."
+    },
+    {
+      "id": "SG_TMA_URINE_HEMATURIA",
+      "case_id": "PMC10448002",
+      "members": [
+        "urine_red_blood_cells_presence",
+        "urine_red_blood_cell_casts_presence"
+      ],
+      "rule": "One glomerular-urine block."
+    },
+    {
+      "id": "SG_TMA_HEPARIN_EXPOSURE_HISTORY",
+      "case_id": "PMC10448002",
+      "members": [
+        "apixaban_to_heparin_transition",
+        "heparin_bridge_to_chronic_warfarin"
+      ],
+      "rule": "One heparin timeline."
+    },
+    {
+      "id": "SG_TMA_DRY_COUGH_TRAJECTORY",
+      "case_id": "PMC10448002",
+      "members": [
+        "dry_cough_presence",
+        "persistent_dry_cough_presence"
+      ],
+      "rule": "One unmodeled cough history; zero likelihood."
+    },
+    {
+      "id": "SG_HAV_TRANSAMINASE_PANEL",
+      "case_id": "PMC7005653",
+      "members": [
+        "serum_ast",
+        "serum_alt"
+      ],
+      "rule": "Use the model shared-latent group; no derived vote."
+    },
+    {
+      "id": "SG_HAV_TROPONIN_SERIES",
+      "case_id": "PMC7005653",
+      "members": [
+        "serum_troponin_i",
+        "serum_troponin_i_abnormality_presence"
+      ],
+      "rule": "One troponin stream."
+    },
+    {
+      "id": "SG_HAV_LV_SYSTOLIC_FUNCTION",
+      "case_id": "PMC7005653",
+      "members": [
+        "left_ventricular_ejection_fraction",
+        "severe_left_ventricular_function_depression_presence",
+        "severe_myocardial_systolic_dysfunction_presence"
+      ],
+      "rule": "One LV systolic-function observation."
+    },
+    {
+      "id": "SG_HAV_WALL_MOTION_PATTERN",
+      "case_id": "PMC7005653",
+      "members": [
+        "left_ventricular_mid_basal_hypokinesia_presence",
+        "left_ventricular_mid_ventricular_hypokinesia_presence"
+      ],
+      "rule": "One wall-motion pattern."
+    },
+    {
+      "id": "SG_HAV_PRESSURE_HEMODYNAMIC",
+      "case_id": "PMC7005653",
+      "members": [
+        "hypotension_presence",
+        "hemodynamic_instability_presence"
+      ],
+      "rule": "Only explicit pressure is rankable; bundle is zero-likelihood."
+    },
+    {
+      "id": "SG_HAV_BILIRUBIN_MANIFESTATION",
+      "case_id": "PMC7005653",
+      "members": [
+        "total_bilirubin",
+        "jaundice_presence"
+      ],
+      "rule": "Bilirubin ranks; jaundice is overlapping record-only provenance."
+    },
+    {
+      "id": "SG_HAV_CEREBRAL_PI_SERIES",
+      "case_id": "PMC7005653",
+      "members": [
+        "cerebral_arterial_pulsatility_index_max",
+        "cerebral_arterial_pulsatility_index_min",
+        "diffuse_cerebral_arterial_pulsatility_elevation_presence"
+      ],
+      "rule": "All record-only until a Doppler factor exists."
+    },
+    {
+      "id": "SG_HAV_ENTEPHALOPATHY_SERIES",
+      "case_id": "PMC7005653",
+      "members": [
+        "hepatic_encephalopathy_grade",
+        "rapid_encephalopathy_progression_presence"
+      ],
+      "rule": "One unmodeled encephalopathy process; zero likelihood."
+    }
+  ],
+  "cases": {
+    "PMC10448002": {
+      "model_id": "blind-tma-differential-v0",
+      "concept_count": 65,
+      "mappings": {
+        "adamts13_activity": {
+          "disposition": "rankable_observation",
+          "observed_node_ids": [
+            "O_ADAMTS13_ACTIVITY"
+          ],
+          "factor_group_ids": [
+            "F_DIRECT_MECHANISM_ASSAYS"
+          ],
+          "branch_relevant_latent_ids": [
+            "L_ADAMTS13_FUNCTIONAL_DEFICIENCY"
+          ],
+          "context_node_ids": [],
+          "background_node_ids": [],
+          "action_ids": [],
+          "same_factor_group_ids": [],
+          "projection_mode": "direct_assay_semantics",
+          "value_direction": null,
+          "note": "Assay identity only; result-to-ordinal projection remains external."
+        },
+        "adamts13_activity_sample_collection": {
+          "disposition": "context_or_action_only",
+          "observed_node_ids": [],
+          "factor_group_ids": [],
+          "branch_relevant_latent_ids": [],
+          "context_node_ids": [
+            "C_RESULT_AVAILABILITY"
+          ],
+          "background_node_ids": [],
+          "action_ids": [],
+          "same_factor_group_ids": [],
+          "projection_mode": "availability_context_only",
+          "value_direction": null,
+          "note": "Order/collection/monitoring changes availability lineage, not clinical likelihood."
+        },
+        "anti_gbm_mediated_disease_hypothesis": {
+          "disposition": "record_only/unmapped",
+          "observed_node_ids": [],
+          "factor_group_ids": [],
+          "branch_relevant_latent_ids": [],
+          "context_node_ids": [],
+          "background_node_ids": [],
+          "action_ids": [],
+          "same_factor_group_ids": [],
+          "projection_mode": "no_runtime_projection",
+          "value_direction": null,
+          "note": "Hypothesis/diagnostic label is not an observation."
+        },
+        "apixaban_to_heparin_transition": {
+          "disposition": "context_or_action_only",
+          "observed_node_ids": [
+            "O_HEPARIN_EXPOSURE"
+          ],
+          "factor_group_ids": [
+            "F_HIT_ASSAYS"
+          ],
+          "branch_relevant_latent_ids": [
+            "L_PF4_DEPENDENT_PLATELET_ACTIVATION"
+          ],
+          "context_node_ids": [],
+          "background_node_ids": [],
+          "action_ids": [
+            "A_HEPARIN_EXPOSURE_START_OR_CONTINUE",
+            "A_NON_HEPARIN_ANTICOAGULATION_LIKE"
+          ],
+          "same_factor_group_ids": [
+            "SG_TMA_HEPARIN_EXPOSURE_HISTORY"
+          ],
+          "projection_mode": "performed_exposure_transition",
+          "value_direction": null,
+          "note": "Heparin exposure enables evaluation but never proves HIT."
+        },
+        "chest_ct_acute_abnormality_presence": {
+          "disposition": "record_only/unmapped",
+          "observed_node_ids": [],
+          "factor_group_ids": [],
+          "branch_relevant_latent_ids": [],
+          "context_node_ids": [],
+          "background_node_ids": [],
+          "action_ids": [],
+          "same_factor_group_ids": [],
+          "projection_mode": "no_runtime_projection",
+          "value_direction": null,
+          "note": "Generic CT abnormality cannot be equated with alveolar opacity/hemorrhage."
+        },
+        "complement_and_hemolysis_laboratory_workup_order": {
+          "disposition": "context_or_action_only",
+          "observed_node_ids": [],
+          "factor_group_ids": [],
+          "branch_relevant_latent_ids": [],
+          "context_node_ids": [
+            "C_RESULT_AVAILABILITY"
+          ],
+          "background_node_ids": [],
+          "action_ids": [],
+          "same_factor_group_ids": [],
+          "projection_mode": "availability_context_only",
+          "value_direction": null,
+          "note": "Order/collection/monitoring changes availability lineage, not clinical likelihood."
+        },
+        "complement_pathway_mediated_microangiopathic_process_hypothesis": {
+          "disposition": "record_only/unmapped",
+          "observed_node_ids": [],
+          "factor_group_ids": [],
+          "branch_relevant_latent_ids": [],
+          "context_node_ids": [],
+          "background_node_ids": [],
+          "action_ids": [],
+          "same_factor_group_ids": [],
+          "projection_mode": "no_runtime_projection",
+          "value_direction": null,
+          "note": "Hypothesis/diagnostic label is not complement evidence."
+        },
+        "daily_plasmapheresis_continuation": {
+          "disposition": "context_or_action_only",
+          "observed_node_ids": [],
+          "factor_group_ids": [],
+          "branch_relevant_latent_ids": [
+            "L_ADAMTS13_FUNCTIONAL_DEFICIENCY",
+            "L_ANTI_GBM_AUTOANTIBODY_ACTIVITY"
+          ],
+          "context_node_ids": [],
+          "background_node_ids": [],
+          "action_ids": [
+            "A_PLASMA_EXCHANGE_LIKE"
+          ],
+          "same_factor_group_ids": [],
+          "projection_mode": "performed_action_class",
+          "value_direction": null,
+          "note": "Multi-mechanism action; response cannot identify a branch."
+        },
+        "dry_cough_presence": {
+          "disposition": "record_only/unmapped",
+          "observed_node_ids": [],
+          "factor_group_ids": [],
+          "branch_relevant_latent_ids": [],
+          "context_node_ids": [],
+          "background_node_ids": [],
+          "action_ids": [],
+          "same_factor_group_ids": [
+            "SG_TMA_DRY_COUGH_TRAJECTORY"
+          ],
+          "projection_mode": "no_runtime_projection",
+          "value_direction": null,
+          "note": "Cough is not hemoptysis and has no registered node."
+        },
+        "eculizumab_initiation": {
+          "disposition": "context_or_action_only",
+          "observed_node_ids": [],
+          "factor_group_ids": [],
+          "branch_relevant_latent_ids": [
+            "L_COMPLEMENT_AMPLIFICATION"
+          ],
+          "context_node_ids": [],
+          "background_node_ids": [],
+          "action_ids": [
+            "A_COMPLEMENT_PATHWAY_SUPPRESSION"
+          ],
+          "same_factor_group_ids": [],
+          "projection_mode": "performed_action_class",
+          "value_direction": null,
+          "note": "Action context only; no branch identity or effect is inferred."
+        },
+        "established_prior_antiphospholipid_syndrome": {
+          "disposition": "context_or_action_only",
+          "observed_node_ids": [],
+          "factor_group_ids": [
+            "F_HIT_THROMBOTIC_PHENOTYPE"
+          ],
+          "branch_relevant_latent_ids": [
+            "L_THROMBIN_GENERATION"
+          ],
+          "context_node_ids": [],
+          "background_node_ids": [
+            "theta_aps_activity"
+          ],
+          "action_ids": [],
+          "same_factor_group_ids": [],
+          "projection_mode": "background_modifier_only",
+          "value_direction": null,
+          "note": "APS is background only and must not add a prior bonus or duplicate thrombosis evidence."
+        },
+        "final_renal_biopsy_microvascular_thrombotic_injury_chronicity": {
+          "disposition": "record_only/unmapped",
+          "observed_node_ids": [],
+          "factor_group_ids": [],
+          "branch_relevant_latent_ids": [
+            "L_RENAL_MICROVASCULAR_INJURY",
+            "L_ENDOTHELIAL_INJURY"
+          ],
+          "context_node_ids": [],
+          "background_node_ids": [],
+          "action_ids": [],
+          "same_factor_group_ids": [],
+          "projection_mode": "latent_association_without_registered_emission",
+          "value_direction": null,
+          "note": "Diagnosis-neutral pathology association exists, but no pathology emission is registered; record only."
+        },
+        "foamy_urine_presence": {
+          "disposition": "record_only/unmapped",
+          "observed_node_ids": [],
+          "factor_group_ids": [],
+          "branch_relevant_latent_ids": [],
+          "context_node_ids": [],
+          "background_node_ids": [],
+          "action_ids": [],
+          "same_factor_group_ids": [],
+          "projection_mode": "no_runtime_projection",
+          "value_direction": null,
+          "note": "Foamy urine cannot substitute for measured proteinuria."
+        },
+        "hemoglobin": {
+          "disposition": "rankable_observation",
+          "observed_node_ids": [
+            "O_HEMOGLOBIN_RELATIVE"
+          ],
+          "factor_group_ids": [
+            "F_HEMOLYSIS_PANEL_JOINT"
+          ],
+          "branch_relevant_latent_ids": [
+            "L_MICROANGIOPATHIC_RBC_DESTRUCTION",
+            "L_ONGOING_BLOOD_LOSS"
+          ],
+          "context_node_ids": [],
+          "background_node_ids": [],
+          "action_ids": [],
+          "same_factor_group_ids": [
+            "SG_TMA_HEMOGLOBIN_SERIES"
+          ],
+          "projection_mode": "direct_measurement_semantics",
+          "value_direction": null,
+          "note": "Shared hemoglobin marginal; schedule once across overlapping factors."
+        },
+        "hemoglobin_hematocrit_stability_over_following_24_hours": {
+          "disposition": "rankable_observation",
+          "observed_node_ids": [
+            "O_HEMOGLOBIN_RELATIVE"
+          ],
+          "factor_group_ids": [
+            "F_HEMOLYSIS_PANEL_JOINT"
+          ],
+          "branch_relevant_latent_ids": [
+            "L_MICROANGIOPATHIC_RBC_DESTRUCTION",
+            "L_ONGOING_BLOOD_LOSS"
+          ],
+          "context_node_ids": [],
+          "background_node_ids": [],
+          "action_ids": [],
+          "same_factor_group_ids": [
+            "SG_TMA_HEMOGLOBIN_SERIES"
+          ],
+          "projection_mode": "temporal_summary_of_same_observation",
+          "value_direction": null,
+          "note": "Trajectory metadata for the hemoglobin stream; not a second snapshot likelihood."
+        },
+        "heparin_associated_immune_thrombocytopenia_hypothesis": {
+          "disposition": "record_only/unmapped",
+          "observed_node_ids": [],
+          "factor_group_ids": [],
+          "branch_relevant_latent_ids": [],
+          "context_node_ids": [],
+          "background_node_ids": [],
+          "action_ids": [],
+          "same_factor_group_ids": [],
+          "projection_mode": "no_runtime_projection",
+          "value_direction": null,
+          "note": "Hypothesis/diagnostic label is not evidence."
+        },
+        "heparin_bridge_to_chronic_warfarin": {
+          "disposition": "context_or_action_only",
+          "observed_node_ids": [
+            "O_HEPARIN_EXPOSURE"
+          ],
+          "factor_group_ids": [
+            "F_HIT_ASSAYS"
+          ],
+          "branch_relevant_latent_ids": [
+            "L_PF4_DEPENDENT_PLATELET_ACTIVATION"
+          ],
+          "context_node_ids": [],
+          "background_node_ids": [],
+          "action_ids": [
+            "A_HEPARIN_EXPOSURE_START_OR_CONTINUE",
+            "A_NON_HEPARIN_ANTICOAGULATION_LIKE"
+          ],
+          "same_factor_group_ids": [
+            "SG_TMA_HEPARIN_EXPOSURE_HISTORY"
+          ],
+          "projection_mode": "performed_exposure_transition",
+          "value_direction": null,
+          "note": "Heparin exposure enables evaluation but never proves HIT."
+        },
+        "heparin_induced_thrombocytopenia_panel_order": {
+          "disposition": "context_or_action_only",
+          "observed_node_ids": [],
+          "factor_group_ids": [],
+          "branch_relevant_latent_ids": [],
+          "context_node_ids": [
+            "C_RESULT_AVAILABILITY"
+          ],
+          "background_node_ids": [],
+          "action_ids": [],
+          "same_factor_group_ids": [],
+          "projection_mode": "availability_context_only",
+          "value_direction": null,
+          "note": "Order/collection/monitoring changes availability lineage, not clinical likelihood."
+        },
+        "heparin_induced_thrombocytopenia_panel_result": {
+          "disposition": "record_only/unmapped",
+          "observed_node_ids": [],
+          "factor_group_ids": [],
+          "branch_relevant_latent_ids": [],
+          "context_node_ids": [],
+          "background_node_ids": [],
+          "action_ids": [],
+          "same_factor_group_ids": [],
+          "projection_mode": "no_runtime_projection",
+          "value_direction": null,
+          "note": "Panel subtype is unspecified; PF4 immunoassay versus functional assay cannot be guessed."
+        },
+        "high_dose_intravenous_corticosteroid_initiation": {
+          "disposition": "context_or_action_only",
+          "observed_node_ids": [],
+          "factor_group_ids": [],
+          "branch_relevant_latent_ids": [
+            "L_ANTI_GBM_AUTOANTIBODY_ACTIVITY",
+            "L_ADAMTS13_FUNCTIONAL_DEFICIENCY"
+          ],
+          "context_node_ids": [],
+          "background_node_ids": [],
+          "action_ids": [
+            "A_IMMUNE_ACTIVITY_SUPPRESSION"
+          ],
+          "same_factor_group_ids": [],
+          "projection_mode": "performed_action_class",
+          "value_direction": null,
+          "note": "Generic immune-suppression action context only."
+        },
+        "hospital_discharge": {
+          "disposition": "record_only/unmapped",
+          "observed_node_ids": [],
+          "factor_group_ids": [],
+          "branch_relevant_latent_ids": [],
+          "context_node_ids": [],
+          "background_node_ids": [],
+          "action_ids": [],
+          "same_factor_group_ids": [],
+          "projection_mode": "no_runtime_projection",
+          "value_direction": null,
+          "note": "Administrative disposition is not a physiologic observation/outcome proxy."
+        },
+        "microangiopathic_hemolysis_or_disseminated_coagulation_process_hypothesis": {
+          "disposition": "record_only/unmapped",
+          "observed_node_ids": [],
+          "factor_group_ids": [],
+          "branch_relevant_latent_ids": [],
+          "context_node_ids": [],
+          "background_node_ids": [],
+          "action_ids": [],
+          "same_factor_group_ids": [],
+          "projection_mode": "no_runtime_projection",
+          "value_direction": null,
+          "note": "Composite hypothesis is not a generic observed axis."
+        },
+        "neurologic_history": {
+          "disposition": "record_only/unmapped",
+          "observed_node_ids": [],
+          "factor_group_ids": [],
+          "branch_relevant_latent_ids": [],
+          "context_node_ids": [],
+          "background_node_ids": [],
+          "action_ids": [],
+          "same_factor_group_ids": [],
+          "projection_mode": "no_runtime_projection",
+          "value_direction": null,
+          "note": "History is not current neurologic dysfunction."
+        },
+        "new_symptoms_during_first_two_hospital_days_presence": {
+          "disposition": "record_only/unmapped",
+          "observed_node_ids": [],
+          "factor_group_ids": [],
+          "branch_relevant_latent_ids": [],
+          "context_node_ids": [],
+          "background_node_ids": [],
+          "action_ids": [],
+          "same_factor_group_ids": [],
+          "projection_mode": "no_runtime_projection",
+          "value_direction": null,
+          "note": "Ambiguous symptom bundle; split concrete symptoms first."
+        },
+        "new_symptoms_during_two_day_recovery_interval_presence": {
+          "disposition": "record_only/unmapped",
+          "observed_node_ids": [],
+          "factor_group_ids": [],
+          "branch_relevant_latent_ids": [],
+          "context_node_ids": [],
+          "background_node_ids": [],
+          "action_ids": [],
+          "same_factor_group_ids": [],
+          "projection_mode": "no_runtime_projection",
+          "value_direction": null,
+          "note": "Ambiguous symptom bundle; split concrete symptoms first."
+        },
+        "obstetric_history": {
+          "disposition": "record_only/unmapped",
+          "observed_node_ids": [],
+          "factor_group_ids": [],
+          "branch_relevant_latent_ids": [],
+          "context_node_ids": [],
+          "background_node_ids": [],
+          "action_ids": [],
+          "same_factor_group_ids": [],
+          "projection_mode": "no_runtime_projection",
+          "value_direction": null,
+          "note": "Generic obstetric history cannot become APS/thrombosis evidence."
+        },
+        "outpatient_genetic_testing_for_complement_regulation_abnormality": {
+          "disposition": "record_only/unmapped",
+          "observed_node_ids": [],
+          "factor_group_ids": [],
+          "branch_relevant_latent_ids": [],
+          "context_node_ids": [],
+          "background_node_ids": [],
+          "action_ids": [],
+          "same_factor_group_ids": [],
+          "projection_mode": "no_runtime_projection",
+          "value_direction": null,
+          "note": "Planned testing is not a result/predisposition observation."
+        },
+        "outpatient_hematology_nephrology_follow_up_and_further_infusions": {
+          "disposition": "record_only/unmapped",
+          "observed_node_ids": [],
+          "factor_group_ids": [],
+          "branch_relevant_latent_ids": [],
+          "context_node_ids": [],
+          "background_node_ids": [],
+          "action_ids": [],
+          "same_factor_group_ids": [],
+          "projection_mode": "no_runtime_projection",
+          "value_direction": null,
+          "note": "Future follow-up is not a performed action at this cut."
+        },
+        "patient_demographics": {
+          "disposition": "record_only/unmapped",
+          "observed_node_ids": [],
+          "factor_group_ids": [],
+          "branch_relevant_latent_ids": [],
+          "context_node_ids": [],
+          "background_node_ids": [],
+          "action_ids": [],
+          "same_factor_group_ids": [],
+          "projection_mode": "no_runtime_projection",
+          "value_direction": null,
+          "note": "No demographic-to-reserve projection is registered."
+        },
+        "percutaneous_renal_biopsy": {
+          "disposition": "context_or_action_only",
+          "observed_node_ids": [
+            "O_BIOPSY_PERFORMED"
+          ],
+          "factor_group_ids": [
+            "F_PROCEDURAL_BLEED"
+          ],
+          "branch_relevant_latent_ids": [
+            "L_PROCEDURAL_BLEED_SOURCE"
+          ],
+          "context_node_ids": [],
+          "background_node_ids": [],
+          "action_ids": [],
+          "same_factor_group_ids": [],
+          "projection_mode": "performed_exposure_gate_only",
+          "value_direction": null,
+          "note": "Biopsy enables the branch; it never proves bleeding."
+        },
+        "peripheral_blood_schistocytes_presence": {
+          "disposition": "rankable_observation",
+          "observed_node_ids": [
+            "O_SCHISTOCYTE_BURDEN"
+          ],
+          "factor_group_ids": [
+            "F_HEMOLYSIS_PANEL_JOINT"
+          ],
+          "branch_relevant_latent_ids": [
+            "L_MICROANGIOPATHIC_RBC_DESTRUCTION"
+          ],
+          "context_node_ids": [],
+          "background_node_ids": [],
+          "action_ids": [],
+          "same_factor_group_ids": [],
+          "projection_mode": "finding_to_ordinal_burden",
+          "value_direction": null,
+          "note": "No observation state is preset."
+        },
+        "peripheral_blood_smear_order": {
+          "disposition": "context_or_action_only",
+          "observed_node_ids": [],
+          "factor_group_ids": [],
+          "branch_relevant_latent_ids": [],
+          "context_node_ids": [
+            "C_RESULT_AVAILABILITY"
+          ],
+          "background_node_ids": [],
+          "action_ids": [],
+          "same_factor_group_ids": [],
+          "projection_mode": "availability_context_only",
+          "value_direction": null,
+          "note": "Order/collection/monitoring changes availability lineage, not clinical likelihood."
+        },
+        "peripheral_blood_target_cells_presence": {
+          "disposition": "record_only/unmapped",
+          "observed_node_ids": [],
+          "factor_group_ids": [],
+          "branch_relevant_latent_ids": [],
+          "context_node_ids": [],
+          "background_node_ids": [],
+          "action_ids": [],
+          "same_factor_group_ids": [],
+          "projection_mode": "no_runtime_projection",
+          "value_direction": null,
+          "note": "No target-cell observation/emission is registered."
+        },
+        "persistent_dry_cough_presence": {
+          "disposition": "record_only/unmapped",
+          "observed_node_ids": [],
+          "factor_group_ids": [],
+          "branch_relevant_latent_ids": [],
+          "context_node_ids": [],
+          "background_node_ids": [],
+          "action_ids": [],
+          "same_factor_group_ids": [
+            "SG_TMA_DRY_COUGH_TRAJECTORY"
+          ],
+          "projection_mode": "no_runtime_projection",
+          "value_direction": null,
+          "note": "Cough is not hemoptysis and has no registered node."
+        },
+        "plasmapheresis_initiation": {
+          "disposition": "context_or_action_only",
+          "observed_node_ids": [],
+          "factor_group_ids": [],
+          "branch_relevant_latent_ids": [
+            "L_ADAMTS13_FUNCTIONAL_DEFICIENCY",
+            "L_ANTI_GBM_AUTOANTIBODY_ACTIVITY"
+          ],
+          "context_node_ids": [],
+          "background_node_ids": [],
+          "action_ids": [
+            "A_PLASMA_EXCHANGE_LIKE"
+          ],
+          "same_factor_group_ids": [],
+          "projection_mode": "performed_action_class",
+          "value_direction": null,
+          "note": "Multi-mechanism action; response cannot identify a branch."
+        },
+        "platelet_count": {
+          "disposition": "rankable_observation",
+          "observed_node_ids": [
+            "O_PLATELET_COUNT_RELATIVE"
+          ],
+          "factor_group_ids": [
+            "F_PLATELET_MULTI_CAUSE"
+          ],
+          "branch_relevant_latent_ids": [
+            "L_MICROVASCULAR_PLATELET_CONSUMPTION",
+            "L_IMMUNE_PLATELET_CONSUMPTION"
+          ],
+          "context_node_ids": [],
+          "background_node_ids": [],
+          "action_ids": [],
+          "same_factor_group_ids": [
+            "SG_TMA_PLATELET_SERIES"
+          ],
+          "projection_mode": "direct_measurement_semantics",
+          "value_direction": null,
+          "note": "One platelet stream and one shared likelihood term."
+        },
+        "platelet_count_trend_over_following_24_hours": {
+          "disposition": "rankable_observation",
+          "observed_node_ids": [
+            "O_PLATELET_COUNT_RELATIVE"
+          ],
+          "factor_group_ids": [
+            "F_PLATELET_MULTI_CAUSE"
+          ],
+          "branch_relevant_latent_ids": [
+            "L_MICROVASCULAR_PLATELET_CONSUMPTION",
+            "L_IMMUNE_PLATELET_CONSUMPTION"
+          ],
+          "context_node_ids": [],
+          "background_node_ids": [],
+          "action_ids": [],
+          "same_factor_group_ids": [
+            "SG_TMA_PLATELET_SERIES"
+          ],
+          "projection_mode": "temporal_summary_of_same_observation",
+          "value_direction": null,
+          "note": "One platelet stream and one shared likelihood term."
+        },
+        "post_biopsy_perirenal_hematoma_dimensions": {
+          "disposition": "rankable_observation",
+          "observed_node_ids": [
+            "O_LOCAL_HEMATOMA_IMAGING"
+          ],
+          "factor_group_ids": [
+            "F_PROCEDURAL_BLEED"
+          ],
+          "branch_relevant_latent_ids": [
+            "L_LOCAL_HEMATOMA",
+            "L_ONGOING_BLOOD_LOSS"
+          ],
+          "context_node_ids": [],
+          "background_node_ids": [],
+          "action_ids": [],
+          "same_factor_group_ids": [],
+          "projection_mode": "imaging_burden_semantics",
+          "value_direction": null,
+          "note": "A later encoder may ordinalize dimensions; no threshold is encoded here."
+        },
+        "preliminary_biopsy_no_evidence_for_anti_gbm_disease": {
+          "disposition": "record_only/unmapped",
+          "observed_node_ids": [],
+          "factor_group_ids": [],
+          "branch_relevant_latent_ids": [],
+          "context_node_ids": [],
+          "background_node_ids": [],
+          "action_ids": [],
+          "same_factor_group_ids": [],
+          "projection_mode": "no_runtime_projection",
+          "value_direction": null,
+          "note": "Disease-level pathology interpretation is not the serum assay."
+        },
+        "preliminary_renal_biopsy_microvascular_thrombotic_injury": {
+          "disposition": "record_only/unmapped",
+          "observed_node_ids": [],
+          "factor_group_ids": [],
+          "branch_relevant_latent_ids": [
+            "L_RENAL_MICROVASCULAR_INJURY",
+            "L_ENDOTHELIAL_INJURY"
+          ],
+          "context_node_ids": [],
+          "background_node_ids": [],
+          "action_ids": [],
+          "same_factor_group_ids": [],
+          "projection_mode": "latent_association_without_registered_emission",
+          "value_direction": null,
+          "note": "Diagnosis-neutral pathology association exists, but no pathology emission is registered; record only."
+        },
+        "recent_outpatient_apixaban_exposure": {
+          "disposition": "context_or_action_only",
+          "observed_node_ids": [],
+          "factor_group_ids": [],
+          "branch_relevant_latent_ids": [],
+          "context_node_ids": [],
+          "background_node_ids": [],
+          "action_ids": [
+            "A_NON_HEPARIN_ANTICOAGULATION_LIKE"
+          ],
+          "same_factor_group_ids": [],
+          "projection_mode": "historical_exposure_context",
+          "value_direction": null,
+          "note": "Historical action context; no dedicated residual-memory node exists."
+        },
+        "renal_biopsy_capillary_red_cell_fragments_presence": {
+          "disposition": "record_only/unmapped",
+          "observed_node_ids": [],
+          "factor_group_ids": [],
+          "branch_relevant_latent_ids": [
+            "L_RENAL_MICROVASCULAR_INJURY",
+            "L_MICROANGIOPATHIC_RBC_DESTRUCTION"
+          ],
+          "context_node_ids": [],
+          "background_node_ids": [],
+          "action_ids": [],
+          "same_factor_group_ids": [],
+          "projection_mode": "latent_association_without_registered_emission",
+          "value_direction": null,
+          "note": "Diagnosis-neutral pathology association exists, but no pathology emission is registered; record only."
+        },
+        "renal_biopsy_endothelial_cell_injury_presence": {
+          "disposition": "record_only/unmapped",
+          "observed_node_ids": [],
+          "factor_group_ids": [],
+          "branch_relevant_latent_ids": [
+            "L_RENAL_MICROVASCULAR_INJURY",
+            "L_ENDOTHELIAL_INJURY"
+          ],
+          "context_node_ids": [],
+          "background_node_ids": [],
+          "action_ids": [],
+          "same_factor_group_ids": [],
+          "projection_mode": "latent_association_without_registered_emission",
+          "value_direction": null,
+          "note": "Diagnosis-neutral pathology association exists, but no pathology emission is registered; record only."
+        },
+        "renal_biopsy_glomerular_and_arteriolar_fibrin_thrombi_presence": {
+          "disposition": "record_only/unmapped",
+          "observed_node_ids": [],
+          "factor_group_ids": [],
+          "branch_relevant_latent_ids": [
+            "L_RENAL_MICROVASCULAR_INJURY",
+            "L_ENDOTHELIAL_INJURY"
+          ],
+          "context_node_ids": [],
+          "background_node_ids": [],
+          "action_ids": [],
+          "same_factor_group_ids": [],
+          "projection_mode": "latent_association_without_registered_emission",
+          "value_direction": null,
+          "note": "Diagnosis-neutral pathology association exists, but no pathology emission is registered; record only."
+        },
+        "renal_biopsy_glomerular_basement_membrane_duplication_presence": {
+          "disposition": "record_only/unmapped",
+          "observed_node_ids": [],
+          "factor_group_ids": [],
+          "branch_relevant_latent_ids": [
+            "L_RENAL_MICROVASCULAR_INJURY",
+            "L_ENDOTHELIAL_INJURY"
+          ],
+          "context_node_ids": [],
+          "background_node_ids": [],
+          "action_ids": [],
+          "same_factor_group_ids": [],
+          "projection_mode": "latent_association_without_registered_emission",
+          "value_direction": null,
+          "note": "Diagnosis-neutral pathology association exists, but no pathology emission is registered; record only."
+        },
+        "renal_biopsy_mesangiolysis_presence": {
+          "disposition": "record_only/unmapped",
+          "observed_node_ids": [],
+          "factor_group_ids": [],
+          "branch_relevant_latent_ids": [
+            "L_RENAL_MICROVASCULAR_INJURY",
+            "L_ENDOTHELIAL_INJURY"
+          ],
+          "context_node_ids": [],
+          "background_node_ids": [],
+          "action_ids": [],
+          "same_factor_group_ids": [],
+          "projection_mode": "latent_association_without_registered_emission",
+          "value_direction": null,
+          "note": "Diagnosis-neutral pathology association exists, but no pathology emission is registered; record only."
+        },
+        "renal_biopsy_multilayered_glomerular_basement_membrane_presence": {
+          "disposition": "record_only/unmapped",
+          "observed_node_ids": [],
+          "factor_group_ids": [],
+          "branch_relevant_latent_ids": [
+            "L_RENAL_MICROVASCULAR_INJURY",
+            "L_ENDOTHELIAL_INJURY"
+          ],
+          "context_node_ids": [],
+          "background_node_ids": [],
+          "action_ids": [],
+          "same_factor_group_ids": [],
+          "projection_mode": "latent_association_without_registered_emission",
+          "value_direction": null,
+          "note": "Diagnosis-neutral pathology association exists, but no pathology emission is registered; record only."
+        },
+        "renal_biopsy_site_pain_presence": {
+          "disposition": "record_only/unmapped",
+          "observed_node_ids": [],
+          "factor_group_ids": [],
+          "branch_relevant_latent_ids": [],
+          "context_node_ids": [],
+          "background_node_ids": [],
+          "action_ids": [],
+          "same_factor_group_ids": [],
+          "projection_mode": "no_runtime_projection",
+          "value_direction": null,
+          "note": "Pain is not equivalent to hematoma or blood loss."
+        },
+        "rituximab_initiation": {
+          "disposition": "context_or_action_only",
+          "observed_node_ids": [],
+          "factor_group_ids": [],
+          "branch_relevant_latent_ids": [
+            "L_ANTI_GBM_AUTOANTIBODY_ACTIVITY",
+            "L_ADAMTS13_FUNCTIONAL_DEFICIENCY"
+          ],
+          "context_node_ids": [],
+          "background_node_ids": [],
+          "action_ids": [
+            "A_IMMUNE_ACTIVITY_SUPPRESSION"
+          ],
+          "same_factor_group_ids": [],
+          "projection_mode": "performed_action_class",
+          "value_direction": null,
+          "note": "Generic immune-suppression action context only."
+        },
+        "serial_complete_blood_count_monitoring": {
+          "disposition": "context_or_action_only",
+          "observed_node_ids": [],
+          "factor_group_ids": [],
+          "branch_relevant_latent_ids": [],
+          "context_node_ids": [
+            "C_RESULT_AVAILABILITY"
+          ],
+          "background_node_ids": [],
+          "action_ids": [],
+          "same_factor_group_ids": [],
+          "projection_mode": "availability_context_only",
+          "value_direction": null,
+          "note": "Order/collection/monitoring changes availability lineage, not clinical likelihood."
+        },
+        "serum_complement_c3": {
+          "disposition": "rankable_observation",
+          "observed_node_ids": [
+            "O_COMPLEMENT_COMPONENT_PATTERN"
+          ],
+          "factor_group_ids": [
+            "F_COMPLEMENT_ACTIVITY_ASSAYS"
+          ],
+          "branch_relevant_latent_ids": [
+            "L_COMPLEMENT_AMPLIFICATION"
+          ],
+          "context_node_ids": [],
+          "background_node_ids": [],
+          "action_ids": [],
+          "same_factor_group_ids": [
+            "SG_TMA_COMPLEMENT_COMPONENT_PANEL"
+          ],
+          "projection_mode": "panel_component_to_joint_pattern",
+          "value_direction": null,
+          "note": "C3/C4 instantiate one correlated complement pattern; direction is not preset."
+        },
+        "serum_complement_c4": {
+          "disposition": "rankable_observation",
+          "observed_node_ids": [
+            "O_COMPLEMENT_COMPONENT_PATTERN"
+          ],
+          "factor_group_ids": [
+            "F_COMPLEMENT_ACTIVITY_ASSAYS"
+          ],
+          "branch_relevant_latent_ids": [
+            "L_COMPLEMENT_AMPLIFICATION"
+          ],
+          "context_node_ids": [],
+          "background_node_ids": [],
+          "action_ids": [],
+          "same_factor_group_ids": [
+            "SG_TMA_COMPLEMENT_COMPONENT_PANEL"
+          ],
+          "projection_mode": "panel_component_to_joint_pattern",
+          "value_direction": null,
+          "note": "C3/C4 instantiate one correlated complement pattern; direction is not preset."
+        },
+        "serum_creatinine": {
+          "disposition": "rankable_observation",
+          "observed_node_ids": [
+            "O_CREATININE_RELATIVE"
+          ],
+          "factor_group_ids": [
+            "F_RENAL_FUNCTION_JOINT"
+          ],
+          "branch_relevant_latent_ids": [
+            "L_RENAL_FUNCTION_LOSS",
+            "L_RENAL_MICROVASCULAR_INJURY",
+            "L_GLOMERULAR_CAPILLARY_INJURY"
+          ],
+          "context_node_ids": [],
+          "background_node_ids": [],
+          "action_ids": [],
+          "same_factor_group_ids": [
+            "SG_TMA_CREATININE_SERIES"
+          ],
+          "projection_mode": "direct_measurement_semantics",
+          "value_direction": null,
+          "note": "One creatinine stream; derived flags/trends add no duplicate vote."
+        },
+        "serum_creatinine_elevation_presence": {
+          "disposition": "rankable_observation",
+          "observed_node_ids": [
+            "O_CREATININE_RELATIVE"
+          ],
+          "factor_group_ids": [
+            "F_RENAL_FUNCTION_JOINT"
+          ],
+          "branch_relevant_latent_ids": [
+            "L_RENAL_FUNCTION_LOSS",
+            "L_RENAL_MICROVASCULAR_INJURY",
+            "L_GLOMERULAR_CAPILLARY_INJURY"
+          ],
+          "context_node_ids": [],
+          "background_node_ids": [],
+          "action_ids": [],
+          "same_factor_group_ids": [
+            "SG_TMA_CREATININE_SERIES"
+          ],
+          "projection_mode": "derived_presence_of_same_measurement",
+          "value_direction": null,
+          "note": "One creatinine stream; derived flags/trends add no duplicate vote."
+        },
+        "serum_creatinine_trend_at_discharge": {
+          "disposition": "rankable_observation",
+          "observed_node_ids": [
+            "O_CREATININE_RELATIVE"
+          ],
+          "factor_group_ids": [
+            "F_RENAL_FUNCTION_JOINT"
+          ],
+          "branch_relevant_latent_ids": [
+            "L_RENAL_FUNCTION_LOSS",
+            "L_RENAL_MICROVASCULAR_INJURY",
+            "L_GLOMERULAR_CAPILLARY_INJURY"
+          ],
+          "context_node_ids": [],
+          "background_node_ids": [],
+          "action_ids": [],
+          "same_factor_group_ids": [
+            "SG_TMA_CREATININE_SERIES"
+          ],
+          "projection_mode": "temporal_summary_of_same_observation",
+          "value_direction": null,
+          "note": "One creatinine stream; derived flags/trends add no duplicate vote."
+        },
+        "serum_haptoglobin": {
+          "disposition": "rankable_observation",
+          "observed_node_ids": [
+            "O_HAPTOGLOBIN_RELATIVE"
+          ],
+          "factor_group_ids": [
+            "F_HEMOLYSIS_PANEL_JOINT"
+          ],
+          "branch_relevant_latent_ids": [
+            "L_MICROANGIOPATHIC_RBC_DESTRUCTION"
+          ],
+          "context_node_ids": [],
+          "background_node_ids": [],
+          "action_ids": [],
+          "same_factor_group_ids": [],
+          "projection_mode": "direct_measurement_semantics",
+          "value_direction": null,
+          "note": "Analyte identity only; no high/low direction is encoded."
+        },
+        "serum_igg_anti_glomerular_basement_membrane_antibody_result": {
+          "disposition": "rankable_observation",
+          "observed_node_ids": [
+            "O_ANTI_GBM_ASSAY"
+          ],
+          "factor_group_ids": [
+            "F_DIRECT_MECHANISM_ASSAYS"
+          ],
+          "branch_relevant_latent_ids": [
+            "L_ANTI_GBM_AUTOANTIBODY_ACTIVITY"
+          ],
+          "context_node_ids": [],
+          "background_node_ids": [],
+          "action_ids": [],
+          "same_factor_group_ids": [],
+          "projection_mode": "direct_assay_semantics",
+          "value_direction": null,
+          "note": "Assay identity only; result state remains external typed data."
+        },
+        "serum_lactate_dehydrogenase": {
+          "disposition": "rankable_observation",
+          "observed_node_ids": [
+            "O_LDH_RELATIVE"
+          ],
+          "factor_group_ids": [
+            "F_HEMOLYSIS_PANEL_JOINT"
+          ],
+          "branch_relevant_latent_ids": [
+            "L_MICROANGIOPATHIC_RBC_DESTRUCTION"
+          ],
+          "context_node_ids": [],
+          "background_node_ids": [],
+          "action_ids": [],
+          "same_factor_group_ids": [],
+          "projection_mode": "direct_measurement_semantics",
+          "value_direction": null,
+          "note": "Analyte identity only; no high/low direction is encoded."
+        },
+        "severe_adamts13_deficiency_mediated_microangiopathy_hypothesis": {
+          "disposition": "record_only/unmapped",
+          "observed_node_ids": [],
+          "factor_group_ids": [],
+          "branch_relevant_latent_ids": [],
+          "context_node_ids": [],
+          "background_node_ids": [],
+          "action_ids": [],
+          "same_factor_group_ids": [],
+          "projection_mode": "no_runtime_projection",
+          "value_direction": null,
+          "note": "Hypothesis cannot substitute for the ADAMTS13 assay."
+        },
+        "slow_prednisone_taper_initiation": {
+          "disposition": "context_or_action_only",
+          "observed_node_ids": [],
+          "factor_group_ids": [],
+          "branch_relevant_latent_ids": [
+            "L_ANTI_GBM_AUTOANTIBODY_ACTIVITY",
+            "L_ADAMTS13_FUNCTIONAL_DEFICIENCY"
+          ],
+          "context_node_ids": [],
+          "background_node_ids": [],
+          "action_ids": [
+            "A_IMMUNE_ACTIVITY_SUPPRESSION"
+          ],
+          "same_factor_group_ids": [],
+          "projection_mode": "performed_action_class",
+          "value_direction": null,
+          "note": "Generic immune-suppression action context only."
+        },
+        "total_bilirubin": {
+          "disposition": "record_only/unmapped",
+          "observed_node_ids": [],
+          "factor_group_ids": [],
+          "branch_relevant_latent_ids": [],
+          "context_node_ids": [],
+          "background_node_ids": [],
+          "action_ids": [],
+          "same_factor_group_ids": [],
+          "projection_mode": "no_runtime_projection",
+          "value_direction": null,
+          "note": "The TMA model registers indirect bilirubin, not total bilirubin."
+        },
+        "tunneled_right_internal_jugular_plasmapheresis_catheter_insertion": {
+          "disposition": "record_only/unmapped",
+          "observed_node_ids": [],
+          "factor_group_ids": [],
+          "branch_relevant_latent_ids": [],
+          "context_node_ids": [],
+          "background_node_ids": [],
+          "action_ids": [],
+          "same_factor_group_ids": [],
+          "projection_mode": "no_runtime_projection",
+          "value_direction": null,
+          "note": "No access-device action/observation is registered."
+        },
+        "urine_protein_concentration": {
+          "disposition": "rankable_observation",
+          "observed_node_ids": [
+            "O_PROTEINURIA"
+          ],
+          "factor_group_ids": [
+            "F_GLOMERULAR_URINE"
+          ],
+          "branch_relevant_latent_ids": [
+            "L_GLOMERULAR_CAPILLARY_INJURY"
+          ],
+          "context_node_ids": [],
+          "background_node_ids": [],
+          "action_ids": [],
+          "same_factor_group_ids": [],
+          "projection_mode": "measurement_to_ordinal",
+          "value_direction": null,
+          "note": "Collection context remains required."
+        },
+        "urine_red_blood_cell_casts_presence": {
+          "disposition": "rankable_observation",
+          "observed_node_ids": [
+            "O_HEMATURIA"
+          ],
+          "factor_group_ids": [
+            "F_GLOMERULAR_URINE"
+          ],
+          "branch_relevant_latent_ids": [
+            "L_GLOMERULAR_CAPILLARY_INJURY"
+          ],
+          "context_node_ids": [],
+          "background_node_ids": [],
+          "action_ids": [],
+          "same_factor_group_ids": [
+            "SG_TMA_URINE_HEMATURIA"
+          ],
+          "projection_mode": "coarse_parent_finding",
+          "value_direction": null,
+          "note": "One hematuria/glomerular-urine block; cast morphology is provenance, not another vote."
+        },
+        "urine_red_blood_cells_presence": {
+          "disposition": "rankable_observation",
+          "observed_node_ids": [
+            "O_HEMATURIA"
+          ],
+          "factor_group_ids": [
+            "F_GLOMERULAR_URINE"
+          ],
+          "branch_relevant_latent_ids": [
+            "L_GLOMERULAR_CAPILLARY_INJURY"
+          ],
+          "context_node_ids": [],
+          "background_node_ids": [],
+          "action_ids": [],
+          "same_factor_group_ids": [
+            "SG_TMA_URINE_HEMATURIA"
+          ],
+          "projection_mode": "coarse_parent_finding",
+          "value_direction": null,
+          "note": "One hematuria/glomerular-urine block; cast morphology is provenance, not another vote."
+        }
+      }
+    },
+    "PMC7005653": {
+      "model_id": "hav_takotsubo_generic_blind_v0",
+      "concept_count": 41,
+      "mappings": {
+        "abdominal_ultrasound_abnormality_presence": {
+          "disposition": "record_only/unmapped",
+          "observed_node_ids": [],
+          "factor_group_ids": [],
+          "branch_relevant_latent_ids": [],
+          "context_node_ids": [],
+          "background_node_ids": [],
+          "action_ids": [],
+          "same_factor_group_ids": [],
+          "projection_mode": "no_runtime_projection",
+          "value_direction": null,
+          "note": "Generic ultrasound abnormality is too broad."
+        },
+        "alkaline_phosphatase": {
+          "disposition": "record_only/unmapped",
+          "observed_node_ids": [],
+          "factor_group_ids": [],
+          "branch_relevant_latent_ids": [],
+          "context_node_ids": [],
+          "background_node_ids": [],
+          "action_ids": [],
+          "same_factor_group_ids": [],
+          "projection_mode": "no_runtime_projection",
+          "value_direction": null,
+          "note": "No cholestatic-enzyme observation node is registered."
+        },
+        "cerebral_arterial_pulsatility_index_max": {
+          "disposition": "record_only/unmapped",
+          "observed_node_ids": [],
+          "factor_group_ids": [],
+          "branch_relevant_latent_ids": [],
+          "context_node_ids": [],
+          "background_node_ids": [],
+          "action_ids": [],
+          "same_factor_group_ids": [
+            "SG_HAV_CEREBRAL_PI_SERIES"
+          ],
+          "projection_mode": "no_runtime_projection",
+          "value_direction": null,
+          "note": "No cerebral Doppler node or safe systemic-perfusion projection is registered."
+        },
+        "cerebral_arterial_pulsatility_index_min": {
+          "disposition": "record_only/unmapped",
+          "observed_node_ids": [],
+          "factor_group_ids": [],
+          "branch_relevant_latent_ids": [],
+          "context_node_ids": [],
+          "background_node_ids": [],
+          "action_ids": [],
+          "same_factor_group_ids": [
+            "SG_HAV_CEREBRAL_PI_SERIES"
+          ],
+          "projection_mode": "no_runtime_projection",
+          "value_direction": null,
+          "note": "No cerebral Doppler node or safe systemic-perfusion projection is registered."
+        },
+        "diffuse_cerebral_arterial_pulsatility_elevation_presence": {
+          "disposition": "record_only/unmapped",
+          "observed_node_ids": [],
+          "factor_group_ids": [],
+          "branch_relevant_latent_ids": [],
+          "context_node_ids": [],
+          "background_node_ids": [],
+          "action_ids": [],
+          "same_factor_group_ids": [
+            "SG_HAV_CEREBRAL_PI_SERIES"
+          ],
+          "projection_mode": "no_runtime_projection",
+          "value_direction": null,
+          "note": "Derived Doppler summary has no node and must not duplicate extrema."
+        },
+        "drug_use_history_presence": {
+          "disposition": "record_only/unmapped",
+          "observed_node_ids": [],
+          "factor_group_ids": [],
+          "branch_relevant_latent_ids": [],
+          "context_node_ids": [],
+          "background_node_ids": [],
+          "action_ids": [],
+          "same_factor_group_ids": [],
+          "projection_mode": "no_runtime_projection",
+          "value_direction": null,
+          "note": "Generic exposure history has no registered context/emission."
+        },
+        "ecg_abnormality_presence": {
+          "disposition": "record_only/unmapped",
+          "observed_node_ids": [],
+          "factor_group_ids": [],
+          "branch_relevant_latent_ids": [],
+          "context_node_ids": [],
+          "background_node_ids": [],
+          "action_ids": [],
+          "same_factor_group_ids": [],
+          "projection_mode": "no_runtime_projection",
+          "value_direction": null,
+          "note": "Ambiguous ECG bundle is not wall motion or troponin."
+        },
+        "fatigue_presence": {
+          "disposition": "record_only/unmapped",
+          "observed_node_ids": [],
+          "factor_group_ids": [],
+          "branch_relevant_latent_ids": [],
+          "context_node_ids": [],
+          "background_node_ids": [],
+          "action_ids": [],
+          "same_factor_group_ids": [],
+          "projection_mode": "no_runtime_projection",
+          "value_direction": null,
+          "note": "No symptom observation is registered."
+        },
+        "gamma_glutamyl_transferase": {
+          "disposition": "record_only/unmapped",
+          "observed_node_ids": [],
+          "factor_group_ids": [],
+          "branch_relevant_latent_ids": [],
+          "context_node_ids": [],
+          "background_node_ids": [],
+          "action_ids": [],
+          "same_factor_group_ids": [],
+          "projection_mode": "no_runtime_projection",
+          "value_direction": null,
+          "note": "No cholestatic-enzyme observation node is registered."
+        },
+        "hemodynamic_instability_presence": {
+          "disposition": "record_only/unmapped",
+          "observed_node_ids": [],
+          "factor_group_ids": [],
+          "branch_relevant_latent_ids": [],
+          "context_node_ids": [],
+          "background_node_ids": [],
+          "action_ids": [],
+          "same_factor_group_ids": [
+            "SG_HAV_PRESSURE_HEMODYNAMIC"
+          ],
+          "projection_mode": "no_runtime_projection",
+          "value_direction": null,
+          "note": "Ambiguous hemodynamic bundle cannot be collapsed into pressure/perfusion."
+        },
+        "hepatic_cholestatic_histology_presence": {
+          "disposition": "record_only/unmapped",
+          "observed_node_ids": [],
+          "factor_group_ids": [],
+          "branch_relevant_latent_ids": [],
+          "context_node_ids": [],
+          "background_node_ids": [],
+          "action_ids": [],
+          "same_factor_group_ids": [],
+          "projection_mode": "no_runtime_projection",
+          "value_direction": null,
+          "note": "No cholestatic pathology node or unambiguous latent projection."
+        },
+        "hepatic_encephalopathy_grade": {
+          "disposition": "record_only/unmapped",
+          "observed_node_ids": [],
+          "factor_group_ids": [],
+          "branch_relevant_latent_ids": [
+            "encephalopathy_process"
+          ],
+          "context_node_ids": [],
+          "background_node_ids": [],
+          "action_ids": [],
+          "same_factor_group_ids": [
+            "SG_HAV_ENTEPHALOPATHY_SERIES"
+          ],
+          "projection_mode": "latent_association_without_registered_emission",
+          "value_direction": null,
+          "note": "A generic latent/coordinate is relevant, but no observation emission is registered; record only."
+        },
+        "hepatic_necroinflammatory_histology_presence": {
+          "disposition": "record_only/unmapped",
+          "observed_node_ids": [],
+          "factor_group_ids": [],
+          "branch_relevant_latent_ids": [
+            "hepatocyte_injury_burden"
+          ],
+          "context_node_ids": [],
+          "background_node_ids": [],
+          "action_ids": [],
+          "same_factor_group_ids": [],
+          "projection_mode": "latent_association_without_registered_emission",
+          "value_direction": null,
+          "note": "A generic latent/coordinate is relevant, but no observation emission is registered; record only."
+        },
+        "hepatitis_a_igm_seropositivity": {
+          "disposition": "record_only/unmapped",
+          "observed_node_ids": [],
+          "factor_group_ids": [],
+          "branch_relevant_latent_ids": [],
+          "context_node_ids": [],
+          "background_node_ids": [],
+          "action_ids": [],
+          "same_factor_group_ids": [],
+          "projection_mode": "no_runtime_projection",
+          "value_direction": null,
+          "note": "No etiologic assay node; serology must not become a hidden branch label."
+        },
+        "hepatitis_b_serology_positivity_reported": {
+          "disposition": "record_only/unmapped",
+          "observed_node_ids": [],
+          "factor_group_ids": [],
+          "branch_relevant_latent_ids": [],
+          "context_node_ids": [],
+          "background_node_ids": [],
+          "action_ids": [],
+          "same_factor_group_ids": [],
+          "projection_mode": "no_runtime_projection",
+          "value_direction": null,
+          "note": "No viral serology node/etiologic branch."
+        },
+        "hepatitis_c_serology_positivity_reported": {
+          "disposition": "record_only/unmapped",
+          "observed_node_ids": [],
+          "factor_group_ids": [],
+          "branch_relevant_latent_ids": [],
+          "context_node_ids": [],
+          "background_node_ids": [],
+          "action_ids": [],
+          "same_factor_group_ids": [],
+          "projection_mode": "no_runtime_projection",
+          "value_direction": null,
+          "note": "No viral serology node/etiologic branch."
+        },
+        "hepatitis_e_serology_positivity_reported": {
+          "disposition": "record_only/unmapped",
+          "observed_node_ids": [],
+          "factor_group_ids": [],
+          "branch_relevant_latent_ids": [],
+          "context_node_ids": [],
+          "background_node_ids": [],
+          "action_ids": [],
+          "same_factor_group_ids": [],
+          "projection_mode": "no_runtime_projection",
+          "value_direction": null,
+          "note": "No viral serology node/etiologic branch."
+        },
+        "hiv_serology_positivity_reported": {
+          "disposition": "record_only/unmapped",
+          "observed_node_ids": [],
+          "factor_group_ids": [],
+          "branch_relevant_latent_ids": [],
+          "context_node_ids": [],
+          "background_node_ids": [],
+          "action_ids": [],
+          "same_factor_group_ids": [],
+          "projection_mode": "no_runtime_projection",
+          "value_direction": null,
+          "note": "No viral serology node/etiologic branch."
+        },
+        "hypotension_presence": {
+          "disposition": "rankable_observation",
+          "observed_node_ids": [
+            "arterial_pressure_impairment_ordinal"
+          ],
+          "factor_group_ids": [
+            "hemodynamic_shared_latent"
+          ],
+          "branch_relevant_latent_ids": [
+            "pump_function_loss",
+            "systemic_perfusion_deficit",
+            "support_masking"
+          ],
+          "context_node_ids": [],
+          "background_node_ids": [],
+          "action_ids": [],
+          "same_factor_group_ids": [
+            "SG_HAV_PRESSURE_HEMODYNAMIC"
+          ],
+          "projection_mode": "finding_to_ordinal_impairment",
+          "value_direction": null,
+          "note": "Maps only explicit pressure impairment; state remains external typed data."
+        },
+        "jaundice_presence": {
+          "disposition": "record_only/unmapped",
+          "observed_node_ids": [],
+          "factor_group_ids": [],
+          "branch_relevant_latent_ids": [],
+          "context_node_ids": [],
+          "background_node_ids": [],
+          "action_ids": [],
+          "same_factor_group_ids": [
+            "SG_HAV_BILIRUBIN_MANIFESTATION"
+          ],
+          "projection_mode": "no_runtime_projection",
+          "value_direction": null,
+          "note": "Physical jaundice is not the serum bilirubin measurement; retain as overlapping provenance."
+        },
+        "left_ventricular_ejection_fraction": {
+          "disposition": "rankable_observation",
+          "observed_node_ids": [
+            "ejection_fraction_impairment_ordinal"
+          ],
+          "factor_group_ids": [
+            "cardiac_injury_shared_latent"
+          ],
+          "branch_relevant_latent_ids": [
+            "pump_function_loss",
+            "support_masking"
+          ],
+          "context_node_ids": [],
+          "background_node_ids": [],
+          "action_ids": [],
+          "same_factor_group_ids": [
+            "SG_HAV_LV_SYSTOLIC_FUNCTION"
+          ],
+          "projection_mode": "direct_measurement_semantics",
+          "value_direction": null,
+          "note": "All concepts collapse to one LV systolic-function observation."
+        },
+        "left_ventricular_mid_basal_hypokinesia_presence": {
+          "disposition": "rankable_observation",
+          "observed_node_ids": [
+            "wall_motion_pattern"
+          ],
+          "factor_group_ids": [
+            "cardiac_injury_shared_latent"
+          ],
+          "branch_relevant_latent_ids": [
+            "transient_myocardial_stunning",
+            "myocardial_inflammatory_activity",
+            "ischemic_myocardial_injury"
+          ],
+          "context_node_ids": [],
+          "background_node_ids": [],
+          "action_ids": [],
+          "same_factor_group_ids": [
+            "SG_HAV_WALL_MOTION_PATTERN"
+          ],
+          "projection_mode": "components_to_single_categorical_pattern",
+          "value_direction": null,
+          "note": "Segmental components assemble one pattern and are not scored independently."
+        },
+        "left_ventricular_mid_ventricular_hypokinesia_presence": {
+          "disposition": "rankable_observation",
+          "observed_node_ids": [
+            "wall_motion_pattern"
+          ],
+          "factor_group_ids": [
+            "cardiac_injury_shared_latent"
+          ],
+          "branch_relevant_latent_ids": [
+            "transient_myocardial_stunning",
+            "myocardial_inflammatory_activity",
+            "ischemic_myocardial_injury"
+          ],
+          "context_node_ids": [],
+          "background_node_ids": [],
+          "action_ids": [],
+          "same_factor_group_ids": [
+            "SG_HAV_WALL_MOTION_PATTERN"
+          ],
+          "projection_mode": "components_to_single_categorical_pattern",
+          "value_direction": null,
+          "note": "Segmental components assemble one pattern and are not scored independently."
+        },
+        "nausea_presence": {
+          "disposition": "record_only/unmapped",
+          "observed_node_ids": [],
+          "factor_group_ids": [],
+          "branch_relevant_latent_ids": [],
+          "context_node_ids": [],
+          "background_node_ids": [],
+          "action_ids": [],
+          "same_factor_group_ids": [],
+          "projection_mode": "no_runtime_projection",
+          "value_direction": null,
+          "note": "No symptom observation is registered."
+        },
+        "obstructive_coronary_artery_abnormality_presence": {
+          "disposition": "record_only/unmapped",
+          "observed_node_ids": [],
+          "factor_group_ids": [],
+          "branch_relevant_latent_ids": [
+            "ischemic_myocardial_injury"
+          ],
+          "context_node_ids": [],
+          "background_node_ids": [],
+          "action_ids": [],
+          "same_factor_group_ids": [],
+          "projection_mode": "latent_association_without_registered_emission",
+          "value_direction": null,
+          "note": "A generic latent/coordinate is relevant, but no observation emission is registered; record only."
+        },
+        "other_physical_exam_abnormality_reported": {
+          "disposition": "record_only/unmapped",
+          "observed_node_ids": [],
+          "factor_group_ids": [],
+          "branch_relevant_latent_ids": [],
+          "context_node_ids": [],
+          "background_node_ids": [],
+          "action_ids": [],
+          "same_factor_group_ids": [],
+          "projection_mode": "no_runtime_projection",
+          "value_direction": null,
+          "note": "Ambiguous physical-exam bundle; split concrete findings first."
+        },
+        "periportal_hepatic_necrosis_presence": {
+          "disposition": "record_only/unmapped",
+          "observed_node_ids": [],
+          "factor_group_ids": [],
+          "branch_relevant_latent_ids": [
+            "hepatocyte_injury_burden"
+          ],
+          "context_node_ids": [],
+          "background_node_ids": [],
+          "action_ids": [],
+          "same_factor_group_ids": [],
+          "projection_mode": "latent_association_without_registered_emission",
+          "value_direction": null,
+          "note": "A generic latent/coordinate is relevant, but no observation emission is registered; record only."
+        },
+        "portal_plasma_cell_presence": {
+          "disposition": "record_only/unmapped",
+          "observed_node_ids": [],
+          "factor_group_ids": [],
+          "branch_relevant_latent_ids": [],
+          "context_node_ids": [],
+          "background_node_ids": [],
+          "action_ids": [],
+          "same_factor_group_ids": [],
+          "projection_mode": "no_runtime_projection",
+          "value_direction": null,
+          "note": "No pathology node or unambiguous generic latent projection."
+        },
+        "precordial_st_segment_depression_presence": {
+          "disposition": "record_only/unmapped",
+          "observed_node_ids": [],
+          "factor_group_ids": [],
+          "branch_relevant_latent_ids": [
+            "ischemic_myocardial_injury"
+          ],
+          "context_node_ids": [],
+          "background_node_ids": [],
+          "action_ids": [],
+          "same_factor_group_ids": [],
+          "projection_mode": "latent_association_without_registered_emission",
+          "value_direction": null,
+          "note": "A generic latent/coordinate is relevant, but no observation emission is registered; record only."
+        },
+        "prothrombin_time_inr": {
+          "disposition": "rankable_observation",
+          "observed_node_ids": [
+            "inr_impairment_ordinal"
+          ],
+          "factor_group_ids": [],
+          "branch_relevant_latent_ids": [
+            "hepatic_synthetic_failure"
+          ],
+          "context_node_ids": [],
+          "background_node_ids": [],
+          "action_ids": [],
+          "same_factor_group_ids": [],
+          "projection_mode": "direct_measurement_semantics",
+          "value_direction": null,
+          "note": "INR identity only; anticoagulant/vitamin-K/assay context remains required."
+        },
+        "rapid_encephalopathy_progression_presence": {
+          "disposition": "record_only/unmapped",
+          "observed_node_ids": [],
+          "factor_group_ids": [],
+          "branch_relevant_latent_ids": [
+            "encephalopathy_process",
+            "recovery_momentum"
+          ],
+          "context_node_ids": [],
+          "background_node_ids": [],
+          "action_ids": [],
+          "same_factor_group_ids": [
+            "SG_HAV_ENTEPHALOPATHY_SERIES"
+          ],
+          "projection_mode": "latent_association_without_registered_emission",
+          "value_direction": null,
+          "note": "A generic latent/coordinate is relevant, but no observation emission is registered; record only."
+        },
+        "recent_travel_history_presence": {
+          "disposition": "record_only/unmapped",
+          "observed_node_ids": [],
+          "factor_group_ids": [],
+          "branch_relevant_latent_ids": [],
+          "context_node_ids": [],
+          "background_node_ids": [],
+          "action_ids": [],
+          "same_factor_group_ids": [],
+          "projection_mode": "no_runtime_projection",
+          "value_direction": null,
+          "note": "No exposure-context node is registered."
+        },
+        "serum_alt": {
+          "disposition": "rankable_observation",
+          "observed_node_ids": [
+            "alt_ordinal"
+          ],
+          "factor_group_ids": [
+            "transaminase_shared_latent"
+          ],
+          "branch_relevant_latent_ids": [
+            "hepatocyte_injury_burden"
+          ],
+          "context_node_ids": [],
+          "background_node_ids": [],
+          "action_ids": [],
+          "same_factor_group_ids": [
+            "SG_HAV_TRANSAMINASE_PANEL"
+          ],
+          "projection_mode": "direct_measurement_semantics",
+          "value_direction": null,
+          "note": "Shared hepatocyte-injury latent; no derived transaminase vote."
+        },
+        "serum_ammonia": {
+          "disposition": "record_only/unmapped",
+          "observed_node_ids": [],
+          "factor_group_ids": [],
+          "branch_relevant_latent_ids": [
+            "hepatic_metabolic_failure"
+          ],
+          "context_node_ids": [],
+          "background_node_ids": [],
+          "action_ids": [],
+          "same_factor_group_ids": [],
+          "projection_mode": "latent_association_without_registered_emission",
+          "value_direction": null,
+          "note": "A generic latent/coordinate is relevant, but no observation emission is registered; record only."
+        },
+        "serum_ast": {
+          "disposition": "rankable_observation",
+          "observed_node_ids": [
+            "ast_ordinal"
+          ],
+          "factor_group_ids": [
+            "transaminase_shared_latent"
+          ],
+          "branch_relevant_latent_ids": [
+            "hepatocyte_injury_burden"
+          ],
+          "context_node_ids": [],
+          "background_node_ids": [],
+          "action_ids": [],
+          "same_factor_group_ids": [
+            "SG_HAV_TRANSAMINASE_PANEL"
+          ],
+          "projection_mode": "direct_measurement_semantics",
+          "value_direction": null,
+          "note": "Shared hepatocyte-injury latent; no derived transaminase vote."
+        },
+        "serum_troponin_i": {
+          "disposition": "rankable_observation",
+          "observed_node_ids": [
+            "troponin_ordinal"
+          ],
+          "factor_group_ids": [
+            "cardiac_injury_shared_latent"
+          ],
+          "branch_relevant_latent_ids": [
+            "myocardial_injury_burden"
+          ],
+          "context_node_ids": [],
+          "background_node_ids": [],
+          "action_ids": [],
+          "same_factor_group_ids": [
+            "SG_HAV_TROPONIN_SERIES"
+          ],
+          "projection_mode": "direct_measurement_semantics",
+          "value_direction": null,
+          "note": "Measurement and abnormality flag form one troponin stream."
+        },
+        "serum_troponin_i_abnormality_presence": {
+          "disposition": "rankable_observation",
+          "observed_node_ids": [
+            "troponin_ordinal"
+          ],
+          "factor_group_ids": [
+            "cardiac_injury_shared_latent"
+          ],
+          "branch_relevant_latent_ids": [
+            "myocardial_injury_burden"
+          ],
+          "context_node_ids": [],
+          "background_node_ids": [],
+          "action_ids": [],
+          "same_factor_group_ids": [
+            "SG_HAV_TROPONIN_SERIES"
+          ],
+          "projection_mode": "derived_presence_of_same_measurement",
+          "value_direction": null,
+          "note": "Measurement and abnormality flag form one troponin stream."
+        },
+        "severe_left_ventricular_function_depression_presence": {
+          "disposition": "rankable_observation",
+          "observed_node_ids": [
+            "ejection_fraction_impairment_ordinal"
+          ],
+          "factor_group_ids": [
+            "cardiac_injury_shared_latent"
+          ],
+          "branch_relevant_latent_ids": [
+            "pump_function_loss",
+            "support_masking"
+          ],
+          "context_node_ids": [],
+          "background_node_ids": [],
+          "action_ids": [],
+          "same_factor_group_ids": [
+            "SG_HAV_LV_SYSTOLIC_FUNCTION"
+          ],
+          "projection_mode": "derived_impairment_of_same_measurement",
+          "value_direction": null,
+          "note": "All concepts collapse to one LV systolic-function observation."
+        },
+        "severe_myocardial_systolic_dysfunction_presence": {
+          "disposition": "rankable_observation",
+          "observed_node_ids": [
+            "ejection_fraction_impairment_ordinal"
+          ],
+          "factor_group_ids": [
+            "cardiac_injury_shared_latent"
+          ],
+          "branch_relevant_latent_ids": [
+            "pump_function_loss",
+            "support_masking"
+          ],
+          "context_node_ids": [],
+          "background_node_ids": [],
+          "action_ids": [],
+          "same_factor_group_ids": [
+            "SG_HAV_LV_SYSTOLIC_FUNCTION"
+          ],
+          "projection_mode": "derived_impairment_of_same_measurement",
+          "value_direction": null,
+          "note": "All concepts collapse to one LV systolic-function observation."
+        },
+        "sexual_risk_behavior_history_presence": {
+          "disposition": "record_only/unmapped",
+          "observed_node_ids": [],
+          "factor_group_ids": [],
+          "branch_relevant_latent_ids": [],
+          "context_node_ids": [],
+          "background_node_ids": [],
+          "action_ids": [],
+          "same_factor_group_ids": [],
+          "projection_mode": "no_runtime_projection",
+          "value_direction": null,
+          "note": "No exposure-context node is registered."
+        },
+        "total_bilirubin": {
+          "disposition": "rankable_observation",
+          "observed_node_ids": [
+            "bilirubin_ordinal"
+          ],
+          "factor_group_ids": [],
+          "branch_relevant_latent_ids": [
+            "hepatocyte_injury_burden",
+            "hepatic_synthetic_failure"
+          ],
+          "context_node_ids": [],
+          "background_node_ids": [],
+          "action_ids": [],
+          "same_factor_group_ids": [
+            "SG_HAV_BILIRUBIN_MANIFESTATION"
+          ],
+          "projection_mode": "direct_measurement_semantics",
+          "value_direction": null,
+          "note": "No severity direction is preset."
+        }
+      }
+    }
+  },
+  "validation": {
+    "status": "PASS",
+    "checks": [
+      "exact concept coverage",
+      "model reference existence",
+      "same-factor forward/reverse links",
+      "null directions",
+      "rankable has observed node",
+      "record-only has no observed node"
+    ],
+    "concept_counts": {
+      "PMC10448002": 65,
+      "PMC7005653": 41
+    },
+    "disposition_counts": {
+      "PMC10448002": {
+        "rankable_observation": 18,
+        "context_or_action_only": 16,
+        "record_only/unmapped": 31
+      },
+      "PMC7005653": {
+        "record_only/unmapped": 29,
+        "rankable_observation": 12
+      }
+    },
+    "error_count": 0,
+    "errors": []
+  }
+}

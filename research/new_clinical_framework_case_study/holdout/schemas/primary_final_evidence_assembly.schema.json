@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "ncf.primary-final-evidence-assembly.v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "phase", "combined_preprimary_seal", "combined_preprimary_payload_sha256", "all_sealed_inventory", "all_sealed_verification", "inputs", "outputs", "gate_ids", "coverage_ids", "evidence_files", "invariants", "assembly_sha256"],
+  "properties": {
+    "schema_version": {"const": "ncf.primary-final-evidence-assembly.v1"},
+    "phase": {"enum": ["NONREPORT", "FINAL"]},
+    "combined_preprimary_seal": {"$ref": "#/$defs/contentRef"},
+    "combined_preprimary_payload_sha256": {"$ref": "#/$defs/sha256"},
+    "all_sealed_inventory": {"$ref": "#/$defs/contentRef"},
+    "all_sealed_verification": {
+      "type": "object", "additionalProperties": false,
+      "required": ["all_artifacts_content_verified", "artifact_count", "artifact_classes"],
+      "properties": {
+        "all_artifacts_content_verified": {"const": true},
+        "artifact_count": {"type": "integer", "minimum": 3},
+        "artifact_classes": {"type": "array", "minItems": 3, "uniqueItems": true, "items": {"type": "string", "minLength": 1}}
+      }
+    },
+    "inputs": {"type": "array", "minItems": 6, "uniqueItems": true, "items": {"$ref": "#/$defs/contentRef"}},
+    "outputs": {"type": "array", "minItems": 2, "maxItems": 2, "uniqueItems": true, "items": {"$ref": "#/$defs/contentRef"}},
+    "gate_ids": {"type": "array", "minItems": 29, "maxItems": 30, "uniqueItems": true, "items": {"type": "string", "pattern": "^PL-[A-Z]+-[0-9]{3}$"}},
+    "coverage_ids": {"type": "array", "minItems": 7, "maxItems": 7, "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+    "evidence_files": {"type": "array", "minItems": 36, "maxItems": 37, "uniqueItems": true, "items": {"$ref": "#/$defs/contentRef"}},
+    "invariants": {
+      "type": "object", "additionalProperties": false,
+      "required": ["manual_pass_evidence_forbidden", "all_results_source_derived", "exact_gate_coverage", "exact_complex_coverage"],
+      "properties": {
+        "manual_pass_evidence_forbidden": {"const": true},
+        "all_results_source_derived": {"const": true},
+        "exact_gate_coverage": {"const": true},
+        "exact_complex_coverage": {"const": true}
+      }
+    },
+    "assembly_sha256": {"$ref": "#/$defs/sha256"}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "contentRef": {
+      "type": "object", "additionalProperties": false,
+      "required": ["path", "sha256", "bytes"],
+      "properties": {
+        "path": {"type": "string", "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))[A-Za-z0-9._/-]+$"},
+        "sha256": {"$ref": "#/$defs/sha256"},
+        "bytes": {"type": "integer", "minimum": 1}
+      }
+    }
+  }
+}

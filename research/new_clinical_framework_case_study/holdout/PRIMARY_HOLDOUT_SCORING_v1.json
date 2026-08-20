@@ -1,0 +1,494 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "contract_id": "NCF-PRIMARY-HOLDOUT-SCORING",
+  "contract_version": "1.0.0",
+  "status": "FROZEN_BEFORE_PRIMARY_CASE_SEARCH_OR_SELECTION",
+  "architecture_version": "NCF-ARCH-1.0.0",
+  "gate_contract_version": "1.1.0",
+  "scope": "single complex longitudinal adult ICU hemodynamic-collapse case",
+  "probability_boundary": {
+    "runtime_probabilities_are_clinically_calibrated": false,
+    "allowed_interpretation": "ordinal case-bounded evidence response and non-zero predictive support",
+    "forbid_sensitivity_specificity_ppv_npv_or_population_claims": true
+  },
+  "eligible_forecast_cuts": {
+    "rule": "every nonterminal guaranteed-availability cut with at least one later clinically consequential verification event",
+    "horizons": [
+      "next_guaranteed_availability_cut",
+      "one_runtime_ordinal_step"
+    ],
+    "missing_followup": "exclude only with a pre-replay DATA_EVIDENCE reason; list all exclusions; no favorable-cut selection",
+    "forecast_must_be_sealed_before_next_cut": true
+  },
+  "prediction_case_consistency": {
+    "support_floor": 1e-12,
+    "finite_positive_support_required_for_every_mapped_consequential_realization": true,
+    "undefined_or_zero_support_is_hard_fail": true,
+    "latent_posterior_predictive_check": "future evidence-updated process coordinate and mode posterior must overlap a state assigned support by the prior sealed forecast",
+    "direction_deadband": 0.05,
+    "directional_item_eligible_if": "absolute forecasted median change and absolute realized posterior change are both at least direction_deadband",
+    "directional_agreement": "sign(forecasted median change) equals sign(realized posterior change)",
+    "aggregate_rule": {
+      "no_zero_or_undefined_support": true,
+      "all_eligible_cuts_forecasted": true,
+      "mean_bounded_log_score_must_not_be_worse_than_persistence_by_more_than": 0.1,
+      "all_oracle_designated_critical_mode_transitions_must_have_nonzero_support": true
+    },
+    "baseline": "frozen persistence forecast from the same cut state with no process drift, coupling, mode switch or action effect",
+    "claim_if_pass": "PREDICTIVELY_CASE_CONSISTENT_NOT_CALIBRATED"
+  },
+  "diagnostic_localization": {
+    "oracle_is_opened_only_after_replay_outputs_are_sealed": true,
+    "target_process_rule": {
+      "marginal_at_decisive_cut_minimum": 0.5,
+      "posterior_odds_over_case_blind_prior_minimum_ratio": 2.0,
+      "at_least_one_explicit_oracle_concordant_factor": true
+    },
+    "concurrent_targets_are_not_normalized_to_sum_one": true,
+    "incompatible_alternative_rule": "each oracle-designated incompatible alternative must have an explicit factor that lowers its odds by the decisive cut; unresolved evidence-equivalent alternatives remain unresolved",
+    "tie_rule": "if target and an oracle-designated incompatible alternative differ by less than 0.25 absolute log-odds at the decisive cut, report unresolved tie rather than localized",
+    "ood_target_absent_from_model": "MODEL_CONTENT_FAIL_WITH_OOD_OR_PARTIAL_ANSWER_REQUIRED",
+    "published_label_alone_is_never_input_or_success_evidence": true
+  },
+  "directional_assertions": {
+    "case_specific_assertions_created_by": "independent oracle adjudicator",
+    "must_be_sealed_before_first_runtime_output": true,
+    "must_not_use_model_scores_or_runtime_output": true,
+    "reliable_negative_required_for_primary_case": true,
+    "nonmention_never_counts_as_negative": true
+  },
+  "ood_response": {
+    "unmapped_or_misfit_consequential_evidence_must_raise_matching_residual_component": true,
+    "material_delta_from_pre_evidence_state": 0.1,
+    "if_material_delta_not_reached": "require typed partial_answer_or_abstention with explicit event ids; otherwise fail",
+    "known_process_confidence_cannot_renormalize_away_residual": true
+  },
+  "action_counterfactual": {
+    "single_case_observed_response_identifies_unperformed_individual_effect": false,
+    "permitted_statuses": [
+      "IDENTIFIED_WITHIN_SCOPE",
+      "PARTIALLY_IDENTIFIED",
+      "UNIDENTIFIABLE",
+      "OUT_OF_SCOPE"
+    ],
+    "unique_action_effect_or_best_action_forbidden_when_status_is_unidentifiable_or_out_of_scope": true,
+    "observed_factual_response_may_update_subsequent_shared_state": true
+  },
+  "representation": {
+    "complete_source_assertion_denominator_required": true,
+    "clinically_consequential_silent_drop_tolerance": 0,
+    "nonmention_as_negative_tolerance": 0,
+    "invented_availability_time_tolerance": 0,
+    "future_event_leak_tolerance": 0,
+    "method_failed_or_unknown_in_factor_messages_tolerance": 0,
+    "unit_normalization_failed_in_factor_messages_tolerance": 0,
+    "low_or_unknown_reliability_in_factor_messages_tolerance": 0,
+    "unconditioned_support_masked_evidence_in_factor_messages_tolerance": 0,
+    "withheld_without_measurement_uncertainty_accounting_tolerance": 0,
+    "unsuppressed_alternative_representation_duplicates_tolerance": 0,
+    "reliable_negative_requires_all_five_source_contract_checks": true
+  },
+  "refinement_non_regression": {
+    "old_scope_absolute_probability_tolerance": 1e-12,
+    "old_scope_state_hash_change_without_declared_migration_tolerance": 0,
+    "unaffected_query_direction_changes_allowed": 0
+  },
+  "verdict_boundary": {
+    "all_30_hard_gates_must_pass": true,
+    "complex_real_case_coverage_must_pass": true,
+    "correct_final_label_can_override_failure": false,
+    "case_independent_structural_probe_can_replace_missing_real_case_evidence": false,
+    "strongest_positive_verdict": "PERFECT_LANDING_WITHIN_FROZEN_CASE_SCOPE"
+  },
+  "final_scorer_contract": {
+    "executable": "holdout/tools/final_primary_holdout_scorer.py",
+    "result_schema": "holdout/schemas/primary_holdout_final_result.schema.json",
+    "test_source": "holdout/tools/test_final_primary_holdout_scorer.py",
+    "required_gate_count": 30,
+    "required_gate_id_set_source": "holdout/PERFECT_LANDING_GATES.json gates[].id",
+    "missing_duplicate_unknown_or_malformed_gate_verdict": "HARNESS_INCOMPLETE",
+    "not_executed_evidence_missing_or_not_applicable_hard_gate_verdict": "HARNESS_INCOMPLETE",
+    "all_gate_evidence_complete_with_any_hard_gate_fail_verdict": "FAILED",
+    "complex_case_coverage_missing_or_malformed_verdict": "HARNESS_INCOMPLETE",
+    "complex_case_coverage_complete_with_any_failure_verdict": "FAILED",
+    "only_positive_path": "exactly all 30 hard gates PASS and all frozen complex real-case coverage checks PASS",
+    "correct_diagnosis_override_forbidden": true,
+    "result_rows_are_canonicalized_to_exact_frozen_gate_order": true,
+    "evidence_schema": "holdout/schemas/primary_gate_evidence.schema.json",
+    "evidence_refs_are_content_addressed_objects": true,
+    "evidence_file_must_exist_under_study_root": true,
+    "evidence_sha256_must_match": true,
+    "evidence_subject_kind_and_id_must_match_row": true,
+    "evidence_claimed_result_must_match_row": true,
+    "evidence_ref_requires_sha256_and_bytes": true,
+    "source_artifact_refs_are_content_addressed": true,
+    "producer_tool_ref_must_match_exact_combined_seal_artifact": true,
+    "deterministic_assertions_require_source_json_pointer_observed_expected_operator": true,
+    "bare_passed_boolean_forbidden": true,
+    "pass_requires_all_deterministic_operator_checks_true": true,
+    "fail_requires_at_least_one_deterministic_operator_check_false": true,
+    "unautomated_positive_gate_verdict": "HARNESS_INCOMPLETE",
+    "evidence_producer_policy": {
+      "sealed_automated_generators": [
+        {
+          "producer_id": "structural-gate-harness-v1",
+          "tool_path": "holdout/tools/structural_gate_harness.py",
+          "artifact_schema_versions": [
+            "ncf.structural-gate-results.v1"
+          ],
+          "artifact_produced_by_required": true,
+          "allowed_subjects": {
+            "GATE": [
+              "PL-IND-001",
+              "PL-LED-002",
+              "PL-STATE-001",
+              "PL-STATE-002",
+              "PL-TIME-001",
+              "PL-TIME-002",
+              "PL-FACT-001",
+              "PL-FACT-002",
+              "PL-CONC-001",
+              "PL-CONC-002",
+              "PL-MODE-001",
+              "PL-MODE-002",
+              "PL-SUPPORT-001",
+              "PL-GEOM-001",
+              "PL-DX-001",
+              "PL-PRED-001",
+              "PL-ACT-001",
+              "PL-ACT-002",
+              "PL-OOD-001",
+              "PL-OOD-002",
+              "PL-REF-001",
+              "PL-REF-002",
+              "PL-REF-003",
+              "PL-REF-004"
+            ],
+            "COMPLEX_COVERAGE": []
+          },
+          "replay_contract": {
+            "schema_version": "ncf.producer-replay-policy.v1",
+            "adapter_id": "CONFIGURED_CLI_EXACT_JSON_V1",
+            "argv_template": [
+              "--output",
+              "{output_dir}",
+              "--generated-at",
+              "{check:generated_at}"
+            ],
+            "required_input_slots": {},
+            "check_arg_contract": {
+              "generated_at": {
+                "source": "OUTPUT_JSON_POINTER",
+                "json_pointer": "/generated_at",
+                "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+              }
+            },
+            "output_contract": {
+              "mode": "DIRECTORY_MANIFEST",
+              "artifact_relative_path": "structural_gate_results.json",
+              "manifest_json_pointer": "/evidence_manifest",
+              "manifest_path_field": "path",
+              "json_schema_versions": [
+                "ncf.structural-gate-results.v1"
+              ]
+            },
+            "timeout_seconds": 300,
+            "working_directory": "STUDY_ROOT",
+            "network_policy": "APPLICATION_SOCKET_GUARD_OFFLINE",
+            "comparison": "EXACT_BYTES_AND_CANONICAL_JSON"
+          },
+          "assertion_contract": {
+            "schema_version": "ncf.producer-assertion-contract.v1",
+            "mode": "SUBJECT_RESULT_ROW_EXACT_V1",
+            "result_array_json_pointers": {
+              "GATE": "/gate_results"
+            },
+            "subject_id_field": "gate_id",
+            "subject_kind_field": null,
+            "result_field": "result"
+          }
+        },
+        {
+          "producer_id": "event-ledger-fresh-replay-v1",
+          "tool_path": "holdout/tools/event_ledger_replay.py",
+          "artifact_schema_versions": [
+            "ncf.holdout.fresh-process-replay-report.v1"
+          ],
+          "artifact_produced_by_required": false,
+          "allowed_subjects": {
+            "GATE": [
+              "PL-LED-002"
+            ],
+            "COMPLEX_COVERAGE": [
+              "recursive_updates"
+            ]
+          },
+          "replay_contract": {
+            "schema_version": "ncf.producer-replay-policy.v1",
+            "adapter_id": "CONFIGURED_CLI_EXACT_JSON_V1",
+            "argv_template": [
+              "verify",
+              "--bundle",
+              "{input:bundle}",
+              "--model",
+              "{input:model}",
+              "--report",
+              "{output}"
+            ],
+            "required_input_slots": {
+              "bundle": {
+                "json_schema_versions": [
+                  "ncf.holdout.event-ledger-replay-bundle.v1"
+                ]
+              },
+              "model": {
+                "json_schema_versions": [
+                  "new-clinical-runtime.model.v2.0"
+                ]
+              }
+            },
+            "check_arg_contract": {},
+            "output_contract": {
+              "mode": "SINGLE_FILE",
+              "json_schema_versions": [
+                "ncf.holdout.fresh-process-replay-report.v1"
+              ]
+            },
+            "timeout_seconds": 300,
+            "working_directory": "STUDY_ROOT",
+            "network_policy": "APPLICATION_SOCKET_GUARD_OFFLINE",
+            "comparison": "EXACT_BYTES_AND_CANONICAL_JSON"
+          },
+          "assertion_contract": {
+            "schema_version": "ncf.producer-assertion-contract.v1",
+            "mode": "SUBJECT_EXACT_POINTERS_V1",
+            "subject_assertions": {
+              "GATE": {
+                "PL-LED-002": [
+                  {
+                    "json_pointer": "/status",
+                    "expected": "PASS",
+                    "operator": "EQ"
+                  },
+                  {
+                    "json_pointer": "/recursive_fresh_process_byte_exact",
+                    "expected": true,
+                    "operator": "EQ"
+                  },
+                  {
+                    "json_pointer": "/cold_prefix_replay_byte_exact",
+                    "expected": true,
+                    "operator": "EQ"
+                  },
+                  {
+                    "json_pointer": "/cold_full_history_replay_byte_exact",
+                    "expected": true,
+                    "operator": "EQ"
+                  },
+                  {
+                    "json_pointer": "/deterministic_event_order_validated",
+                    "expected": true,
+                    "operator": "EQ"
+                  },
+                  {
+                    "json_pointer": "/available_time_boundary_validated",
+                    "expected": true,
+                    "operator": "EQ"
+                  }
+                ]
+              },
+              "COMPLEX_COVERAGE": {
+                "recursive_updates": [
+                  {
+                    "json_pointer": "/status",
+                    "expected": "PASS",
+                    "operator": "EQ"
+                  },
+                  {
+                    "json_pointer": "/recursive_fresh_process_byte_exact",
+                    "expected": true,
+                    "operator": "EQ"
+                  },
+                  {
+                    "json_pointer": "/cold_prefix_replay_byte_exact",
+                    "expected": true,
+                    "operator": "EQ"
+                  },
+                  {
+                    "json_pointer": "/cold_full_history_replay_byte_exact",
+                    "expected": true,
+                    "operator": "EQ"
+                  },
+                  {
+                    "json_pointer": "/deterministic_event_order_validated",
+                    "expected": true,
+                    "operator": "EQ"
+                  },
+                  {
+                    "json_pointer": "/available_time_boundary_validated",
+                    "expected": true,
+                    "operator": "EQ"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "producer_id": "primary-case-gate-evaluator-case-v1",
+          "tool_path": "holdout/tools/primary_case_gate_evaluator.py",
+          "artifact_schema_versions": [
+            "ncf.primary-case-gate-evaluation.v1"
+          ],
+          "artifact_produced_by_required": true,
+          "replay_contract": {
+            "schema_version": "ncf.producer-replay-policy.v1",
+            "adapter_id": "CONFIGURED_CLI_EXACT_JSON_V1",
+            "argv_template": [
+              "{check:subcommand}",
+              "--manifest",
+              "{input:input_manifest}",
+              "--output",
+              "{output}"
+            ],
+            "required_input_slots": {
+              "input_manifest": {
+                "json_schema_versions": [
+                  "ncf.primary-case-gate-evaluator-input.v1"
+                ]
+              }
+            },
+            "check_arg_contract": {
+              "subcommand": {
+                "source": "SEALED_ENUM",
+                "allowed_values": [
+                  "evaluate-case"
+                ]
+              }
+            },
+            "output_contract": {
+              "mode": "SINGLE_FILE",
+              "json_schema_versions": [
+                "ncf.primary-case-gate-evaluation.v1"
+              ]
+            },
+            "timeout_seconds": 300,
+            "working_directory": "STUDY_ROOT",
+            "network_policy": "APPLICATION_SOCKET_GUARD_OFFLINE",
+            "comparison": "EXACT_BYTES_AND_CANONICAL_JSON"
+          },
+          "allowed_subjects": {
+            "GATE": [
+              "PL-BLIND-001",
+              "PL-LED-001",
+              "PL-DX-002",
+              "PL-PRED-002",
+              "PL-CASE-001"
+            ],
+            "COMPLEX_COVERAGE": [
+              "at_least_two_local_domains",
+              "concurrent_process_target_from_oracle",
+              "delayed_information",
+              "reliable_negative_evidence",
+              "performed_action_lifecycle_with_response",
+              "prospective_pre_next_cut_forecasts"
+            ]
+          },
+          "assertion_contract": {
+            "schema_version": "ncf.producer-assertion-contract.v1",
+            "mode": "SUBJECT_RESULT_ROW_EXHAUSTIVE_CHECKS_V1",
+            "result_array_json_pointers": {
+              "GATE": "/gate_results",
+              "COMPLEX_COVERAGE": "/coverage_results"
+            },
+            "subject_id_field": "subject_id",
+            "subject_kind_field": "subject_kind",
+            "result_field": "computed_result",
+            "checks_field": "checks",
+            "check_id_field": "check_id",
+            "check_observed_field": "observed",
+            "check_expected_field": "expected",
+            "check_operator_field": "operator",
+            "check_pass_field": "passed"
+          }
+        },
+        {
+          "producer_id": "primary-case-gate-evaluator-report-v1",
+          "tool_path": "holdout/tools/primary_case_gate_evaluator.py",
+          "artifact_schema_versions": [
+            "ncf.primary-case-gate-evaluation.v1"
+          ],
+          "artifact_produced_by_required": true,
+          "replay_contract": {
+            "schema_version": "ncf.producer-replay-policy.v1",
+            "adapter_id": "CONFIGURED_CLI_EXACT_JSON_V1",
+            "argv_template": [
+              "{check:subcommand}",
+              "--manifest",
+              "{input:input_manifest}",
+              "--output",
+              "{output}"
+            ],
+            "required_input_slots": {
+              "input_manifest": {
+                "json_schema_versions": [
+                  "ncf.primary-case-gate-evaluator-input.v1"
+                ]
+              }
+            },
+            "check_arg_contract": {
+              "subcommand": {
+                "source": "SEALED_ENUM",
+                "allowed_values": [
+                  "evaluate-report"
+                ]
+              }
+            },
+            "output_contract": {
+              "mode": "SINGLE_FILE",
+              "json_schema_versions": [
+                "ncf.primary-case-gate-evaluation.v1"
+              ]
+            },
+            "timeout_seconds": 300,
+            "working_directory": "STUDY_ROOT",
+            "network_policy": "APPLICATION_SOCKET_GUARD_OFFLINE",
+            "comparison": "EXACT_BYTES_AND_CANONICAL_JSON"
+          },
+          "allowed_subjects": {
+            "GATE": [
+              "PL-REPORT-001"
+            ],
+            "COMPLEX_COVERAGE": []
+          },
+          "assertion_contract": {
+            "schema_version": "ncf.producer-assertion-contract.v1",
+            "mode": "SUBJECT_RESULT_ROW_EXHAUSTIVE_CHECKS_V1",
+            "result_array_json_pointers": {
+              "GATE": "/gate_results",
+              "COMPLEX_COVERAGE": "/coverage_results"
+            },
+            "subject_id_field": "subject_id",
+            "subject_kind_field": "subject_kind",
+            "result_field": "computed_result",
+            "checks_field": "checks",
+            "check_id_field": "check_id",
+            "check_observed_field": "observed",
+            "check_expected_field": "expected",
+            "check_operator_field": "operator",
+            "check_pass_field": "passed"
+          }
+        }
+      ],
+      "manual_independent_auditor": {
+        "policy_id": "NCF-MANUAL-INDEPENDENT-AUDITOR-FAILURE-ONLY-1.0.0",
+        "required_role": "scorer_auditor",
+        "required_role_manifest_schema_version": "NCF-PRIMARY-ROLE-MANIFEST-1.1.0",
+        "required_audit_output_data_class": "audit_report",
+        "pass_permitted": false,
+        "fail_permitted": true,
+        "unautomated_positive_result": "HARNESS_INCOMPLETE"
+      }
+    }
+  }
+}

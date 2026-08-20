@@ -1,0 +1,83 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "new-clinical-runtime.event.v2.1",
+  "title": "Runtime v2 public event",
+  "type": "object",
+  "required": ["schema_version", "event_id", "event_type", "occurred_time", "recorded_at", "available_at", "provenance"],
+  "properties": {
+    "schema_version": {"const": "new-clinical-runtime.event.v2.1"},
+    "event_id": {"type": "string", "minLength": 1},
+    "event_type": {
+      "enum": [
+        "ObservationAvailable",
+        "ActionStarted",
+        "ActionContinued",
+        "ActionDoseChanged",
+        "ActionHeld",
+        "ActionStopped",
+        "ActionCompleted",
+        "PlannedAction",
+        "PlannedTreatment",
+        "RecordOnly"
+      ]
+    },
+    "occurred_time": {"$ref": "#/$defs/timeInterval"},
+    "recorded_at": {"type": "number"},
+    "available_at": {"type": "number"},
+    "sample_time": {"$ref": "#/$defs/timeInterval"},
+    "result_at": {"type": "number"},
+    "concept_id": {"type": "string"},
+    "value": {},
+    "rankable": {"type": "boolean"},
+    "action_id": {"type": "string"},
+    "exposure_id": {"type": "string"},
+    "dose": {"type": "number", "minimum": 0},
+    "dose_unit": {"type": ["string", "null"]},
+    "provenance": {
+      "type": "object",
+      "required": ["source_result_id"],
+      "properties": {
+        "source_result_id": {"type": "string", "minLength": 1},
+        "source_kind": {"type": "string"}
+      },
+      "additionalProperties": true
+    }
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"event_type": {"const": "ObservationAvailable"}}},
+      "then": {"required": ["concept_id", "value", "sample_time", "result_at"]}
+    },
+    {
+      "if": {
+        "properties": {
+          "event_type": {
+            "enum": ["ActionStarted", "ActionContinued", "ActionDoseChanged", "ActionHeld", "ActionStopped", "ActionCompleted"]
+          }
+        }
+      },
+      "then": {"required": ["action_id", "exposure_id"]}
+    },
+    {
+      "if": {
+        "properties": {
+          "event_type": {"enum": ["PlannedAction", "PlannedTreatment"]}
+        }
+      },
+      "then": {"required": ["action_id"]}
+    }
+  ],
+  "$defs": {
+    "timeInterval": {
+      "type": "object",
+      "required": ["lower", "upper"],
+      "properties": {
+        "lower": {"type": "number"},
+        "upper": {"type": "number"},
+        "partial_order_id": {"type": "string"}
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": true
+}

@@ -1,0 +1,91 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "ncf.data.all-sealed-artifacts-after-replay.v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "evaluator_run_id",
+    "replay_sealed",
+    "oracle_contents_included",
+    "artifacts"
+  ],
+  "properties": {
+    "schema_version": {"const": "NCF-ALL-SEALED-ARTIFACTS-AFTER-REPLAY-1.0.0"},
+    "evaluator_run_id": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$"},
+    "replay_sealed": {"const": true},
+    "oracle_contents_included": {"const": false},
+    "artifacts": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/artifactRef"}
+    },
+    "producer_id": {
+      "const": "post-replay-inventory-compiler-v1"
+    },
+    "topology_order": {
+      "const": [
+        "six_upstream_role_manifests_closed",
+        "evaluator_post_replay_receipt_closed",
+        "post_replay_inventory_compiled",
+        "evaluator_manifest_closed",
+        "scorer_auditor_consumes_inventory",
+        "final_eight_role_manifest_set_closed"
+      ]
+    },
+    "producer_inputs": {
+      "type": "array",
+      "minItems": 16,
+      "maxItems": 16,
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/artifactRef"}
+    },
+    "lineage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "compiler_input_manifest",
+        "upstream_role_manifest_set_digest",
+        "evaluator_input_inventory_digest",
+        "producer_input_inventory_digest",
+        "self_reference_forbidden"
+      ],
+      "properties": {
+        "compiler_input_manifest": {"$ref": "#/$defs/contentRef"},
+        "upstream_role_manifest_set_digest": {"$ref": "#/$defs/sha256"},
+        "evaluator_input_inventory_digest": {"$ref": "#/$defs/sha256"},
+        "producer_input_inventory_digest": {"$ref": "#/$defs/sha256"},
+        "self_reference_forbidden": {"const": true}
+      }
+    },
+    "executor_internal_bundle": {"$ref": "#/$defs/artifactRef"},
+    "inventory_sha256": {"$ref": "#/$defs/sha256"},
+    "closure_payload_sha256": {"$ref": "#/$defs/sha256"}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "contentRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256", "bytes"],
+      "properties": {
+        "path": {"type": "string", "minLength": 1},
+        "sha256": {"$ref": "#/$defs/sha256"},
+        "bytes": {"type": "integer", "minimum": 1}
+      }
+    },
+    "artifactRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256", "bytes", "data_class", "schema_id"],
+      "properties": {
+        "path": {"type": "string", "minLength": 1},
+        "sha256": {"$ref": "#/$defs/sha256"},
+        "bytes": {"type": "integer", "minimum": 1},
+        "data_class": {"type": "string", "pattern": "^[a-z][a-z0-9_]{0,127}$"},
+        "schema_id": {"type": "string", "minLength": 1}
+      }
+    }
+  }
+}

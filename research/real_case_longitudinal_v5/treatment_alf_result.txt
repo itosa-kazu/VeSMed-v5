@@ -1,0 +1,43 @@
+============================================================================================================
+V5 joint SDE treatment vector-field simulation
+============================================================================================================
+N_PARTICLES=260, horizon=30d, dt=1.0, kappa=0.55, noise_scale=0.06
+Treatment policies, including same-disease bundles and timed stages, are ranked by RMST over the horizon. Candidate disease/combo is taken from each case's expected manifold(s).
+Manifold discovery: 1 root distillation files from C:\Users\wangw\Documents\vesmed\distillations\v5_*.json
+Case filter: ACUTE_LIVER_FAILURE_HAV_TAKOTSUBO_PMC7005653
+Cases loaded for this run: 1
+
+------------------------------------------------------------------------------------------------------------
+ACUTE_LIVER_FAILURE_HAV_TAKOTSUBO_PMC7005653  candidate=D-ACUTE-LIVER-FAILURE
+source: PMID 32039396 / PMC7005653 / https://pmc.ncbi.nlm.nih.gov/articles/PMC7005653/
+start latent days: D-ACUTE-LIVER-FAILURE=day0.0
+
+Top treatment vector fields by RMST:
+   1. RMST= 30.00d [p25=30.00, p75=30.00] gain= +0.01d  D-ACUTE-LIVER-FAILURE:urgent_liver_transplantation_or_transplant_pathway + D-ACUTE-LIVER-FAILURE:acyclovir_for_herpesvirus_context + D-ACUTE-LIVER-FAILURE:pregnancy_context_delivery_or_obstetric_source_control + D-ACUTE-LIVER-FAILURE:therapeutic_plasma_exchange
+   2. RMST= 30.00d [p25=30.00, p75=30.00] gain= +0.01d  D-ACUTE-LIVER-FAILURE:urgent_liver_transplantation_or_transplant_pathway + D-ACUTE-LIVER-FAILURE:pregnancy_context_delivery_or_obstetric_source_control + D-ACUTE-LIVER-FAILURE:therapeutic_plasma_exchange
+   3. RMST= 30.00d [p25=30.00, p75=30.00] gain= +0.01d  D-ACUTE-LIVER-FAILURE:urgent_liver_transplantation_or_transplant_pathway + D-ACUTE-LIVER-FAILURE:acyclovir_for_herpesvirus_context + D-ACUTE-LIVER-FAILURE:therapeutic_plasma_exchange
+   4. RMST= 30.00d [p25=30.00, p75=30.00] gain= +0.01d  D-ACUTE-LIVER-FAILURE:urgent_liver_transplantation_or_transplant_pathway + D-ACUTE-LIVER-FAILURE:pregnancy_context_delivery_or_obstetric_source_control + D-ACUTE-LIVER-FAILURE:intravenous_n_acetylcysteine + D-ACUTE-LIVER-FAILURE:therapeutic_plasma_exchange
+   5. RMST= 30.00d [p25=30.00, p75=30.00] gain= +0.01d  D-ACUTE-LIVER-FAILURE:urgent_liver_transplantation_or_transplant_pathway + D-ACUTE-LIVER-FAILURE:therapeutic_plasma_exchange
+   6. RMST= 30.00d [p25=30.00, p75=30.00] gain= +0.01d  D-ACUTE-LIVER-FAILURE:urgent_liver_transplantation_or_transplant_pathway + D-ACUTE-LIVER-FAILURE:therapeutic_plasma_exchange + D-ACUTE-LIVER-FAILURE:hemodynamic_support_vasopressors_fluids_and_perfusion_optimization
+   7. RMST= 30.00d [p25=30.00, p75=30.00] gain= +0.01d  D-ACUTE-LIVER-FAILURE:urgent_liver_transplantation_or_transplant_pathway + D-ACUTE-LIVER-FAILURE:pregnancy_context_delivery_or_obstetric_source_control
+   8. RMST= 30.00d [p25=30.00, p75=30.00] gain= +0.01d  D-ACUTE-LIVER-FAILURE:urgent_liver_transplantation_or_transplant_pathway + D-ACUTE-LIVER-FAILURE:pregnancy_context_delivery_or_obstetric_source_control + D-ACUTE-LIVER-FAILURE:hemodynamic_support_vasopressors_fluids_and_perfusion_optimization
+Best vs no treatment: D-ACUTE-LIVER-FAILURE:urgent_liver_transplantation_or_transplant_pathway + D-ACUTE-LIVER-FAILURE:acyclovir_for_herpesvirus_context + D-ACUTE-LIVER-FAILURE:pregnancy_context_delivery_or_obstetric_source_control + D-ACUTE-LIVER-FAILURE:therapeutic_plasma_exchange  gain=+0.01d over 30d
+Axis movement at day 7 vs no treatment:
+  mortality_hazard_in_D-ACUTE-LIVER-FAILURE     treated= 1.359e-06  untreated= 1.093e-07  delta= +1.25e-06
+  major_bleeding_hazard                         treated= 7.554e-06  untreated= 0.0005525  delta=-0.0005449
+  acute_kidney_injury_hazard                    treated=  0.000787  untreated=  0.000829  delta=-4.195e-05
+  dic_hazard                                    treated= 1.437e-05  untreated=  0.001447  delta= -0.001433
+  serum_lactate                                 treated=     2.074  untreated=     2.078  delta= -0.004037
+  mean_arterial_pressure                        treated=     77.49  untreated=     77.36  delta=   +0.1283
+
+============================================================================================================
+Notes:
+  - reshape_landscape changes disease trajectory targets including mortality_hazard when distilled.
+  - latent_mechanisms / mechanism_edges let treatments change hidden disease engines and propagate to downstream axes.
+  - push_state adds an explicit treatment force to axes such as MAP, oxygen saturation, hemoglobin, fever, or potassium.
+  - sigma_modulation changes diffusion amplitude for specified axes.
+  - required_context_axes/effect_modifiers can scale treatment force by susceptibility, active coverage, source control, contraindications, or toxicity context when distilled.
+  - same-disease bundle generation combines complementary treatment lanes and avoids duplicate alternatives such as two antibiotics or TPE plus plasma-infusion bridge.
+  - timed-stage policies can start slower add-ons later, shown as labels such as rituximab@day1 or anakinra@day2.
+  - hazard_drift/event_transition couplings can let treatment-moved axes push event hazards or mortality_hazard; old couplings without coupling_type remain covariance-only.
+  - This is treatment runtime v0.1; it has timed stages but does not yet branch on simulated follow-up response.

@@ -1,0 +1,96 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "ncf.primary-case-gate-evaluator-input.v1",
+  "title": "NCF deterministic primary-case gate evaluator input manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "stage",
+    "execution_context",
+    "inputs"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "ncf.primary-case-gate-evaluator-input.v1"
+    },
+    "stage": {
+      "enum": [
+        "CASE_EVALUATION",
+        "REPORT_CANDIDATE",
+        "REPORT_CONSISTENCY"
+      ]
+    },
+    "inputs": {
+      "type": "array",
+      "minItems": 4,
+      "maxItems": 20,
+      "items": {
+        "$ref": "#/$defs/contentRef"
+      }
+    },
+    "execution_context": {
+      "const": "POST_ROLE_DAG_EXTERNAL_DETERMINISTIC_EVALUATOR"
+    }
+  },
+  "$defs": {
+    "contentRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ref_id",
+        "role",
+        "path",
+        "sha256",
+        "bytes"
+      ],
+      "properties": {
+        "ref_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "role": {
+          "enum": [
+            "gate_contract",
+            "scoring_contract",
+            "preprimary_seal",
+            "search_retrieval_manifest",
+            "role_manifest_set",
+            "case_access_lineage",
+            "immutable_source_manifest",
+            "source_audit",
+            "source_inventory",
+            "event_ledger",
+            "event_ledger_audit",
+            "oracle_targets",
+            "runtime_output",
+            "runtime_input_manifest",
+            "runtime_replay_seal",
+            "mapped_observation_consumption",
+            "nonreport_gate_bundle",
+            "complex_coverage_bundle",
+            "report_candidate_results",
+            "report_candidate_markdown",
+            "all_sealed_artifacts_after_replay",
+            "audit_report",
+            "sanitized_ledger_assignment_proof",
+            "sanitized_ledger_replay_verification"
+          ]
+        },
+        "path": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))[A-Za-z0-9._/-]+$"
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "bytes": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    }
+  }
+}

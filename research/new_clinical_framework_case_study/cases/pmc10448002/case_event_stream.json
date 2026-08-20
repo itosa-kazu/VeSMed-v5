@@ -1,0 +1,2351 @@
+{
+  "schema_id": "new_clinical_framework.diagnosis_neutral_event_ledger.v1",
+  "case_id": "PMC10448002",
+  "source": {
+    "title": "Complement-Mediated Thrombotic Microangiopathy in a Patient With Antiphospholipid Syndrome and Anti-glomerular Basement Membrane Antibodies",
+    "pmcid": "PMC10448002",
+    "pmid": "37637585",
+    "doi": "10.7759/cureus.42410",
+    "article_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10448002/",
+    "full_text_xml_url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC10448002/fullTextXML",
+    "full_text_xml_sha256": "31767e6ef062340bee98b55bd37be77a3900fa9a0b8a897776db60ce12ed98e0",
+    "license": "CC BY 3.0"
+  },
+  "time_origin": {
+    "hospital_day": 0,
+    "definition": "ED presentation/admission"
+  },
+  "time_policy": {
+    "occurrence_time": "When the clinical fact/action actually occurred or specimen was obtained.",
+    "available_at": "Earliest time or interval when the treating team could use that information, as supported by the paper.",
+    "unknown_exact_time": "Represented as an interval plus partial-order constraints; no midpoint is promoted to fact.",
+    "same_specimen_late_result": "Occurrence remains the collection/biopsy day while available_at records the later result interval.",
+    "no_future_leakage": "A cut may consume an event only when its available_at is resolved before that cut or the cut is explicitly defined as after that event. Narrative-later facts cannot be backfilled into earlier cuts.",
+    "reported_length_of_stay": "The paper reports a 15-day hospitalization. This is stored as duration=15 days, not promoted to an exact zero-based hospital_day=15 timestamp."
+  },
+  "layer_policy": {
+    "observation": "Direct symptoms, measurements, imaging, morphology, or assay reports. Observed concepts do not encode a disease label.",
+    "action": "Orders, specimens, procedures, medications, monitoring, or discharge planning.",
+    "clinical_hypothesis": "What the treating team considered, upgraded, or downgraded. It is never treated as ground truth observation.",
+    "report_conclusion": "Diagnostic language in a report when the source does not expose a diagnosis-neutral raw feature; excluded from rankable observations.",
+    "outcome": "Realized endpoint such as discharge.",
+    "future_plan": "Not-yet-realized post-discharge plan. Never treated as completed action or outcome."
+  },
+  "event_stream": [
+    {
+      "event_id": "B001",
+      "event_type": "background",
+      "concept_id": "patient_demographics",
+      "occurrence_time": {
+        "kind": "historical",
+        "label": "at admission"
+      },
+      "available_at": {
+        "kind": "exact_hospital_day",
+        "hospital_day": 0,
+        "precision": "day"
+      },
+      "partial_order": {
+        "after": [],
+        "before": []
+      },
+      "source": {
+        "anchor": "case_p1",
+        "support": "direct"
+      },
+      "value": {
+        "age_years": 30,
+        "sex": "female"
+      },
+      "rankable_observation": false
+    },
+    {
+      "event_id": "B002",
+      "event_type": "background",
+      "concept_id": "established_prior_antiphospholipid_syndrome",
+      "occurrence_time": {
+        "kind": "historical",
+        "label": "before admission",
+        "precision": "date_not_reported"
+      },
+      "available_at": {
+        "kind": "exact_hospital_day",
+        "hospital_day": 0,
+        "precision": "day"
+      },
+      "partial_order": {
+        "after": [],
+        "before": []
+      },
+      "source": {
+        "anchor": "case_p1",
+        "support": "direct"
+      },
+      "value": "present",
+      "rankable_observation": false,
+      "notes": [
+        "Prior diagnosis as reported by the authors; it is not a contemporaneous mechanistic observation."
+      ]
+    },
+    {
+      "event_id": "B003",
+      "event_type": "background",
+      "concept_id": "recent_outpatient_apixaban_exposure",
+      "occurrence_time": {
+        "kind": "historical",
+        "label": "recently before admission",
+        "precision": "exact_start_not_reported"
+      },
+      "available_at": {
+        "kind": "exact_hospital_day",
+        "hospital_day": 0,
+        "precision": "day"
+      },
+      "partial_order": {
+        "after": [],
+        "before": []
+      },
+      "source": {
+        "anchor": "case_p1",
+        "support": "direct"
+      },
+      "value": "present",
+      "rankable_observation": false
+    },
+    {
+      "event_id": "B004",
+      "event_type": "background",
+      "concept_id": "neurologic_history",
+      "occurrence_time": {
+        "kind": "historical",
+        "label": "before admission",
+        "precision": "dates_not_reported"
+      },
+      "available_at": {
+        "kind": "exact_hospital_day",
+        "hospital_day": 0,
+        "precision": "day"
+      },
+      "partial_order": {
+        "after": [],
+        "before": []
+      },
+      "source": {
+        "anchor": "case_p1",
+        "support": "direct"
+      },
+      "value": [
+        "complex partial epilepsy",
+        "migraine with aura"
+      ],
+      "rankable_observation": false
+    },
+    {
+      "event_id": "B005",
+      "event_type": "background",
+      "concept_id": "obstetric_history",
+      "occurrence_time": {
+        "kind": "historical",
+        "label": "four prior pregnancies",
+        "precision": "dates_not_reported"
+      },
+      "available_at": {
+        "kind": "exact_hospital_day",
+        "hospital_day": 0,
+        "precision": "day"
+      },
+      "partial_order": {
+        "after": [],
+        "before": []
+      },
+      "source": {
+        "anchor": "case_p1",
+        "support": "direct"
+      },
+      "value": {
+        "gravida": 4,
+        "para": 4,
+        "preterm_births": 4,
+        "preeclampsia_first_pregnancy": true,
+        "hellp_last_three_pregnancies": true
+      },
+      "rankable_observation": false
+    },
+    {
+      "event_id": "O001",
+      "event_type": "observation",
+      "concept_id": "persistent_dry_cough_presence",
+      "occurrence_time": {
+        "kind": "relative_pre_admission",
+        "label": "several weeks before admission",
+        "precision": "approximate"
+      },
+      "available_at": {
+        "kind": "exact_hospital_day",
+        "hospital_day": 0,
+        "precision": "day"
+      },
+      "partial_order": {
+        "after": [],
+        "before": []
+      },
+      "source": {
+        "anchor": "case_p1",
+        "support": "direct"
+      },
+      "value": true,
+      "rankable_observation": true
+    },
+    {
+      "event_id": "O002",
+      "event_type": "observation",
+      "concept_id": "serum_creatinine_elevation_presence",
+      "occurrence_time": {
+        "kind": "relative_pre_admission",
+        "label": "several weeks before admission",
+        "precision": "approximate"
+      },
+      "available_at": {
+        "kind": "exact_hospital_day",
+        "hospital_day": 0,
+        "precision": "day"
+      },
+      "partial_order": {
+        "after": [],
+        "before": []
+      },
+      "source": {
+        "anchor": "case_p1",
+        "support": "direct"
+      },
+      "value": true,
+      "rankable_observation": true,
+      "notes": [
+        "The earlier ED value is not reported."
+      ]
+    },
+    {
+      "event_id": "O003",
+      "event_type": "observation",
+      "concept_id": "urine_protein_concentration",
+      "occurrence_time": {
+        "kind": "relative_pre_admission",
+        "earliest_hospital_day": -5,
+        "latest_hospital_day": -5,
+        "label": "five days before admission",
+        "precision": "day"
+      },
+      "available_at": {
+        "kind": "exact_hospital_day",
+        "hospital_day": 0,
+        "precision": "day",
+        "note": "The article implies this prior urinalysis was available in the record by admission; exact review time is not stated."
+      },
+      "partial_order": {
+        "after": [],
+        "before": []
+      },
+      "source": {
+        "anchor": "case_p2",
+        "support": "direct"
+      },
+      "value": {
+        "operator": ">",
+        "number": 500
+      },
+      "unit": "mg/dL",
+      "rankable_observation": true
+    },
+    {
+      "event_id": "O004",
+      "event_type": "observation",
+      "concept_id": "urine_red_blood_cells_presence",
+      "occurrence_time": {
+        "kind": "relative_pre_admission",
+        "earliest_hospital_day": -5,
+        "latest_hospital_day": -5,
+        "label": "five days before admission",
+        "precision": "day"
+      },
+      "available_at": {
+        "kind": "exact_hospital_day",
+        "hospital_day": 0,
+        "precision": "day"
+      },
+      "partial_order": {
+        "after": [],
+        "before": []
+      },
+      "source": {
+        "anchor": "case_p2",
+        "support": "direct"
+      },
+      "value": false,
+      "rankable_observation": true
+    },
+    {
+      "event_id": "O005",
+      "event_type": "observation",
+      "concept_id": "urine_red_blood_cell_casts_presence",
+      "occurrence_time": {
+        "kind": "relative_pre_admission",
+        "earliest_hospital_day": -5,
+        "latest_hospital_day": -5,
+        "label": "five days before admission",
+        "precision": "day"
+      },
+      "available_at": {
+        "kind": "exact_hospital_day",
+        "hospital_day": 0,
+        "precision": "day"
+      },
+      "partial_order": {
+        "after": [],
+        "before": []
+      },
+      "source": {
+        "anchor": "case_p2",
+        "support": "direct"
+      },
+      "value": false,
+      "rankable_observation": true
+    },
+    {
+      "event_id": "O006",
+      "event_type": "observation",
+      "concept_id": "serum_igg_anti_glomerular_basement_membrane_antibody_result",
+      "occurrence_time": {
+        "kind": "outpatient_before_admission",
+        "label": "before admission",
+        "precision": "collection_date_and_numeric_titer_not_reported"
+      },
+      "available_at": {
+        "kind": "exact_hospital_day",
+        "hospital_day": 0,
+        "precision": "day",
+        "note": "Known before ED arrival because it triggered referral and treatment planning."
+      },
+      "partial_order": {
+        "after": [],
+        "before": []
+      },
+      "source": {
+        "anchor": "case_p1; introduction_p1",
+        "support": "direct"
+      },
+      "value": {
+        "qualifier": "elevated",
+        "numeric_titer": null
+      },
+      "rankable_observation": true,
+      "notes": [
+        "This is the assay result, not a diagnosis of anti-GBM disease."
+      ]
+    },
+    {
+      "event_id": "O007",
+      "event_type": "observation",
+      "concept_id": "dry_cough_presence",
+      "occurrence_time": {
+        "kind": "exact_hospital_day",
+        "hospital_day": 0,
+        "precision": "day"
+      },
+      "available_at": {
+        "kind": "exact_hospital_day",
+        "hospital_day": 0,
+        "precision": "day"
+      },
+      "partial_order": {
+        "after": [],
+        "before": []
+      },
+      "source": {
+        "anchor": "case_p1",
+        "support": "direct"
+      },
+      "value": true,
+      "rankable_observation": true
+    },
+    {
+      "event_id": "O008",
+      "event_type": "observation",
+      "concept_id": "foamy_urine_presence",
+      "occurrence_time": {
+        "kind": "exact_hospital_day",
+        "hospital_day": 0,
+        "precision": "day"
+      },
+      "available_at": {
+        "kind": "exact_hospital_day",
+        "hospital_day": 0,
+        "precision": "day"
+      },
+      "partial_order": {
+        "after": [],
+        "before": []
+      },
+      "source": {
+        "anchor": "case_p1",
+        "support": "direct"
+      },
+      "value": true,
+      "rankable_observation": true
+    },
+    {
+      "event_id": "O009",
+      "event_type": "observation",
+      "concept_id": "hemoglobin",
+      "occurrence_time": {
+        "kind": "exact_hospital_day",
+        "hospital_day": 0,
+        "precision": "day"
+      },
+      "available_at": {
+        "kind": "exact_hospital_day",
+        "hospital_day": 0,
+        "precision": "day"
+      },
+      "partial_order": {
+        "after": [],
+        "before": []
+      },
+      "source": {
+        "anchor": "case_p2",
+        "support": "direct"
+      },
+      "value": 11.1,
+      "unit": "g/dL",
+      "rankable_observation": true,
+      "notes": [
+        "Characterized as microcytic anemia; MCV is not reported."
+      ]
+    },
+    {
+      "event_id": "O010",
+      "event_type": "observation",
+      "concept_id": "serum_creatinine",
+      "occurrence_time": {
+        "kind": "exact_hospital_day",
+        "hospital_day": 0,
+        "precision": "day"
+      },
+      "available_at": {
+        "kind": "exact_hospital_day",
+        "hospital_day": 0,
+        "precision": "day"
+      },
+      "partial_order": {
+        "after": [],
+        "before": []
+      },
+      "source": {
+        "anchor": "case_p2",
+        "support": "direct"
+      },
+      "value": 1.83,
+      "unit": "mg/dL",
+      "rankable_observation": true
+    },
+    {
+      "event_id": "O011",
+      "event_type": "observation",
+      "concept_id": "platelet_count",
+      "occurrence_time": {
+        "kind": "exact_hospital_day",
+        "hospital_day": 0,
+        "precision": "day"
+      },
+      "available_at": {
+        "kind": "exact_hospital_day",
+        "hospital_day": 0,
+        "precision": "day"
+      },
+      "partial_order": {
+        "after": [],
+        "before": []
+      },
+      "source": {
+        "anchor": "case_p2",
+        "support": "direct"
+      },
+      "value": 92000,
+      "unit": "per mm3",
+      "rankable_observation": true
+    },
+    {
+      "event_id": "O012",
+      "event_type": "observation",
+      "concept_id": "serum_lactate_dehydrogenase",
+      "occurrence_time": {
+        "kind": "exact_hospital_day",
+        "hospital_day": 0,
+        "precision": "day"
+      },
+      "available_at": {
+        "kind": "exact_hospital_day",
+        "hospital_day": 0,
+        "precision": "day"
+      },
+      "partial_order": {
+        "after": [],
+        "before": []
+      },
+      "source": {
+        "anchor": "case_p2",
+        "support": "direct"
+      },
+      "value": 335,
+      "unit": "U/L",
+      "rankable_observation": true
+    },
+    {
+      "event_id": "O013",
+      "event_type": "observation",
+      "concept_id": "total_bilirubin",
+      "occurrence_time": {
+        "kind": "exact_hospital_day",
+        "hospital_day": 0,
+        "precision": "day"
+      },
+      "available_at": {
+        "kind": "exact_hospital_day",
+        "hospital_day": 0,
+        "precision": "day"
+      },
+      "partial_order": {
+        "after": [],
+        "before": []
+      },
+      "source": {
+        "anchor": "case_p2",
+        "support": "direct"
+      },
+      "value": 0.4,
+      "unit": "mg/dL",
+      "rankable_observation": true
+    },
+    {
+      "event_id": "O014",
+      "event_type": "observation",
+      "concept_id": "chest_ct_acute_abnormality_presence",
+      "occurrence_time": {
+        "kind": "exact_hospital_day",
+        "hospital_day": 0,
+        "precision": "day"
+      },
+      "available_at": {
+        "kind": "exact_hospital_day",
+        "hospital_day": 0,
+        "precision": "day"
+      },
+      "partial_order": {
+        "after": [],
+        "before": []
+      },
+      "source": {
+        "anchor": "case_p2",
+        "support": "direct"
+      },
+      "value": false,
+      "rankable_observation": true,
+      "notes": [
+        "The paper says the chest CT was unremarkable; no finer radiographic negatives are invented."
+      ]
+    },
+    {
+      "event_id": "H001",
+      "event_type": "clinical_hypothesis",
+      "concept_id": "anti_gbm_mediated_disease_hypothesis",
+      "occurrence_time": {
+        "kind": "exact_hospital_day",
+        "hospital_day": 0,
+        "precision": "day"
+      },
+      "available_at": {
+        "kind": "exact_hospital_day",
+        "hospital_day": 0,
+        "precision": "day"
+      },
+      "partial_order": {
+        "after": [],
+        "before": []
+      },
+      "source": {
+        "anchor": "case_p1; discussion_p1",
+        "support": "direct"
+      },
+      "value": {
+        "status": "presumed",
+        "basis": [
+          "O006",
+          "O010"
+        ]
+      },
+      "rankable_observation": false,
+      "notes": [
+        "Clinical-team hypothesis, not ground truth."
+      ]
+    },
+    {
+      "event_id": "A001",
+      "event_type": "action",
+      "concept_id": "plasmapheresis_initiation",
+      "occurrence_time": {
+        "kind": "exact_hospital_day",
+        "hospital_day": 0,
+        "precision": "day",
+        "note": "First session occurred on the night of admission."
+      },
+      "available_at": {
+        "kind": "exact_hospital_day",
+        "hospital_day": 0,
+        "precision": "day"
+      },
+      "partial_order": {
+        "after": [
+          "H001"
+        ],
+        "before": []
+      },
+      "source": {
+        "anchor": "case_p2",
+        "support": "direct"
+      },
+      "value": {
+        "session": "first",
+        "replacement_fluid": "albumin"
+      },
+      "rankable_observation": false
+    },
+    {
+      "event_id": "A002",
+      "event_type": "action",
+      "concept_id": "high_dose_intravenous_corticosteroid_initiation",
+      "occurrence_time": {
+        "kind": "exact_hospital_day",
+        "hospital_day": 0,
+        "precision": "day"
+      },
+      "available_at": {
+        "kind": "exact_hospital_day",
+        "hospital_day": 0,
+        "precision": "day"
+      },
+      "partial_order": {
+        "after": [
+          "H001"
+        ],
+        "before": []
+      },
+      "source": {
+        "anchor": "abstract; case_p2; discussion_p1",
+        "support": "direct"
+      },
+      "value": {
+        "agent": "methylprednisolone",
+        "dose": null
+      },
+      "rankable_observation": false,
+      "notes": [
+        "Dose is not reported."
+      ]
+    },
+    {
+      "event_id": "A003",
+      "event_type": "action",
+      "concept_id": "apixaban_to_heparin_transition",
+      "occurrence_time": {
+        "kind": "exact_hospital_day",
+        "hospital_day": 0,
+        "precision": "day"
+      },
+      "available_at": {
+        "kind": "exact_hospital_day",
+        "hospital_day": 0,
+        "precision": "day"
+      },
+      "partial_order": {
+        "after": [],
+        "before": []
+      },
+      "source": {
+        "anchor": "case_p2",
+        "support": "direct"
+      },
+      "value": {
+        "apixaban": "stopped/replaced",
+        "heparin_infusion": "started"
+      },
+      "rankable_observation": false
+    },
+    {
+      "event_id": "A004",
+      "event_type": "action",
+      "concept_id": "tunneled_right_internal_jugular_plasmapheresis_catheter_insertion",
+      "occurrence_time": {
+        "kind": "exact_hospital_day",
+        "hospital_day": 0,
+        "precision": "day"
+      },
+      "available_at": {
+        "kind": "exact_hospital_day",
+        "hospital_day": 0,
+        "precision": "day"
+      },
+      "partial_order": {
+        "after": [],
+        "before": [
+          "A001"
+        ]
+      },
+      "source": {
+        "anchor": "case_p2",
+        "support": "direct"
+      },
+      "value": "performed",
+      "rankable_observation": false
+    },
+    {
+      "event_id": "H002",
+      "event_type": "clinical_hypothesis",
+      "concept_id": "severe_adamts13_deficiency_mediated_microangiopathy_hypothesis",
+      "occurrence_time": {
+        "kind": "exact_hospital_day",
+        "hospital_day": 1,
+        "precision": "day"
+      },
+      "available_at": {
+        "kind": "exact_hospital_day",
+        "hospital_day": 1,
+        "precision": "day"
+      },
+      "partial_order": {
+        "after": [],
+        "before": []
+      },
+      "source": {
+        "anchor": "case_p2",
+        "support": "direct"
+      },
+      "value": {
+        "status": "considered",
+        "basis": [
+          "O010",
+          "B002"
+        ]
+      },
+      "rankable_observation": false
+    },
+    {
+      "event_id": "A005",
+      "event_type": "action",
+      "concept_id": "adamts13_activity_sample_collection",
+      "occurrence_time": {
+        "kind": "exact_hospital_day",
+        "hospital_day": 1,
+        "precision": "day"
+      },
+      "available_at": {
+        "kind": "exact_hospital_day",
+        "hospital_day": 1,
+        "precision": "day"
+      },
+      "partial_order": {
+        "after": [
+          "H002"
+        ],
+        "before": []
+      },
+      "source": {
+        "anchor": "case_p2",
+        "support": "direct"
+      },
+      "value": "drawn",
+      "rankable_observation": false
+    },
+    {
+      "event_id": "O015",
+      "event_type": "observation",
+      "concept_id": "new_symptoms_during_first_two_hospital_days_presence",
+      "occurrence_time": {
+        "kind": "interval",
+        "earliest_hospital_day": 0,
+        "latest_hospital_day": 2,
+        "label": "first two hospital days",
+        "precision": "interval"
+      },
+      "available_at": {
+        "kind": "known_by",
+        "hospital_day": 2,
+        "precision": "day"
+      },
+      "partial_order": {
+        "after": [],
+        "before": []
+      },
+      "source": {
+        "anchor": "case_p2",
+        "support": "direct"
+      },
+      "value": false,
+      "rankable_observation": false,
+      "notes": [
+        "Record-only global course statement; it must not be expanded into unreported symptom-specific negatives."
+      ]
+    },
+    {
+      "event_id": "A006",
+      "event_type": "action",
+      "concept_id": "percutaneous_renal_biopsy",
+      "occurrence_time": {
+        "kind": "exact_hospital_day",
+        "hospital_day": 3,
+        "precision": "day"
+      },
+      "available_at": {
+        "kind": "exact_hospital_day",
+        "hospital_day": 3,
+        "precision": "day"
+      },
+      "partial_order": {
+        "after": [],
+        "before": []
+      },
+      "source": {
+        "anchor": "case_p3",
+        "support": "direct"
+      },
+      "value": "performed by interventional radiology",
+      "rankable_observation": false
+    },
+    {
+      "event_id": "O016",
+      "event_type": "observation",
+      "concept_id": "platelet_count",
+      "occurrence_time": {
+        "kind": "exact_hospital_day",
+        "hospital_day": 4,
+        "precision": "day"
+      },
+      "available_at": {
+        "kind": "exact_hospital_day",
+        "hospital_day": 4,
+        "precision": "day"
+      },
+      "partial_order": {
+        "after": [
+          "A006"
+        ],
+        "before": []
+      },
+      "source": {
+        "anchor": "case_p3",
+        "support": "direct"
+      },
+      "value": 40000,
+      "unit": "per mm3",
+      "rankable_observation": true
+    },
+    {
+      "event_id": "O017",
+      "event_type": "observation",
+      "concept_id": "hemoglobin",
+      "occurrence_time": {
+        "kind": "exact_hospital_day",
+        "hospital_day": 4,
+        "precision": "day"
+      },
+      "available_at": {
+        "kind": "exact_hospital_day",
+        "hospital_day": 4,
+        "precision": "day"
+      },
+      "partial_order": {
+        "after": [
+          "A006"
+        ],
+        "before": []
+      },
+      "source": {
+        "anchor": "case_p3",
+        "support": "direct"
+      },
+      "value": 7.6,
+      "unit": "g/dL",
+      "rankable_observation": true,
+      "notes": [
+        "Described as worsening microcytic anemia."
+      ]
+    },
+    {
+      "event_id": "O018",
+      "event_type": "observation",
+      "concept_id": "renal_biopsy_site_pain_presence",
+      "occurrence_time": {
+        "kind": "exact_hospital_day",
+        "hospital_day": 4,
+        "precision": "day"
+      },
+      "available_at": {
+        "kind": "exact_hospital_day",
+        "hospital_day": 4,
+        "precision": "day"
+      },
+      "partial_order": {
+        "after": [
+          "A006"
+        ],
+        "before": []
+      },
+      "source": {
+        "anchor": "case_p3",
+        "support": "direct"
+      },
+      "value": true,
+      "rankable_observation": true
+    },
+    {
+      "event_id": "O019",
+      "event_type": "observation",
+      "concept_id": "post_biopsy_perirenal_hematoma_dimensions",
+      "occurrence_time": {
+        "kind": "exact_hospital_day",
+        "hospital_day": 4,
+        "precision": "day"
+      },
+      "available_at": {
+        "kind": "exact_hospital_day",
+        "hospital_day": 4,
+        "precision": "day"
+      },
+      "partial_order": {
+        "after": [
+          "A006"
+        ],
+        "before": []
+      },
+      "source": {
+        "anchor": "case_p3",
+        "support": "direct"
+      },
+      "value": {
+        "dimension_1": 5.3,
+        "dimension_2": 2.4,
+        "dimension_3": 6.9
+      },
+      "unit": "cm",
+      "rankable_observation": true
+    },
+    {
+      "event_id": "A007",
+      "event_type": "action",
+      "concept_id": "serial_complete_blood_count_monitoring",
+      "occurrence_time": {
+        "kind": "exact_hospital_day",
+        "hospital_day": 4,
+        "precision": "day"
+      },
+      "available_at": {
+        "kind": "exact_hospital_day",
+        "hospital_day": 4,
+        "precision": "day"
+      },
+      "partial_order": {
+        "after": [
+          "O019"
+        ],
+        "before": []
+      },
+      "source": {
+        "anchor": "case_p3",
+        "support": "direct"
+      },
+      "value": "initiated",
+      "rankable_observation": false
+    },
+    {
+      "event_id": "O020",
+      "event_type": "observation",
+      "concept_id": "hemoglobin_hematocrit_stability_over_following_24_hours",
+      "occurrence_time": {
+        "kind": "interval",
+        "earliest_hospital_day": 4,
+        "latest_hospital_day": 5,
+        "label": "24 hours after day-4 complication",
+        "precision": "interval"
+      },
+      "available_at": {
+        "kind": "known_by",
+        "hospital_day": 5,
+        "precision": "day"
+      },
+      "partial_order": {
+        "after": [
+          "A007"
+        ],
+        "before": []
+      },
+      "source": {
+        "anchor": "case_p3",
+        "support": "direct"
+      },
+      "value": "stable",
+      "rankable_observation": true,
+      "notes": [
+        "No numeric hemoglobin or hematocrit values are reported for this interval."
+      ]
+    },
+    {
+      "event_id": "O021",
+      "event_type": "observation",
+      "concept_id": "platelet_count_trend_over_following_24_hours",
+      "occurrence_time": {
+        "kind": "interval",
+        "earliest_hospital_day": 4,
+        "latest_hospital_day": 5,
+        "label": "24 hours after day-4 complication",
+        "precision": "interval"
+      },
+      "available_at": {
+        "kind": "known_by",
+        "hospital_day": 5,
+        "precision": "day"
+      },
+      "partial_order": {
+        "after": [
+          "A007"
+        ],
+        "before": []
+      },
+      "source": {
+        "anchor": "case_p3",
+        "support": "direct"
+      },
+      "value": "continued_decline",
+      "rankable_observation": true,
+      "notes": [
+        "No nadir or exact value is reported."
+      ]
+    },
+    {
+      "event_id": "H003",
+      "event_type": "clinical_hypothesis",
+      "concept_id": "heparin_associated_immune_thrombocytopenia_hypothesis",
+      "occurrence_time": {
+        "kind": "interval_censored",
+        "earliest_hospital_day": 4,
+        "latest_hospital_day": 5,
+        "label": "after continued platelet decline",
+        "precision": "exact_time_not_reported"
+      },
+      "available_at": {
+        "kind": "same_as_occurrence",
+        "earliest_hospital_day": 4,
+        "latest_hospital_day": 5,
+        "precision": "interval_censored"
+      },
+      "partial_order": {
+        "after": [
+          "O021"
+        ],
+        "before": []
+      },
+      "source": {
+        "anchor": "case_p3",
+        "support": "direct"
+      },
+      "value": {
+        "status": "considered",
+        "basis": [
+          "A003",
+          "O016",
+          "O021"
+        ]
+      },
+      "rankable_observation": false
+    },
+    {
+      "event_id": "A008",
+      "event_type": "action",
+      "concept_id": "heparin_induced_thrombocytopenia_panel_order",
+      "occurrence_time": {
+        "kind": "interval_censored",
+        "earliest_hospital_day": 4,
+        "latest_hospital_day": 5,
+        "label": "after continued platelet decline",
+        "precision": "exact_time_not_reported"
+      },
+      "available_at": {
+        "kind": "same_as_occurrence",
+        "earliest_hospital_day": 4,
+        "latest_hospital_day": 5,
+        "precision": "interval_censored"
+      },
+      "partial_order": {
+        "after": [
+          "H003"
+        ],
+        "before": []
+      },
+      "source": {
+        "anchor": "case_p3",
+        "support": "direct"
+      },
+      "value": "ordered",
+      "rankable_observation": false
+    },
+    {
+      "event_id": "H004",
+      "event_type": "clinical_hypothesis",
+      "concept_id": "microangiopathic_hemolysis_or_disseminated_coagulation_process_hypothesis",
+      "occurrence_time": {
+        "kind": "interval_censored",
+        "earliest_hospital_day": 4,
+        "latest_hospital_day": 5,
+        "label": "after continued platelet decline",
+        "precision": "exact_time_not_reported"
+      },
+      "available_at": {
+        "kind": "same_as_occurrence",
+        "earliest_hospital_day": 4,
+        "latest_hospital_day": 5,
+        "precision": "interval_censored"
+      },
+      "partial_order": {
+        "after": [],
+        "before": []
+      },
+      "source": {
+        "anchor": "case_p3",
+        "support": "direct"
+      },
+      "value": {
+        "status": "considered",
+        "basis": [
+          "O016",
+          "O017",
+          "O021"
+        ]
+      },
+      "rankable_observation": false
+    },
+    {
+      "event_id": "A009",
+      "event_type": "action",
+      "concept_id": "peripheral_blood_smear_order",
+      "occurrence_time": {
+        "kind": "interval_censored",
+        "earliest_hospital_day": 4,
+        "latest_hospital_day": 5,
+        "label": "after continued platelet decline",
+        "precision": "exact_time_not_reported"
+      },
+      "available_at": {
+        "kind": "same_as_occurrence",
+        "earliest_hospital_day": 4,
+        "latest_hospital_day": 5,
+        "precision": "interval_censored"
+      },
+      "partial_order": {
+        "after": [
+          "H004"
+        ],
+        "before": []
+      },
+      "source": {
+        "anchor": "case_p3",
+        "support": "direct"
+      },
+      "value": "ordered",
+      "rankable_observation": false
+    },
+    {
+      "event_id": "O022",
+      "event_type": "observation",
+      "concept_id": "platelet_count",
+      "occurrence_time": {
+        "kind": "interval_censored",
+        "earliest_hospital_day": 5,
+        "latest_hospital_day": 6,
+        "label": "over the two days following the day-4 complication",
+        "precision": "narrative_window_not_exact_clock_time",
+        "note": "Do not split this interval into invented exact days."
+      },
+      "available_at": {
+        "kind": "known_within_interval",
+        "earliest_hospital_day": 5,
+        "latest_hospital_day": 6,
+        "label": "by the narrative workup checkpoint",
+        "precision": "interval_censored"
+      },
+      "partial_order": {
+        "after": [
+          "O016",
+          "O021"
+        ],
+        "before": []
+      },
+      "source": {
+        "anchor": "case_p4",
+        "support": "direct"
+      },
+      "value": 110000,
+      "unit": "per mm3",
+      "rankable_observation": true,
+      "notes": [
+        "The exact collection day within the two-day interval is not reported."
+      ]
+    },
+    {
+      "event_id": "O023",
+      "event_type": "observation",
+      "concept_id": "hemoglobin",
+      "occurrence_time": {
+        "kind": "interval_censored",
+        "earliest_hospital_day": 5,
+        "latest_hospital_day": 6,
+        "label": "over the two days following the day-4 complication",
+        "precision": "narrative_window_not_exact_clock_time",
+        "note": "Do not split this interval into invented exact days."
+      },
+      "available_at": {
+        "kind": "known_within_interval",
+        "earliest_hospital_day": 5,
+        "latest_hospital_day": 6,
+        "label": "by the narrative workup checkpoint",
+        "precision": "interval_censored"
+      },
+      "partial_order": {
+        "after": [
+          "O017"
+        ],
+        "before": []
+      },
+      "source": {
+        "anchor": "case_p4",
+        "support": "direct"
+      },
+      "value": 8.1,
+      "unit": "g/dL",
+      "rankable_observation": true,
+      "notes": [
+        "The exact collection day within the two-day interval is not reported."
+      ]
+    },
+    {
+      "event_id": "O024",
+      "event_type": "observation",
+      "concept_id": "new_symptoms_during_two_day_recovery_interval_presence",
+      "occurrence_time": {
+        "kind": "interval_censored",
+        "earliest_hospital_day": 5,
+        "latest_hospital_day": 6,
+        "label": "over the two days following the day-4 complication",
+        "precision": "narrative_window_not_exact_clock_time",
+        "note": "Do not split this interval into invented exact days."
+      },
+      "available_at": {
+        "kind": "known_within_interval",
+        "earliest_hospital_day": 5,
+        "latest_hospital_day": 6,
+        "label": "by the narrative workup checkpoint",
+        "precision": "interval_censored"
+      },
+      "partial_order": {
+        "after": [],
+        "before": []
+      },
+      "source": {
+        "anchor": "case_p4",
+        "support": "direct"
+      },
+      "value": false,
+      "rankable_observation": false,
+      "notes": [
+        "Record-only global course statement; do not infer specific negatives."
+      ]
+    },
+    {
+      "event_id": "O025",
+      "event_type": "observation",
+      "concept_id": "preliminary_renal_biopsy_microvascular_thrombotic_injury",
+      "occurrence_time": {
+        "kind": "exact_hospital_day",
+        "hospital_day": 3,
+        "precision": "day",
+        "note": "The tissue was obtained on day 3; this event records the report content, not a new tissue occurrence."
+      },
+      "available_at": {
+        "kind": "interval_censored",
+        "earliest_hospital_day": 5,
+        "latest_hospital_day": 6,
+        "label": "preliminary biopsy result reported during narrative workup checkpoint",
+        "precision": "exact_result_time_not_reported"
+      },
+      "partial_order": {
+        "after": [
+          "A006"
+        ],
+        "before": []
+      },
+      "source": {
+        "anchor": "case_p4",
+        "support": "direct"
+      },
+      "value": {
+        "acute_injury": "present",
+        "interstitial_fibrosis_and_tubular_atrophy_percent": 50
+      },
+      "rankable_observation": true
+    },
+    {
+      "event_id": "R001",
+      "event_type": "report_conclusion",
+      "concept_id": "preliminary_biopsy_no_evidence_for_anti_gbm_disease",
+      "occurrence_time": {
+        "kind": "exact_hospital_day",
+        "hospital_day": 3,
+        "precision": "day"
+      },
+      "available_at": {
+        "kind": "interval_censored",
+        "earliest_hospital_day": 5,
+        "latest_hospital_day": 6,
+        "label": "same preliminary biopsy report",
+        "precision": "exact_result_time_not_reported"
+      },
+      "partial_order": {
+        "after": [
+          "A006"
+        ],
+        "before": []
+      },
+      "source": {
+        "anchor": "case_p4",
+        "support": "direct"
+      },
+      "value": "reported by pathologist/authors",
+      "rankable_observation": false,
+      "notes": [
+        "No immunofluorescence value or specific absent morphologic sign is reported; no negative axis is invented."
+      ]
+    },
+    {
+      "event_id": "H005",
+      "event_type": "clinical_hypothesis",
+      "concept_id": "anti_gbm_mediated_disease_hypothesis",
+      "occurrence_time": {
+        "kind": "hypothesis_update",
+        "earliest_hospital_day": 5,
+        "latest_hospital_day": 6,
+        "label": "after preliminary biopsy report",
+        "precision": "interval_censored"
+      },
+      "available_at": {
+        "kind": "same_as_occurrence",
+        "earliest_hospital_day": 5,
+        "latest_hospital_day": 6,
+        "precision": "interval_censored"
+      },
+      "partial_order": {
+        "after": [
+          "R001"
+        ],
+        "before": []
+      },
+      "source": {
+        "anchor": "case_p4; discussion_p3",
+        "support": "direct"
+      },
+      "value": {
+        "status": "downgraded/excluded_by_treating_team",
+        "basis": [
+          "R001"
+        ]
+      },
+      "rankable_observation": false
+    },
+    {
+      "event_id": "H006",
+      "event_type": "clinical_hypothesis",
+      "concept_id": "complement_pathway_mediated_microangiopathic_process_hypothesis",
+      "occurrence_time": {
+        "kind": "hypothesis_update_before_discharge",
+        "label": "after preliminary biopsy result and before discharge",
+        "precision": "partial_order_only",
+        "earliest_hospital_day": 5
+      },
+      "available_at": {
+        "kind": "same_as_occurrence",
+        "label": "after preliminary biopsy result and before discharge",
+        "precision": "partial_order_only",
+        "earliest_hospital_day": 5
+      },
+      "partial_order": {
+        "after": [
+          "O025"
+        ],
+        "before": []
+      },
+      "source": {
+        "anchor": "case_p4",
+        "support": "direct"
+      },
+      "value": {
+        "status": "raised",
+        "basis": [
+          "O025"
+        ]
+      },
+      "rankable_observation": false
+    },
+    {
+      "event_id": "A010",
+      "event_type": "action",
+      "concept_id": "complement_and_hemolysis_laboratory_workup_order",
+      "occurrence_time": {
+        "kind": "after_preliminary_biopsy_before_discharge",
+        "label": "after preliminary biopsy result and before discharge",
+        "precision": "partial_order_only",
+        "earliest_hospital_day": 5
+      },
+      "available_at": {
+        "kind": "same_as_occurrence",
+        "label": "after preliminary biopsy result and before discharge",
+        "precision": "partial_order_only",
+        "earliest_hospital_day": 5
+      },
+      "partial_order": {
+        "after": [
+          "H006"
+        ],
+        "before": []
+      },
+      "source": {
+        "anchor": "case_p4",
+        "support": "direct"
+      },
+      "value": "ordered/drawn",
+      "rankable_observation": false
+    },
+    {
+      "event_id": "O026",
+      "event_type": "observation",
+      "concept_id": "serum_complement_c3",
+      "occurrence_time": {
+        "kind": "after_order_before_discharge",
+        "label": "after corresponding order/collection and before discharge",
+        "precision": "partial_order_only",
+        "earliest_hospital_day": 5
+      },
+      "available_at": {
+        "kind": "after_order_before_discharge",
+        "label": "after corresponding order/collection and before discharge",
+        "precision": "partial_order_only",
+        "earliest_hospital_day": 5
+      },
+      "partial_order": {
+        "after": [
+          "A010"
+        ],
+        "before": []
+      },
+      "source": {
+        "anchor": "case_p4",
+        "support": "direct"
+      },
+      "value": 69,
+      "unit": "mg/dL",
+      "rankable_observation": true
+    },
+    {
+      "event_id": "O027",
+      "event_type": "observation",
+      "concept_id": "serum_complement_c4",
+      "occurrence_time": {
+        "kind": "after_order_before_discharge",
+        "label": "after corresponding order/collection and before discharge",
+        "precision": "partial_order_only",
+        "earliest_hospital_day": 5
+      },
+      "available_at": {
+        "kind": "after_order_before_discharge",
+        "label": "after corresponding order/collection and before discharge",
+        "precision": "partial_order_only",
+        "earliest_hospital_day": 5
+      },
+      "partial_order": {
+        "after": [
+          "A010"
+        ],
+        "before": []
+      },
+      "source": {
+        "anchor": "case_p4",
+        "support": "direct"
+      },
+      "value": 8.0,
+      "unit": "mg/dL",
+      "rankable_observation": true
+    },
+    {
+      "event_id": "O028",
+      "event_type": "observation",
+      "concept_id": "serum_haptoglobin",
+      "occurrence_time": {
+        "kind": "after_order_before_discharge",
+        "label": "after corresponding order/collection and before discharge",
+        "precision": "partial_order_only",
+        "earliest_hospital_day": 5
+      },
+      "available_at": {
+        "kind": "after_order_before_discharge",
+        "label": "after corresponding order/collection and before discharge",
+        "precision": "partial_order_only",
+        "earliest_hospital_day": 5
+      },
+      "partial_order": {
+        "after": [
+          "A010"
+        ],
+        "before": []
+      },
+      "source": {
+        "anchor": "case_p4",
+        "support": "direct"
+      },
+      "value": {
+        "operator": "<",
+        "number": 9
+      },
+      "unit": "mg/dL",
+      "rankable_observation": true
+    },
+    {
+      "event_id": "O029",
+      "event_type": "observation",
+      "concept_id": "serum_lactate_dehydrogenase",
+      "occurrence_time": {
+        "kind": "after_order_before_discharge",
+        "label": "after corresponding order/collection and before discharge",
+        "precision": "partial_order_only",
+        "earliest_hospital_day": 5
+      },
+      "available_at": {
+        "kind": "after_order_before_discharge",
+        "label": "after corresponding order/collection and before discharge",
+        "precision": "partial_order_only",
+        "earliest_hospital_day": 5
+      },
+      "partial_order": {
+        "after": [
+          "A010"
+        ],
+        "before": []
+      },
+      "source": {
+        "anchor": "case_p4",
+        "support": "direct"
+      },
+      "value": 291,
+      "unit": "U/L",
+      "rankable_observation": true
+    },
+    {
+      "event_id": "O030",
+      "event_type": "observation",
+      "concept_id": "peripheral_blood_target_cells_presence",
+      "occurrence_time": {
+        "kind": "after_order_before_discharge",
+        "label": "after corresponding order/collection and before discharge",
+        "precision": "partial_order_only",
+        "earliest_hospital_day": 5
+      },
+      "available_at": {
+        "kind": "after_order_before_discharge",
+        "label": "after corresponding order/collection and before discharge",
+        "precision": "partial_order_only",
+        "earliest_hospital_day": 5
+      },
+      "partial_order": {
+        "after": [
+          "A009"
+        ],
+        "before": []
+      },
+      "source": {
+        "anchor": "case_p4",
+        "support": "direct"
+      },
+      "value": true,
+      "rankable_observation": true
+    },
+    {
+      "event_id": "O031",
+      "event_type": "observation",
+      "concept_id": "peripheral_blood_schistocytes_presence",
+      "occurrence_time": {
+        "kind": "after_order_before_discharge",
+        "label": "after corresponding order/collection and before discharge",
+        "precision": "partial_order_only",
+        "earliest_hospital_day": 5
+      },
+      "available_at": {
+        "kind": "after_order_before_discharge",
+        "label": "after corresponding order/collection and before discharge",
+        "precision": "partial_order_only",
+        "earliest_hospital_day": 5
+      },
+      "partial_order": {
+        "after": [
+          "A009"
+        ],
+        "before": []
+      },
+      "source": {
+        "anchor": "case_p4",
+        "support": "direct"
+      },
+      "value": true,
+      "rankable_observation": true,
+      "notes": [
+        "No schistocyte percentage is reported."
+      ]
+    },
+    {
+      "event_id": "O032",
+      "event_type": "observation",
+      "concept_id": "heparin_induced_thrombocytopenia_panel_result",
+      "occurrence_time": {
+        "kind": "after_order_before_discharge",
+        "label": "after corresponding order/collection and before discharge",
+        "precision": "partial_order_only",
+        "earliest_hospital_day": 5
+      },
+      "available_at": {
+        "kind": "after_order_before_discharge",
+        "label": "after corresponding order/collection and before discharge",
+        "precision": "partial_order_only",
+        "earliest_hospital_day": 5
+      },
+      "partial_order": {
+        "after": [
+          "A008"
+        ],
+        "before": []
+      },
+      "source": {
+        "anchor": "case_p4",
+        "support": "direct"
+      },
+      "value": "negative",
+      "rankable_observation": true
+    },
+    {
+      "event_id": "H007",
+      "event_type": "clinical_hypothesis",
+      "concept_id": "heparin_associated_immune_thrombocytopenia_hypothesis",
+      "occurrence_time": {
+        "kind": "hypothesis_update_before_discharge",
+        "label": "after negative HIT panel and before discharge",
+        "precision": "partial_order_only",
+        "earliest_hospital_day": 5
+      },
+      "available_at": {
+        "kind": "same_as_occurrence",
+        "label": "after negative HIT panel and before discharge",
+        "precision": "partial_order_only",
+        "earliest_hospital_day": 5
+      },
+      "partial_order": {
+        "after": [
+          "O032"
+        ],
+        "before": []
+      },
+      "source": {
+        "anchor": "case_p5",
+        "support": "direct"
+      },
+      "value": {
+        "status": "ruled_out_by_treating_team",
+        "basis": [
+          "O032"
+        ]
+      },
+      "rankable_observation": false
+    },
+    {
+      "event_id": "O033",
+      "event_type": "observation",
+      "concept_id": "adamts13_activity",
+      "occurrence_time": {
+        "kind": "exact_hospital_day",
+        "hospital_day": 1,
+        "precision": "day",
+        "note": "Sample was collected on hospital day 1; the result became available later."
+      },
+      "available_at": {
+        "kind": "after_order_before_discharge",
+        "label": "after corresponding order/collection and before discharge",
+        "precision": "partial_order_only",
+        "earliest_hospital_day": 5
+      },
+      "partial_order": {
+        "after": [
+          "A005"
+        ],
+        "before": []
+      },
+      "source": {
+        "anchor": "case_p4",
+        "support": "direct"
+      },
+      "value": 61,
+      "unit": "percent",
+      "rankable_observation": true
+    },
+    {
+      "event_id": "H008",
+      "event_type": "clinical_hypothesis",
+      "concept_id": "severe_adamts13_deficiency_mediated_microangiopathy_hypothesis",
+      "occurrence_time": {
+        "kind": "hypothesis_update_before_discharge",
+        "label": "after ADAMTS13 result and before discharge",
+        "precision": "partial_order_only",
+        "earliest_hospital_day": 5
+      },
+      "available_at": {
+        "kind": "same_as_occurrence",
+        "label": "after ADAMTS13 result and before discharge",
+        "precision": "partial_order_only",
+        "earliest_hospital_day": 5
+      },
+      "partial_order": {
+        "after": [
+          "O033"
+        ],
+        "before": []
+      },
+      "source": {
+        "anchor": "case_p4",
+        "support": "direct"
+      },
+      "value": {
+        "status": "ruled_out_by_treating_team",
+        "basis": [
+          "O033"
+        ]
+      },
+      "rankable_observation": false
+    },
+    {
+      "event_id": "O034",
+      "event_type": "observation",
+      "concept_id": "final_renal_biopsy_microvascular_thrombotic_injury_chronicity",
+      "occurrence_time": {
+        "kind": "exact_hospital_day",
+        "hospital_day": 3,
+        "precision": "day",
+        "note": "Biopsy tissue was obtained on hospital day 3."
+      },
+      "available_at": {
+        "kind": "after_preliminary_pathology_before_discharge",
+        "label": "final pathology became available after preliminary pathology and before discharge",
+        "precision": "partial_order_only",
+        "earliest_hospital_day": 6
+      },
+      "partial_order": {
+        "after": [
+          "O025"
+        ],
+        "before": []
+      },
+      "source": {
+        "anchor": "case_p4; figures_1_to_3",
+        "support": "direct"
+      },
+      "value": {
+        "acute_features": "present",
+        "chronic_features": "present"
+      },
+      "rankable_observation": true
+    },
+    {
+      "event_id": "O035",
+      "event_type": "observation",
+      "concept_id": "renal_biopsy_glomerular_basement_membrane_duplication_presence",
+      "occurrence_time": {
+        "kind": "exact_hospital_day",
+        "hospital_day": 3,
+        "precision": "day"
+      },
+      "available_at": {
+        "kind": "after_preliminary_pathology_before_discharge",
+        "label": "final pathology became available after preliminary pathology and before discharge",
+        "precision": "partial_order_only",
+        "earliest_hospital_day": 6
+      },
+      "partial_order": {
+        "after": [
+          "O025"
+        ],
+        "before": []
+      },
+      "source": {
+        "anchor": "figure_1; figure_2",
+        "support": "direct"
+      },
+      "value": true,
+      "rankable_observation": true
+    },
+    {
+      "event_id": "O036",
+      "event_type": "observation",
+      "concept_id": "renal_biopsy_endothelial_cell_injury_presence",
+      "occurrence_time": {
+        "kind": "exact_hospital_day",
+        "hospital_day": 3,
+        "precision": "day"
+      },
+      "available_at": {
+        "kind": "after_preliminary_pathology_before_discharge",
+        "label": "final pathology became available after preliminary pathology and before discharge",
+        "precision": "partial_order_only",
+        "earliest_hospital_day": 6
+      },
+      "partial_order": {
+        "after": [
+          "O025"
+        ],
+        "before": []
+      },
+      "source": {
+        "anchor": "figure_1; figure_2",
+        "support": "direct"
+      },
+      "value": true,
+      "rankable_observation": true
+    },
+    {
+      "event_id": "O037",
+      "event_type": "observation",
+      "concept_id": "renal_biopsy_glomerular_and_arteriolar_fibrin_thrombi_presence",
+      "occurrence_time": {
+        "kind": "exact_hospital_day",
+        "hospital_day": 3,
+        "precision": "day"
+      },
+      "available_at": {
+        "kind": "after_preliminary_pathology_before_discharge",
+        "label": "final pathology became available after preliminary pathology and before discharge",
+        "precision": "partial_order_only",
+        "earliest_hospital_day": 6
+      },
+      "partial_order": {
+        "after": [
+          "O025"
+        ],
+        "before": []
+      },
+      "source": {
+        "anchor": "figure_2; figure_3",
+        "support": "direct"
+      },
+      "value": true,
+      "rankable_observation": true
+    },
+    {
+      "event_id": "O038",
+      "event_type": "observation",
+      "concept_id": "renal_biopsy_mesangiolysis_presence",
+      "occurrence_time": {
+        "kind": "exact_hospital_day",
+        "hospital_day": 3,
+        "precision": "day"
+      },
+      "available_at": {
+        "kind": "after_preliminary_pathology_before_discharge",
+        "label": "final pathology became available after preliminary pathology and before discharge",
+        "precision": "partial_order_only",
+        "earliest_hospital_day": 6
+      },
+      "partial_order": {
+        "after": [
+          "O025"
+        ],
+        "before": []
+      },
+      "source": {
+        "anchor": "figure_2",
+        "support": "direct"
+      },
+      "value": true,
+      "rankable_observation": true
+    },
+    {
+      "event_id": "O039",
+      "event_type": "observation",
+      "concept_id": "renal_biopsy_capillary_red_cell_fragments_presence",
+      "occurrence_time": {
+        "kind": "exact_hospital_day",
+        "hospital_day": 3,
+        "precision": "day"
+      },
+      "available_at": {
+        "kind": "after_preliminary_pathology_before_discharge",
+        "label": "final pathology became available after preliminary pathology and before discharge",
+        "precision": "partial_order_only",
+        "earliest_hospital_day": 6
+      },
+      "partial_order": {
+        "after": [
+          "O025"
+        ],
+        "before": []
+      },
+      "source": {
+        "anchor": "figure_2",
+        "support": "direct"
+      },
+      "value": true,
+      "rankable_observation": true
+    },
+    {
+      "event_id": "O040",
+      "event_type": "observation",
+      "concept_id": "renal_biopsy_multilayered_glomerular_basement_membrane_presence",
+      "occurrence_time": {
+        "kind": "exact_hospital_day",
+        "hospital_day": 3,
+        "precision": "day"
+      },
+      "available_at": {
+        "kind": "after_preliminary_pathology_before_discharge",
+        "label": "final pathology became available after preliminary pathology and before discharge",
+        "precision": "partial_order_only",
+        "earliest_hospital_day": 6
+      },
+      "partial_order": {
+        "after": [
+          "O025"
+        ],
+        "before": []
+      },
+      "source": {
+        "anchor": "figure_3",
+        "support": "direct"
+      },
+      "value": true,
+      "rankable_observation": true
+    },
+    {
+      "event_id": "H009",
+      "event_type": "clinical_hypothesis",
+      "concept_id": "complement_pathway_mediated_microangiopathic_process_hypothesis",
+      "occurrence_time": {
+        "kind": "hypothesis_update_before_discharge",
+        "label": "after pathology, complement and hemolysis workup and before discharge",
+        "precision": "partial_order_only",
+        "earliest_hospital_day": 6
+      },
+      "available_at": {
+        "kind": "same_as_occurrence",
+        "label": "after pathology, complement and hemolysis workup and before discharge",
+        "precision": "partial_order_only",
+        "earliest_hospital_day": 6
+      },
+      "partial_order": {
+        "after": [
+          "O026",
+          "O027",
+          "O028",
+          "O031",
+          "O033",
+          "O034"
+        ],
+        "before": []
+      },
+      "source": {
+        "anchor": "abstract; case_p4; conclusions_p2",
+        "support": "direct"
+      },
+      "value": {
+        "status": "adopted_as_discharge_diagnosis_by_authors/treating_team",
+        "basis": [
+          "O026",
+          "O027",
+          "O028",
+          "O031",
+          "O034",
+          "O033"
+        ]
+      },
+      "rankable_observation": false,
+      "notes": [
+        "Genetic confirmation was not available during admission; the paper reports outpatient genetic testing was planned.",
+        "This is a clinical hypothesis/diagnostic conclusion, not hidden-state ground truth."
+      ]
+    },
+    {
+      "event_id": "A011",
+      "event_type": "action",
+      "concept_id": "daily_plasmapheresis_continuation",
+      "occurrence_time": {
+        "kind": "ongoing_interval",
+        "label": "daily after the first session through the inpatient course",
+        "precision": "partial_order_only",
+        "earliest_hospital_day": 1,
+        "note": "Individual session dates and whether the last session was on the discharge date are not enumerated."
+      },
+      "available_at": {
+        "kind": "contemporaneous_over_interval",
+        "label": "known as each daily session occurred",
+        "precision": "partial_order_only",
+        "earliest_hospital_day": 1
+      },
+      "partial_order": {
+        "after": [
+          "A001"
+        ],
+        "before": []
+      },
+      "source": {
+        "anchor": "case_p5",
+        "support": "direct"
+      },
+      "value": "daily",
+      "rankable_observation": false
+    },
+    {
+      "event_id": "A012",
+      "event_type": "action",
+      "concept_id": "heparin_bridge_to_chronic_warfarin",
+      "occurrence_time": {
+        "kind": "after_predecessor_before_discharge",
+        "label": "after HIT was ruled out and before discharge",
+        "precision": "partial_order_only",
+        "earliest_hospital_day": 5
+      },
+      "available_at": {
+        "kind": "same_as_occurrence",
+        "label": "after HIT was ruled out and before discharge",
+        "precision": "partial_order_only",
+        "earliest_hospital_day": 5
+      },
+      "partial_order": {
+        "after": [
+          "H007"
+        ],
+        "before": []
+      },
+      "source": {
+        "anchor": "case_p5",
+        "support": "direct"
+      },
+      "value": {
+        "indication_reported": "management of prior antiphospholipid syndrome"
+      },
+      "rankable_observation": false,
+      "notes": [
+        "The article reports admission heparin exposure and later bridge use but does not explicitly state hold/restart timestamps."
+      ]
+    },
+    {
+      "event_id": "A013",
+      "event_type": "action",
+      "concept_id": "rituximab_initiation",
+      "occurrence_time": {
+        "kind": "after_predecessor_before_discharge",
+        "label": "after revised workup and before discharge",
+        "precision": "partial_order_only",
+        "earliest_hospital_day": 6
+      },
+      "available_at": {
+        "kind": "same_as_occurrence",
+        "label": "after revised workup and before discharge",
+        "precision": "partial_order_only",
+        "earliest_hospital_day": 6
+      },
+      "partial_order": {
+        "after": [
+          "H009"
+        ],
+        "before": []
+      },
+      "source": {
+        "anchor": "case_p5; abstract",
+        "support": "direct"
+      },
+      "value": {
+        "dose": null
+      },
+      "rankable_observation": false
+    },
+    {
+      "event_id": "A014",
+      "event_type": "action",
+      "concept_id": "eculizumab_initiation",
+      "occurrence_time": {
+        "kind": "after_predecessor_before_discharge",
+        "label": "after revised workup and before discharge",
+        "precision": "partial_order_only",
+        "earliest_hospital_day": 6
+      },
+      "available_at": {
+        "kind": "same_as_occurrence",
+        "label": "after revised workup and before discharge",
+        "precision": "partial_order_only",
+        "earliest_hospital_day": 6
+      },
+      "partial_order": {
+        "after": [
+          "H009"
+        ],
+        "before": []
+      },
+      "source": {
+        "anchor": "case_p5; abstract",
+        "support": "direct"
+      },
+      "value": {
+        "dose": null
+      },
+      "rankable_observation": false
+    },
+    {
+      "event_id": "A015",
+      "event_type": "action",
+      "concept_id": "slow_prednisone_taper_initiation",
+      "occurrence_time": {
+        "kind": "after_predecessor_before_discharge",
+        "label": "after targeted therapies began and before discharge",
+        "precision": "partial_order_only",
+        "earliest_hospital_day": 6
+      },
+      "available_at": {
+        "kind": "same_as_occurrence",
+        "label": "after targeted therapies began and before discharge",
+        "precision": "partial_order_only",
+        "earliest_hospital_day": 6
+      },
+      "partial_order": {
+        "after": [
+          "A013",
+          "A014"
+        ],
+        "before": []
+      },
+      "source": {
+        "anchor": "case_p5",
+        "support": "direct"
+      },
+      "value": {
+        "schedule": null
+      },
+      "rankable_observation": false
+    },
+    {
+      "event_id": "O041",
+      "event_type": "observation",
+      "concept_id": "serum_creatinine_trend_at_discharge",
+      "occurrence_time": {
+        "kind": "discharge_after_reported_duration",
+        "label": "discharge after a 15-day hospitalization",
+        "hospital_length_days": 15,
+        "precision": "duration_known; zero-based coordinate not asserted",
+        "note": "The paper reports total length, not a zero-based discharge timestamp."
+      },
+      "available_at": {
+        "kind": "discharge_after_reported_duration",
+        "label": "discharge after a 15-day hospitalization",
+        "hospital_length_days": 15,
+        "precision": "duration_known; zero-based coordinate not asserted",
+        "note": "The paper reports total length, not a zero-based discharge timestamp."
+      },
+      "partial_order": {
+        "after": [],
+        "before": []
+      },
+      "source": {
+        "anchor": "case_p5",
+        "support": "direct"
+      },
+      "value": "decreasing",
+      "rankable_observation": true,
+      "notes": [
+        "No discharge creatinine value is reported."
+      ]
+    },
+    {
+      "event_id": "Y001",
+      "event_type": "outcome",
+      "concept_id": "hospital_discharge",
+      "occurrence_time": {
+        "kind": "discharge_after_reported_duration",
+        "label": "discharge after a 15-day hospitalization",
+        "hospital_length_days": 15,
+        "precision": "duration_known; zero-based coordinate not asserted",
+        "note": "The paper reports total length, not a zero-based discharge timestamp."
+      },
+      "available_at": {
+        "kind": "discharge_after_reported_duration",
+        "label": "discharge after a 15-day hospitalization",
+        "hospital_length_days": 15,
+        "precision": "duration_known; zero-based coordinate not asserted",
+        "note": "The paper reports total length, not a zero-based discharge timestamp."
+      },
+      "partial_order": {
+        "after": [],
+        "before": []
+      },
+      "source": {
+        "anchor": "abstract; case_p5",
+        "support": "direct"
+      },
+      "value": {
+        "disposition": "discharged",
+        "new_symptoms": false,
+        "condition": "stable per abstract"
+      },
+      "rankable_observation": false
+    },
+    {
+      "event_id": "P001",
+      "event_type": "future_plan",
+      "concept_id": "outpatient_genetic_testing_for_complement_regulation_abnormality",
+      "occurrence_time": {
+        "kind": "future_after_discharge",
+        "label": "planned outpatient",
+        "precision": "date_not_reported"
+      },
+      "available_at": {
+        "kind": "discharge_after_reported_duration",
+        "label": "discharge after a 15-day hospitalization",
+        "hospital_length_days": 15,
+        "precision": "duration_known; zero-based coordinate not asserted",
+        "note": "The paper reports total length, not a zero-based discharge timestamp."
+      },
+      "partial_order": {
+        "after": [
+          "Y001"
+        ],
+        "before": []
+      },
+      "source": {
+        "anchor": "case_p5",
+        "support": "direct"
+      },
+      "value": "planned, not completed in this report",
+      "rankable_observation": false
+    },
+    {
+      "event_id": "P002",
+      "event_type": "future_plan",
+      "concept_id": "outpatient_hematology_nephrology_follow_up_and_further_infusions",
+      "occurrence_time": {
+        "kind": "future_after_discharge",
+        "label": "planned outpatient",
+        "precision": "dates_not_reported"
+      },
+      "available_at": {
+        "kind": "discharge_after_reported_duration",
+        "label": "discharge after a 15-day hospitalization",
+        "hospital_length_days": 15,
+        "precision": "duration_known; zero-based coordinate not asserted",
+        "note": "The paper reports total length, not a zero-based discharge timestamp."
+      },
+      "partial_order": {
+        "after": [
+          "Y001"
+        ],
+        "before": []
+      },
+      "source": {
+        "anchor": "abstract; case_p5",
+        "support": "direct"
+      },
+      "value": "scheduled/planned",
+      "rankable_observation": false
+    }
+  ],
+  "information_cuts": [
+    {
+      "cut_id": "C0_ED_PRESENTATION_PRE_TREATMENT",
+      "definition": "Background and observations known at ED presentation, before A001-A004 are applied.",
+      "must_exclude": [
+        "all admission and later actions",
+        "all day-1 or later observations",
+        "all later hypotheses/results"
+      ]
+    },
+    {
+      "cut_id": "C1_AFTER_INITIAL_TREATMENT_AND_DAY1_DRAW",
+      "definition": "After A001-A005 and information available by hospital day 1; biopsy not yet performed.",
+      "must_exclude": [
+        "biopsy and all biopsy results",
+        "day-4 hematoma/CBC",
+        "HIT/smear/complement results",
+        "targeted therapies",
+        "discharge outcome"
+      ]
+    },
+    {
+      "cut_id": "C2_AFTER_DAY3_BIOPSY_BEFORE_RESULT",
+      "definition": "Biopsy has occurred, but neither preliminary nor final pathology is available.",
+      "must_exclude": [
+        "O025 and R001 and O034-O040",
+        "all results ordered because of preliminary pathology"
+      ]
+    },
+    {
+      "cut_id": "C3_DAY4_POST_BIOPSY_COMPLICATION",
+      "definition": "Day-4 CBC, biopsy-site pain and ultrasound hematoma are available.",
+      "must_exclude": [
+        "later CBC recovery",
+        "preliminary/final biopsy conclusions",
+        "complement/hemolysis/HIT/ADAMTS13 results",
+        "later targeted therapies"
+      ]
+    },
+    {
+      "cut_id": "C4_AFTER_REVISED_WORKUP_COMPLETE",
+      "definition": "Logical, not clock-time, cut after preliminary/final pathology and O026-O033 have become available. Exact hospital day is not reported.",
+      "must_include": [
+        "O025",
+        "R001",
+        "O026",
+        "O027",
+        "O028",
+        "O031",
+        "O032",
+        "O033",
+        "O034"
+      ],
+      "must_exclude": [
+        "facts known only at discharge unless separately ordered before this cut"
+      ]
+    },
+    {
+      "cut_id": "C5_DISCHARGE_AFTER_15_DAY_HOSPITALIZATION",
+      "definition": "All in-hospital events and discharge observations are available after the reported 15-day hospitalization; P001-P002 remain future plans, not completed events."
+    }
+  ],
+  "source_anchoring": {
+    "case_p1": "First paragraph of Case presentation",
+    "case_p2": "Second paragraph of Case presentation",
+    "case_p3": "Third paragraph of Case presentation",
+    "case_p4": "Fourth paragraph of Case presentation",
+    "case_p5": "Final paragraph of Case presentation after figures",
+    "discussion_p1": "First paragraph of Discussion",
+    "discussion_p3": "Third paragraph of Discussion",
+    "conclusions_p2": "Second paragraph of Conclusions",
+    "figures_1_to_3": "Captions of Figures 1-3"
+  },
+  "author_diagnostic_summary_not_ground_truth": {
+    "initial": "presumed anti-GBM disease",
+    "revised": "complement-mediated thrombotic microangiopathy",
+    "confirmation_limit": "Outpatient genetic testing was planned; no genetic result is reported."
+  }
+}

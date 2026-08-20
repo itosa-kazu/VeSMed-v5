@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "ncf.primary-source-identifier-request.v1",
+  "title": "Identifier-only NCBI source capture request",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "purpose", "identifiers"],
+  "properties": {
+    "schema_version": {"const": "NCF-PRIMARY-SOURCE-IDENTIFIER-REQUEST-1.0.0"},
+    "purpose": {"enum": ["SCREENING", "SELECTED"]},
+    "identifiers": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["pmid"],
+        "properties": {
+          "pmid": {"type": "string", "pattern": "^[1-9][0-9]*$"},
+          "pmcid": {"type": ["string", "null"], "pattern": "^PMC[1-9][0-9]*$"}
+        }
+      }
+    }
+  }
+}

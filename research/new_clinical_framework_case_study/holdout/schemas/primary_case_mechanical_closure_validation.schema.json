@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "ncf.primary-case-mechanical-closure-validation.v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "status", "role_manifest_set_sha256",
+    "event_ledger_audit_sha256", "case_access_lineage_sha256", "compiler_sha256",
+    "comparison", "medical_judgment_performed"
+  ],
+  "properties": {
+    "schema_version": {"const": "NCF-PRIMARY-CASE-MECHANICAL-CLOSURE-VALIDATION-1.0.0"},
+    "status": {"const": "PASS"},
+    "role_manifest_set_sha256": {"$ref": "#/$defs/sha256"},
+    "event_ledger_audit_sha256": {"$ref": "#/$defs/sha256"},
+    "case_access_lineage_sha256": {"$ref": "#/$defs/sha256"},
+    "compiler_sha256": {"$ref": "#/$defs/sha256"},
+    "comparison": {"const": "EXACT_BYTES_FRESH_PROCESS"},
+    "medical_judgment_performed": {"const": false}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  }
+}

@@ -1,0 +1,129 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "ncf.primary-role-execution-manifest.v1.1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "role",
+    "run_id",
+    "started_at",
+    "finished_at",
+    "case_identity_exposed",
+    "inputs",
+    "outputs",
+    "observed_data_classes",
+    "attestations",
+    "prompt_or_command",
+    "tool_trace",
+    "parent_packet"
+  ],
+  "properties": {
+    "schema_version": {"const": "NCF-PRIMARY-ROLE-MANIFEST-1.1.0"},
+    "role": {"$ref": "#/$defs/role"},
+    "run_id": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$"},
+    "started_at": {"type": "string", "format": "date-time"},
+    "finished_at": {"type": "string", "format": "date-time"},
+    "case_identity_exposed": {"type": "boolean"},
+    "inputs": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/inputArtifact"}
+    },
+    "outputs": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/outputArtifact"}
+    },
+    "observed_data_classes": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"type": "string", "pattern": "^[a-z][a-z0-9_]{0,127}$"}
+    },
+    "attestations": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "only_declared_inputs_observed",
+        "no_forbidden_data_class_observed",
+        "no_undeclared_output_written",
+        "no_artifact_modified_after_input_hash"
+      ],
+      "properties": {
+        "only_declared_inputs_observed": {"const": true},
+        "no_forbidden_data_class_observed": {"const": true},
+        "no_undeclared_output_written": {"const": true},
+        "no_artifact_modified_after_input_hash": {"const": true},
+        "notes": {"type": "string"}
+      }
+    },
+    "prompt_or_command": {"$ref": "#/$defs/contentRef"},
+    "tool_trace": {"$ref": "#/$defs/contentRef"},
+    "parent_packet": {"$ref": "#/$defs/contentRef"}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "role": {
+      "enum": [
+        "scout",
+        "screener",
+        "extractor",
+        "source_auditor",
+        "concept_mapper",
+        "oracle_adjudicator",
+        "evaluator",
+        "scorer_auditor"
+      ]
+    },
+    "contentRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256", "bytes"],
+      "properties": {
+        "path": {"type": "string", "minLength": 1},
+        "sha256": {"$ref": "#/$defs/sha256"},
+        "bytes": {"type": "integer", "minimum": 1}
+      }
+    },
+    "producer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind"],
+      "properties": {
+        "kind": {"enum": ["PRESEALED_ROOT", "ROLE_OUTPUT", "SEALED_EXECUTABLE_OUTPUT"]},
+        "seal": {"$ref": "#/$defs/contentRef"},
+        "role": {"$ref": "#/$defs/role"},
+        "run_id": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$"},
+        "manifest_path": {"type": "string", "minLength": 1},
+        "manifest_sha256": {"$ref": "#/$defs/sha256"},
+        "manifest_bytes": {"type": "integer", "minimum": 1},
+        "producer_id": {"const": "evaluator-sanitized-runtime-ledger-compiler-v1"},
+        "assignment_proof": {"$ref": "#/$defs/contentRef"},
+        "replay_verification": {"$ref": "#/$defs/contentRef"}
+      }
+    },
+    "inputArtifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256", "bytes", "data_class", "schema_id", "producer"],
+      "properties": {
+        "path": {"type": "string", "minLength": 1},
+        "sha256": {"$ref": "#/$defs/sha256"},
+        "bytes": {"type": "integer", "minimum": 1},
+        "data_class": {"type": "string", "pattern": "^[a-z][a-z0-9_]{0,127}$"},
+        "schema_id": {"type": "string", "minLength": 1},
+        "producer": {"$ref": "#/$defs/producer"}
+      }
+    },
+    "outputArtifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256", "bytes", "data_class", "schema_id"],
+      "properties": {
+        "path": {"type": "string", "minLength": 1},
+        "sha256": {"$ref": "#/$defs/sha256"},
+        "bytes": {"type": "integer", "minimum": 1},
+        "data_class": {"type": "string", "pattern": "^[a-z][a-z0-9_]{0,127}$"},
+        "schema_id": {"type": "string", "minLength": 1}
+      }
+    }
+  }
+}

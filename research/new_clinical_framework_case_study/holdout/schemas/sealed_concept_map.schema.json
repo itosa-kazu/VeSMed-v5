@@ -1,0 +1,141 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "ncf.data.sealed-concept-map.v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "mappings"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "NCF-SEALED-CONCEPT-MAP-1.0.0"
+    },
+    "mappings": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/mapping"
+      }
+    }
+  },
+  "$defs": {
+    "mapping": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "opaque_source_concept_token",
+        "mapped_id",
+        "entity_type",
+        "value_type",
+        "unit",
+        "mapping_status"
+      ],
+      "properties": {
+        "opaque_source_concept_token": {
+          "type": "string",
+          "pattern": "^SC-[0-9]{8}$"
+        },
+        "mapped_id": {
+          "type": "string",
+          "enum": [
+            "ACTION_ADRENERGIC_DRIVER_SUPPRESSION",
+            "ACTION_CAUSE_SPECIFIC_NEUROLOGIC_INTERVENTION",
+            "ACTION_CORONARY_REPERFUSION_CLASS",
+            "ACTION_DECONGESTIVE_FLUID_REMOVAL",
+            "ACTION_FLUID_CHALLENGE",
+            "ACTION_HORMONAL_REPLACEMENT_SUPPORT",
+            "ACTION_INFECTIOUS_SOURCE_CONTROL",
+            "ACTION_INOTROPIC_SUPPORT",
+            "ACTION_MECHANICAL_CIRCULATORY_SUPPORT",
+            "ACTION_MECHANICAL_DECOMPRESSION",
+            "ACTION_POSITIVE_PRESSURE_VENTILATION",
+            "ACTION_RENAL_REPLACEMENT_SUPPORT",
+            "ACTION_RHYTHM_STABILIZATION",
+            "ACTION_TOXICOLOGIC_SOURCE_CONTROL",
+            "ACTION_VASOCONSTRICTOR_SUPPORT",
+            "active_bleeding_presence",
+            "altered_consciousness_presence",
+            "anatomically_localized_infectious_source_presence",
+            "atrioventricular_conduction_block_presence",
+            "bilateral_diffuse_airspace_opacity_presence",
+            "bradyarrhythmia_presence",
+            "cardiac_injury_biomarker_state",
+            "cardiac_output_pattern",
+            "confirmed_toxic_exposure_presence",
+            "delayed_capillary_refill_presence",
+            "dynamic_preload_responsiveness_presence",
+            "elevated_jugular_venous_pressure_presence",
+            "elevated_left_sided_cardiac_filling_pressure_presence",
+            "focal_neurologic_deficit_presence",
+            "hyperthermia_presence",
+            "hypothermia_presence",
+            "identified_toxic_agent_assay_positive",
+            "intraventricular_conduction_block_presence",
+            "left_ventricular_ejection_fraction_percent",
+            "mean_arterial_pressure_mm_hg",
+            "measured_external_fluid_loss_presence",
+            "metanephrine_upper_limit_multiple",
+            "microbiologically_confirmed_infection_presence",
+            "multisegment_wall_motion_abnormality_beyond_single_coronary_territory_presence",
+            "normal_left_sided_cardiac_filling_pressure_presence",
+            "oliguria_presence",
+            "oxygenation_trend",
+            "pao2_fio2_ratio",
+            "persistent_hypotension_presence",
+            "prolonged_qrs_presence",
+            "prolonged_qt_presence",
+            "pulmonary_arterial_intraluminal_filling_defect_presence",
+            "pulmonary_edema_presence",
+            "regional_wall_motion_abnormality_presence",
+            "renal_function_trend",
+            "right_ventricular_diastolic_collapse_presence",
+            "right_ventricular_pressure_overload_presence",
+            "serum_cortisol_ug_dl",
+            "serum_creatinine_rise_from_documented_baseline_presence",
+            "serum_crp_state",
+            "serum_free_t4_ng_dl",
+            "serum_lactate_mmol_l",
+            "serum_tsh_miu_l",
+            "severe_hypoxemia_presence",
+            "severe_ventricular_systolic_dysfunction_presence",
+            "systemic_vascular_resistance_state",
+            "tachyarrhythmia_presence",
+            "tremor_presence",
+            "ventricular_function_trend"
+          ]
+        },
+        "entity_type": {
+          "enum": [
+            "OBSERVATION",
+            "ACTION"
+          ]
+        },
+        "value_type": {
+          "enum": [
+            "NUMBER",
+            "BOOLEAN",
+            "CATEGORICAL",
+            "ACTION"
+          ]
+        },
+        "unit": {
+          "enum": [
+            null,
+            "mIU/L",
+            "mmHg",
+            "mmol/L",
+            "ng/dL",
+            "percent",
+            "ug/dL",
+            "xULN"
+          ]
+        },
+        "mapping_status": {
+          "const": "MAPPED"
+        }
+      }
+    }
+  }
+}

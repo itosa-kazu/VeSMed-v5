@@ -1,0 +1,63 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "ncf.availability-compiler-proof.v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "status",
+    "producer_id",
+    "source_ledger",
+    "compiled_output",
+    "compiler",
+    "verifier",
+    "combined_preprimary_seal_payload_sha256",
+    "invocation_sha256",
+    "fresh_replay"
+  ],
+  "properties": {
+    "schema_version": {"const": "NCF-AVAILABILITY-COMPILER-PROOF-1.0.0"},
+    "status": {"const": "PASS"},
+    "producer_id": {"const": "availability-epoch-compiler-v1"},
+    "source_ledger": {"$ref": "#/$defs/contentRef"},
+    "compiled_output": {"$ref": "#/$defs/contentRef"},
+    "compiler": {"$ref": "#/$defs/contentRef"},
+    "verifier": {"$ref": "#/$defs/contentRef"},
+    "combined_preprimary_seal_payload_sha256": {"$ref": "#/$defs/sha256"},
+    "invocation_sha256": {"$ref": "#/$defs/sha256"},
+    "fresh_replay": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version", "status", "invocation_sha256", "output_sha256",
+        "output_bytes", "output_semantic_sha256", "network_control"
+      ],
+      "properties": {
+        "schema_version": {"const": "ncf.producer-replay-verification.v1"},
+        "status": {"const": "PASS"},
+        "invocation_sha256": {"$ref": "#/$defs/sha256"},
+        "output_sha256": {"$ref": "#/$defs/sha256"},
+        "output_bytes": {"type": "integer", "minimum": 1},
+        "output_semantic_sha256": {"$ref": "#/$defs/sha256"},
+        "network_control": {"const": "APPLICATION_SOCKET_GUARD_OFFLINE_NOT_OS_SANDBOX"}
+      }
+    }
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "contentRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256", "bytes"],
+      "properties": {
+        "path": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^(?![A-Za-z]:)(?![/\\\\])(?!.*(?:^|/)\\.\\.(?:/|$)).+$"
+        },
+        "sha256": {"$ref": "#/$defs/sha256"},
+        "bytes": {"type": "integer", "minimum": 1}
+      }
+    }
+  }
+}

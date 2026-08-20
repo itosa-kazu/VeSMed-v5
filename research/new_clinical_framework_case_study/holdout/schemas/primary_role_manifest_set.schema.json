@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "ncf.primary-role-manifest-set.v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "protocol", "manifests"],
+  "properties": {
+    "schema_version": {"const": "NCF-PRIMARY-ROLE-MANIFEST-SET-1.0.0"},
+    "protocol": {"$ref": "#/$defs/contentRef"},
+    "manifests": {
+      "type": "array",
+      "minItems": 8,
+      "maxItems": 8,
+      "items": {"$ref": "#/$defs/manifestRef"}
+    }
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "role": {
+      "enum": [
+        "scout",
+        "screener",
+        "extractor",
+        "source_auditor",
+        "concept_mapper",
+        "oracle_adjudicator",
+        "evaluator",
+        "scorer_auditor"
+      ]
+    },
+    "contentRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256", "bytes"],
+      "properties": {
+        "path": {"type": "string", "minLength": 1},
+        "sha256": {"$ref": "#/$defs/sha256"},
+        "bytes": {"type": "integer", "minimum": 1}
+      }
+    },
+    "manifestRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["role", "run_id", "path", "sha256", "bytes"],
+      "properties": {
+        "role": {"$ref": "#/$defs/role"},
+        "run_id": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$"},
+        "path": {"type": "string", "minLength": 1},
+        "sha256": {"$ref": "#/$defs/sha256"},
+        "bytes": {"type": "integer", "minimum": 1}
+      }
+    }
+  }
+}

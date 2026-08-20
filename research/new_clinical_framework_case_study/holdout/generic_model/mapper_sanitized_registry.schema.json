@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "actions": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "action_id": {"minLength": 1, "type": "string"},
+          "entity_type": {"const": "ACTION"},
+          "unit": {"type": "null"}
+        },
+        "required": ["action_id", "entity_type", "unit"],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "observations": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "concept_id": {"minLength": 1, "type": "string"},
+          "unit": {"type": ["string", "null"]},
+          "value_type": {
+            "enum": ["BOOLEAN", "NUMBER", "ORDINAL", "CATEGORICAL"]
+          }
+        },
+        "required": ["concept_id", "value_type", "unit"],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "schema_version": {"const": "NCF-MAPPER-SANITIZED-REGISTRY-1.0.0"},
+    "source_model_pack_sha256": {"pattern": "^[0-9a-f]{64}$", "type": "string"}
+  },
+  "required": ["schema_version", "source_model_pack_sha256", "observations", "actions"],
+  "type": "object"
+}

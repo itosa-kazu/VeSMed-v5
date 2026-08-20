@@ -1,0 +1,111 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "ncf.primary-post-replay-inventory-compiler-input.v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "producer_id",
+    "evaluator_run_id",
+    "protocol",
+    "combined_preprimary_seal",
+    "upstream_role_manifests",
+    "evaluator_inputs",
+    "sanitizer",
+    "executor_outputs",
+    "oracle_seal_hash_only",
+    "topology_attestations"
+  ],
+  "properties": {
+    "schema_version": {"const": "NCF-POST-REPLAY-INVENTORY-COMPILER-INPUT-1.0.0"},
+    "producer_id": {"const": "post-replay-inventory-compiler-v1"},
+    "evaluator_run_id": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$"},
+    "protocol": {"$ref": "#/$defs/artifactRef"},
+    "combined_preprimary_seal": {"$ref": "#/$defs/artifactRef"},
+    "upstream_role_manifests": {
+      "type": "array",
+      "minItems": 6,
+      "maxItems": 6,
+      "items": {"$ref": "#/$defs/roleManifestRef"}
+    },
+    "evaluator_inputs": {
+      "type": "array",
+      "minItems": 9,
+      "maxItems": 9,
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/artifactRef"}
+    },
+    "sanitizer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["ledger", "assignment_proof", "replay_verification"],
+      "properties": {
+        "ledger": {"$ref": "#/$defs/artifactRef"},
+        "assignment_proof": {"$ref": "#/$defs/artifactRef"},
+        "replay_verification": {"$ref": "#/$defs/artifactRef"}
+      }
+    },
+    "executor_outputs": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "runtime_output",
+        "runtime_event_ledger_replay_bundle",
+        "mapped_observation_consumption",
+        "replay_seal"
+      ],
+      "properties": {
+        "runtime_output": {"$ref": "#/$defs/artifactRef"},
+        "runtime_event_ledger_replay_bundle": {"$ref": "#/$defs/artifactRef"},
+        "mapped_observation_consumption": {"$ref": "#/$defs/artifactRef"},
+        "replay_seal": {"$ref": "#/$defs/artifactRef"}
+      }
+    },
+    "oracle_seal_hash_only": {"$ref": "#/$defs/artifactRef"},
+    "topology_attestations": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "six_upstream_manifests_closed_before_compile",
+        "evaluator_receipt_excludes_closure_self_reference",
+        "scorer_manifest_not_available_to_compiler",
+        "final_eight_role_set_verified_only_after_scorer"
+      ],
+      "properties": {
+        "six_upstream_manifests_closed_before_compile": {"const": true},
+        "evaluator_receipt_excludes_closure_self_reference": {"const": true},
+        "scorer_manifest_not_available_to_compiler": {"const": true},
+        "final_eight_role_set_verified_only_after_scorer": {"const": true}
+      }
+    }
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "artifactRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256", "bytes", "data_class", "schema_id"],
+      "properties": {
+        "path": {"type": "string", "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))[A-Za-z0-9._/-]+$"},
+        "sha256": {"$ref": "#/$defs/sha256"},
+        "bytes": {"type": "integer", "minimum": 1},
+        "data_class": {"type": "string", "pattern": "^[a-z][a-z0-9_]{0,127}$"},
+        "schema_id": {"type": "string", "minLength": 1}
+      }
+    },
+    "roleManifestRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["role", "run_id", "path", "sha256", "bytes", "data_class", "schema_id"],
+      "properties": {
+        "role": {"enum": ["scout", "screener", "extractor", "source_auditor", "concept_mapper", "oracle_adjudicator"]},
+        "run_id": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$"},
+        "path": {"type": "string", "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))[A-Za-z0-9._/-]+$"},
+        "sha256": {"$ref": "#/$defs/sha256"},
+        "bytes": {"type": "integer", "minimum": 1},
+        "data_class": {"const": "role_execution_manifest"},
+        "schema_id": {"const": "ncf.primary-role-execution-manifest.v1.1"}
+      }
+    }
+  }
+}

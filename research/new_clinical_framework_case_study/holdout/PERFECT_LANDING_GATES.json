@@ -1,0 +1,1202 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "contract_id": "NCF-PERFECT-LANDING-GATES",
+  "contract_version": "1.1.0",
+  "status": "FROZEN_BEFORE_HOLDOUT_INSPECTION",
+  "created_at": "2026-07-21T07:24:01+09:00",
+  "architecture_binding": {
+    "architecture_version": "NCF-ARCH-1.0.0",
+    "architecture_document": "../ARCHITECTURE_FINAL_v1.md",
+    "architecture_document_sha256": "d83b910f3cd32c777f126b245c2652e88fccb31aaa125b455f4c5af90cc4575c",
+    "wire_schema": "../architecture_final_v1.schema.json",
+    "wire_schema_sha256": "9804d21e8032f571b6cfd414c08b31891eab8856bc0502e0000df4b7d53f80d1"
+  },
+  "blindness_declaration": {
+    "case_identity_known_to_gate_author": false,
+    "case_article_inspected_by_gate_author": false,
+    "case_selection_file_inspected_by_gate_author": false,
+    "case_event_ledger_inspected_by_gate_author": false,
+    "holdout_model_pack_inspected_by_gate_author": false,
+    "expected_diagnosis_used": false,
+    "require_external_seal_after_file_creation": true
+  },
+  "independence": {
+    "required": true,
+    "allowed_project_prefixes": [
+      "research/new_clinical_framework_case_study/"
+    ],
+    "allowed_third_party_libraries": "must be enumerated in approved_asset_manifest.json",
+    "forbidden_dependency_semantics": [
+      "state source",
+      "model source",
+      "observation mapping",
+      "ranking score",
+      "transition",
+      "fallback",
+      "runtime service",
+      "hidden cache",
+      "cross-architecture data artifact"
+    ],
+    "failure_code": "HF-IND-001"
+  },
+  "gate_result_enum": [
+    "PASS",
+    "FAIL",
+    "NOT_APPLICABLE",
+    "NOT_EXECUTED",
+    "EVIDENCE_MISSING"
+  ],
+  "identifiability_enum": [
+    "IDENTIFIED_WITHIN_SCOPE",
+    "PARTIALLY_IDENTIFIED",
+    "UNIDENTIFIABLE",
+    "OUT_OF_SCOPE"
+  ],
+  "facet_contracts": {
+    "structure": {
+      "pass_state": "STRUCTURE_PERFECT",
+      "gate_ids": [
+        "PL-IND-001",
+        "PL-LED-002",
+        "PL-STATE-001",
+        "PL-STATE-002",
+        "PL-GEOM-001"
+      ]
+    },
+    "case_representation": {
+      "pass_state": "CASE_REPRESENTATION_PERFECT",
+      "gate_ids": [
+        "PL-LED-001",
+        "PL-CASE-001"
+      ]
+    },
+    "time_integrity": {
+      "pass_state": "TIME_INTEGRITY_PERFECT",
+      "gate_ids": [
+        "PL-TIME-001",
+        "PL-TIME-002"
+      ]
+    },
+    "factor_graph": {
+      "pass_state": "FACTOR_EVIDENCE_HONEST",
+      "gate_ids": [
+        "PL-FACT-001",
+        "PL-FACT-002"
+      ]
+    },
+    "concurrent_processes": {
+      "pass_state": "CONCURRENCY_EXPRESSED",
+      "gate_ids": [
+        "PL-CONC-001",
+        "PL-CONC-002"
+      ]
+    },
+    "local_modes": {
+      "pass_state": "LOCAL_MODES_EXPRESSED",
+      "gate_ids": [
+        "PL-MODE-001",
+        "PL-MODE-002"
+      ]
+    },
+    "diagnosis": {
+      "pass_state": "DIAGNOSTICALLY_LOCALIZED",
+      "gate_ids": [
+        "PL-DX-001",
+        "PL-DX-002"
+      ]
+    },
+    "prediction": {
+      "pass_state": "PREDICTIVELY_CASE_CONSISTENT",
+      "gate_ids": [
+        "PL-PRED-001",
+        "PL-PRED-002"
+      ]
+    },
+    "action_counterfactual": {
+      "pass_state": "ACTION_COUNTERFACTUAL_HONEST",
+      "gate_ids": [
+        "PL-SUPPORT-001",
+        "PL-ACT-001",
+        "PL-ACT-002"
+      ]
+    },
+    "open_world_refinement": {
+      "pass_state": "OPEN_WORLD_REFINEMENT_HONEST",
+      "gate_ids": [
+        "PL-OOD-001",
+        "PL-OOD-002",
+        "PL-REF-001",
+        "PL-REF-002",
+        "PL-REF-003",
+        "PL-REF-004"
+      ]
+    },
+    "harness_integrity": {
+      "pass_state": "HARNESS_COMPLETE",
+      "gate_ids": [
+        "PL-BLIND-001"
+      ]
+    },
+    "reporting": {
+      "pass_state": "REPORT_HONEST",
+      "gate_ids": [
+        "PL-REPORT-001"
+      ]
+    }
+  },
+  "aggregation": {
+    "harness_incomplete_if": [
+      "PL-BLIND-001 result is EVIDENCE_MISSING or NOT_EXECUTED",
+      "case source provenance cannot be independently verified",
+      "fresh-process deterministic replay evidence is absent",
+      "gate or architecture binding hash mismatch"
+    ],
+    "hard_fail_if": "any applicable gate with severity=hard has result other than PASS",
+    "not_applicable_rule": "only conditional gates may be NOT_APPLICABLE and they require machine-readable trigger-absence proof",
+    "perfect_landing_if": "all applicable hard gates PASS and every facet_contract gate set passes",
+    "perfect_landing_verdict": "PERFECT_LANDING_WITHIN_FROZEN_CASE_SCOPE",
+    "other_verdict_enum": [
+      "HARNESS_INCOMPLETE",
+      "FAILED",
+      "STRUCTURALLY_PERFECT_CASE_INCONSISTENT",
+      "CASE_CONSISTENT_ONLY"
+    ],
+    "top1_diagnosis_can_override_failure": false,
+    "terminal_outcome_can_override_failure": false,
+    "correct_unidentifiable_is_failure": false,
+    "machine_rules": {
+      "precedence": [
+        "HARNESS_INCOMPLETE",
+        "FAILED",
+        "STRUCTURALLY_PERFECT_CASE_INCONSISTENT",
+        "CASE_CONSISTENT_ONLY",
+        "PERFECT_LANDING_WITHIN_FROZEN_CASE_SCOPE"
+      ],
+      "hard_gate_ids": [
+        "PL-IND-001",
+        "PL-BLIND-001",
+        "PL-LED-001",
+        "PL-LED-002",
+        "PL-STATE-001",
+        "PL-STATE-002",
+        "PL-TIME-001",
+        "PL-TIME-002",
+        "PL-FACT-001",
+        "PL-FACT-002",
+        "PL-CONC-001",
+        "PL-CONC-002",
+        "PL-MODE-001",
+        "PL-MODE-002",
+        "PL-SUPPORT-001",
+        "PL-GEOM-001",
+        "PL-DX-001",
+        "PL-DX-002",
+        "PL-PRED-001",
+        "PL-PRED-002",
+        "PL-ACT-001",
+        "PL-ACT-002",
+        "PL-OOD-001",
+        "PL-OOD-002",
+        "PL-REF-001",
+        "PL-REF-002",
+        "PL-REF-003",
+        "PL-REF-004",
+        "PL-CASE-001",
+        "PL-REPORT-001"
+      ],
+      "hard_failure_results": [
+        "FAIL",
+        "NOT_EXECUTED",
+        "EVIDENCE_MISSING"
+      ],
+      "not_applicable_is_failure_for_applicability_always": true,
+      "perfect_requires_result_for_every_gate": "PASS",
+      "harness_integrity_gate_ids": [
+        "PL-BLIND-001",
+        "PL-LED-001",
+        "PL-LED-002"
+      ],
+      "harness_incomplete_results": [
+        "NOT_EXECUTED",
+        "EVIDENCE_MISSING"
+      ],
+      "failure_override_fields": {
+        "top1_diagnosis": false,
+        "terminal_outcome_match": false
+      }
+    }
+  },
+  "case_consistency_only_evidence": [
+    "published final diagnosis is top-1",
+    "observed treatment response sign matches a rollout",
+    "one realized path falls inside a predicted interval",
+    "a clinician judges the process/mode narrative plausible",
+    "terminal outcome is reproduced after it becomes public",
+    "a toy or shadow refinement experiment passes outside the production runtime"
+  ],
+  "claims_forbidden_from_one_holdout": [
+    "calibrated diagnostic probabilities",
+    "calibrated prognostic probabilities",
+    "true individual causal effect of an unperformed action",
+    "general clinical effectiveness",
+    "superiority to clinical practice or another architecture",
+    "state completeness, minimality, or universal sufficiency",
+    "absence of all dangerous state collisions",
+    "cross-population, cross-hospital, or temporal generalization",
+    "a unique finite permanent map of all medicine"
+  ],
+  "required_scoring_freeze": [
+    "eligible forecast cuts and horizons",
+    "continuous and discrete predictive support rule",
+    "missing follow-up handling",
+    "directional positive and negative evidence assertions",
+    "multi-process localization and tie/abstention rule",
+    "baseline comparison and tolerance",
+    "OOD residual response rule",
+    "refinement non-regression tolerance"
+  ],
+  "gates": [
+    {
+      "id": "PL-IND-001",
+      "title": "Independent runtime and evidence tree",
+      "facet": "structure",
+      "architecture_gates": [],
+      "severity": "hard",
+      "applicability": "always",
+      "procedure": [
+        "run static import/path scan",
+        "run runtime module/file/network/IPC trace during full replay",
+        "compare every loaded model/state/data asset with approved NCF allowlist"
+      ],
+      "pass_condition": "No state, model, observation mapping, score, transition, fallback, executable, service, or data artifact from another VeSMed architecture is consumed.",
+      "fail_code": "HF-IND-001",
+      "required_evidence": [
+        "static_dependency_scan.json",
+        "runtime_dependency_trace.json",
+        "approved_asset_manifest.json",
+        "full_replay_command.txt"
+      ],
+      "allowed_results": [
+        "PASS",
+        "FAIL",
+        "NOT_APPLICABLE",
+        "NOT_EXECUTED",
+        "EVIDENCE_MISSING"
+      ],
+      "case_consistency_only": false
+    },
+    {
+      "id": "PL-BLIND-001",
+      "title": "Gate seal precedes holdout inspection",
+      "facet": "harness_integrity",
+      "architecture_gates": [
+        "G16",
+        "G18"
+      ],
+      "severity": "hard",
+      "applicability": "always",
+      "procedure": [
+        "hash gate Markdown and JSON",
+        "record immutable seal time/object id",
+        "prove case identity/article/ledger/model-access event is later than seal",
+        "verify evaluator did not author gates after case access"
+      ],
+      "pass_condition": "Cryptographic and temporal evidence proves that the gates were frozen before the new holdout identity and contents were inspected by the implementing/evaluating path.",
+      "fail_code": "HF-BLIND-001",
+      "required_evidence": [
+        "gate_seal.json",
+        "case_access_lineage.json",
+        "git_or_content_object_ids.json"
+      ],
+      "allowed_results": [
+        "PASS",
+        "FAIL",
+        "NOT_APPLICABLE",
+        "NOT_EXECUTED",
+        "EVIDENCE_MISSING"
+      ],
+      "case_consistency_only": false
+    },
+    {
+      "id": "PL-LED-001",
+      "title": "Typed public event ledger",
+      "facet": "case_representation",
+      "architecture_gates": [
+        "G01",
+        "G02",
+        "G03"
+      ],
+      "severity": "hard",
+      "applicability": "always",
+      "procedure": [
+        "enumerate every public case statement",
+        "assign event type, occurred order/time bounds, available order/time, provenance, and disposition",
+        "audit hypotheses, plans, performed actions, results, and outcomes as distinct types",
+        "check uncertain time is preserved as interval/partial order"
+      ],
+      "pass_condition": "Every public event has source provenance and correct temporal/type semantics; no unavailable result is exposed and no clock time is invented.",
+      "fail_code": "HF-LED-001",
+      "required_evidence": [
+        "source_inventory.json",
+        "event_ledger.json",
+        "event_ledger_audit.json"
+      ],
+      "allowed_results": [
+        "PASS",
+        "FAIL",
+        "NOT_APPLICABLE",
+        "NOT_EXECUTED",
+        "EVIDENCE_MISSING"
+      ],
+      "case_consistency_only": false
+    },
+    {
+      "id": "PL-LED-002",
+      "title": "Exact-once recursive replay",
+      "facet": "structure",
+      "architecture_gates": [
+        "G03"
+      ],
+      "severity": "hard",
+      "applicability": "always",
+      "procedure": [
+        "ingest each event once",
+        "re-ingest duplicate event ids and equivalent source renderings",
+        "reconstruct each cut in a fresh process from parent state plus delta",
+        "cold replay full available ledger"
+      ],
+      "pass_condition": "Duplicates leave bytes unchanged and recursive/fresh/cold replay produce identical canonical state bytes and query outputs.",
+      "fail_code": "HF-LED-002",
+      "required_evidence": [
+        "duplicate_ingestion_probe.json",
+        "recursive_replay_hashes.json",
+        "fresh_process_replay.json"
+      ],
+      "allowed_results": [
+        "PASS",
+        "FAIL",
+        "NOT_APPLICABLE",
+        "NOT_EXECUTED",
+        "EVIDENCE_MISSING"
+      ],
+      "case_consistency_only": false
+    },
+    {
+      "id": "PL-STATE-001",
+      "title": "One canonical shared state",
+      "facet": "structure",
+      "architecture_gates": [
+        "G04",
+        "G05"
+      ],
+      "severity": "hard",
+      "applicability": "always",
+      "procedure": [
+        "serialize state once per cut",
+        "invoke diagnosis, no-action forecast, current-policy forecast, each action rollout, and plan in permuted orders",
+        "deny heads raw ledger, patient cache, expected labels, and future artifacts"
+      ],
+      "pass_condition": "All heads report the identical consumed_state_sha256; outputs are order invariant; factual state bytes never change during queries.",
+      "fail_code": "HF-STATE-001",
+      "required_evidence": [
+        "consumed_state_hashes.json",
+        "query_permutation_probe.json",
+        "head_io_trace.json"
+      ],
+      "allowed_results": [
+        "PASS",
+        "FAIL",
+        "NOT_APPLICABLE",
+        "NOT_EXECUTED",
+        "EVIDENCE_MISSING"
+      ],
+      "case_consistency_only": false
+    },
+    {
+      "id": "PL-STATE-002",
+      "title": "Frozen wire-state completeness",
+      "facet": "structure",
+      "architecture_gates": [
+        "G07",
+        "G08",
+        "G09",
+        "G12",
+        "G16"
+      ],
+      "severity": "hard",
+      "applicability": "always",
+      "procedure": [
+        "validate every cut against architecture_final_v1.schema.json",
+        "assert nonexclusive active-process posterior, local coordinates/modes, couplings, action lifecycle, epistemic residual, identifiability claims, lineage, and integrity are populated from evidence"
+      ],
+      "pass_condition": "Every state validates the frozen schema and each required field is behaviorally consumed rather than a fixed decorative placeholder.",
+      "fail_code": "HF-STATE-002",
+      "required_evidence": [
+        "schema_validation.json",
+        "field_consumption_trace.json",
+        "state_samples_manifest.json"
+      ],
+      "allowed_results": [
+        "PASS",
+        "FAIL",
+        "NOT_APPLICABLE",
+        "NOT_EXECUTED",
+        "EVIDENCE_MISSING"
+      ],
+      "case_consistency_only": false
+    },
+    {
+      "id": "PL-TIME-001",
+      "title": "No future-information leakage",
+      "facet": "time_integrity",
+      "architecture_gates": [
+        "G01",
+        "G05"
+      ],
+      "severity": "hard",
+      "applicability": "always",
+      "procedure": [
+        "for every cut remove all later-available events",
+        "build old state and outputs",
+        "add later events to storage but keep cut watermark unchanged",
+        "compare bytes and all readouts"
+      ],
+      "pass_condition": "Old state bytes and every old-cut output remain byte-identical when later-unavailable events are present or absent outside the watermark.",
+      "fail_code": "HF-TIME-001",
+      "required_evidence": [
+        "future_leak_probe_by_cut.json",
+        "availability_watermark_trace.json"
+      ],
+      "allowed_results": [
+        "PASS",
+        "FAIL",
+        "NOT_APPLICABLE",
+        "NOT_EXECUTED",
+        "EVIDENCE_MISSING"
+      ],
+      "case_consistency_only": false
+    },
+    {
+      "id": "PL-TIME-002",
+      "title": "Planned/performed/result availability separation",
+      "facet": "time_integrity",
+      "architecture_gates": [
+        "G02"
+      ],
+      "severity": "hard",
+      "applicability": "always",
+      "procedure": [
+        "replay plan-only event",
+        "replay performed/start event when it becomes available",
+        "replay response/result only at its availability cut"
+      ],
+      "pass_condition": "A plan does not start physiological exposure; performed action starts lifecycle only when available; response does not update any earlier cut.",
+      "fail_code": "HF-TIME-002",
+      "required_evidence": [
+        "planned_performed_probe.json",
+        "action_result_availability_probe.json"
+      ],
+      "allowed_results": [
+        "PASS",
+        "FAIL",
+        "NOT_APPLICABLE",
+        "NOT_EXECUTED",
+        "EVIDENCE_MISSING"
+      ],
+      "case_consistency_only": false
+    },
+    {
+      "id": "PL-FACT-001",
+      "title": "Typed positive and negative factor likelihood",
+      "facet": "factor_graph",
+      "architecture_gates": [
+        "G06"
+      ],
+      "severity": "hard",
+      "applicability": "always",
+      "procedure": [
+        "trace every rankable observation to mechanism/mode/background/measurement parents",
+        "inject or use registered reliable negative evidence",
+        "compare posterior odds before and after evidence"
+      ],
+      "pass_condition": "Every rankable fact has a generation path and reliable positive/negative evidence changes relevant odds in the preregistered direction.",
+      "fail_code": "HF-FACT-001",
+      "required_evidence": [
+        "factor_graph_trace.json",
+        "directional_likelihood_assertions.json",
+        "negative_evidence_probe.json"
+      ],
+      "allowed_results": [
+        "PASS",
+        "FAIL",
+        "NOT_APPLICABLE",
+        "NOT_EXECUTED",
+        "EVIDENCE_MISSING"
+      ],
+      "case_consistency_only": false
+    },
+    {
+      "id": "PL-FACT-002",
+      "title": "Shared-source and clone invariance",
+      "facet": "factor_graph",
+      "architecture_gates": [
+        "G06"
+      ],
+      "severity": "hard",
+      "applicability": "always",
+      "procedure": [
+        "clone a source event under new ids/renderings",
+        "repeat correlated children sharing the same latent/source group",
+        "compare posterior entropy/odds with original"
+      ],
+      "pass_condition": "Exact/equivalent same-source clones do not add certainty; correlated children are conditioned through the registered parent rather than multiplied as independent votes.",
+      "fail_code": "HF-FACT-002",
+      "required_evidence": [
+        "clone_invariance_probe.json",
+        "common_parent_ablation.json"
+      ],
+      "allowed_results": [
+        "PASS",
+        "FAIL",
+        "NOT_APPLICABLE",
+        "NOT_EXECUTED",
+        "EVIDENCE_MISSING"
+      ],
+      "case_consistency_only": false
+    },
+    {
+      "id": "PL-CONC-001",
+      "title": "Factorial concurrent-process posterior",
+      "facet": "concurrent_processes",
+      "architecture_gates": [
+        "G07"
+      ],
+      "severity": "hard",
+      "applicability": "always",
+      "procedure": [
+        "run fixed case-independent two-process witness",
+        "activate both nonexclusive processes",
+        "inspect marginal and joint representation"
+      ],
+      "pass_condition": "Both nonexclusive process marginals can be simultaneously high; no sum-to-one disease simplex or single-label overwrite is applied.",
+      "fail_code": "HF-CONC-001",
+      "required_evidence": [
+        "factorial_process_witness.json",
+        "posterior_normalization_trace.json"
+      ],
+      "allowed_results": [
+        "PASS",
+        "FAIL",
+        "NOT_APPLICABLE",
+        "NOT_EXECUTED",
+        "EVIDENCE_MISSING"
+      ],
+      "case_consistency_only": false
+    },
+    {
+      "id": "PL-CONC-002",
+      "title": "Independent process persistence",
+      "facet": "concurrent_processes",
+      "architecture_gates": [
+        "G07",
+        "G13"
+      ],
+      "severity": "hard",
+      "applicability": "always",
+      "procedure": [
+        "identify any holdout cut with a new process/complication while an earlier process remains supported",
+        "otherwise run fixed process-activation witness",
+        "update then withdraw one process"
+      ],
+      "pass_condition": "Activating or withdrawing one process does not erase or renormalize away an independently supported co-active process.",
+      "fail_code": "HF-CONC-002",
+      "required_evidence": [
+        "process_activation_withdrawal_probe.json",
+        "process_persistence_trace.json"
+      ],
+      "allowed_results": [
+        "PASS",
+        "FAIL",
+        "NOT_APPLICABLE",
+        "NOT_EXECUTED",
+        "EVIDENCE_MISSING"
+      ],
+      "case_consistency_only": false
+    },
+    {
+      "id": "PL-MODE-001",
+      "title": "Branch/organ-local modes and coupling",
+      "facet": "local_modes",
+      "architecture_gates": [
+        "G08"
+      ],
+      "severity": "hard",
+      "applicability": "always",
+      "procedure": [
+        "inspect all clinically relevant local domains",
+        "run fixed two-domain witness with different simultaneous modes",
+        "trace cross-coupling update"
+      ],
+      "pass_condition": "At least two relevant domains can carry different mode posteriors at the same cut and registered couplings can affect local transitions.",
+      "fail_code": "HF-MODE-001",
+      "required_evidence": [
+        "local_mode_trace.json",
+        "cross_coupling_probe.json"
+      ],
+      "allowed_results": [
+        "PASS",
+        "FAIL",
+        "NOT_APPLICABLE",
+        "NOT_EXECUTED",
+        "EVIDENCE_MISSING"
+      ],
+      "case_consistency_only": false
+    },
+    {
+      "id": "PL-MODE-002",
+      "title": "Mode-specific drift, guard and hysteresis",
+      "facet": "local_modes",
+      "architecture_gates": [
+        "G08"
+      ],
+      "severity": "hard",
+      "applicability": "always",
+      "procedure": [
+        "construct same-coordinate/different-mode twins",
+        "roll each under same action",
+        "test guard/hysteresis around boundary",
+        "ablate mode state"
+      ],
+      "pass_condition": "Twins can have different trajectory direction; guards prevent illegal switches; hysteresis prevents chattering; mode ablation destroys the preregistered distinction.",
+      "fail_code": "HF-MODE-002",
+      "required_evidence": [
+        "mode_twin_probe.json",
+        "guard_hysteresis_probe.json",
+        "mode_ablation.json"
+      ],
+      "allowed_results": [
+        "PASS",
+        "FAIL",
+        "NOT_APPLICABLE",
+        "NOT_EXECUTED",
+        "EVIDENCE_MISSING"
+      ],
+      "case_consistency_only": false
+    },
+    {
+      "id": "PL-SUPPORT-001",
+      "title": "Support masking and action memory",
+      "facet": "action_counterfactual",
+      "architecture_gates": [
+        "G09",
+        "G11"
+      ],
+      "severity": "hard",
+      "applicability": "always",
+      "procedure": [
+        "construct same measured-output twins with different active support/dose/trend",
+        "roll no-op/continue/stop",
+        "compare reserve and future"
+      ],
+      "pass_condition": "Support-dependent normal output is distinguishable from unsupported stability; state and forecast differ by lifecycle and dose/trend.",
+      "fail_code": "HF-SUPPORT-001",
+      "required_evidence": [
+        "support_masking_twin.json",
+        "support_lifecycle_rollouts.json"
+      ],
+      "allowed_results": [
+        "PASS",
+        "FAIL",
+        "NOT_APPLICABLE",
+        "NOT_EXECUTED",
+        "EVIDENCE_MISSING"
+      ],
+      "case_consistency_only": false
+    },
+    {
+      "id": "PL-GEOM-001",
+      "title": "Runtime-connected branch geometry",
+      "facet": "structure",
+      "architecture_gates": [
+        "G10"
+      ],
+      "severity": "hard",
+      "applicability": "always",
+      "procedure": [
+        "run preregistered surface-similar/mechanism-different witness",
+        "record neighbor/inference/plan with geometry",
+        "disable geometry only and rerun"
+      ],
+      "pass_condition": "Geometry-enabled result respects topology/behavior; the registered ablation exposes the expected wrong neighbor, inference, or action.",
+      "fail_code": "HF-GEOM-001",
+      "required_evidence": [
+        "geometry_witness.json",
+        "geometry_ablation.json"
+      ],
+      "allowed_results": [
+        "PASS",
+        "FAIL",
+        "NOT_APPLICABLE",
+        "NOT_EXECUTED",
+        "EVIDENCE_MISSING"
+      ],
+      "case_consistency_only": false
+    },
+    {
+      "id": "PL-DX-001",
+      "title": "Stagewise evidence-responsive diagnosis",
+      "facet": "diagnosis",
+      "architecture_gates": [
+        "G06",
+        "G07",
+        "G12",
+        "G18"
+      ],
+      "severity": "hard",
+      "applicability": "always",
+      "procedure": [
+        "seal directional assertions before runtime outputs",
+        "at each cut record process odds and factor deltas",
+        "verify reliable positive and negative evidence directions",
+        "scan input/trace for expected-label and future leakage"
+      ],
+      "pass_condition": "Relevant processes move directionally with available evidence, concurrent processes remain possible, and no expected diagnosis/future event is consumed.",
+      "fail_code": "HF-DX-001",
+      "required_evidence": [
+        "diagnostic_direction_assertions.json",
+        "diagnostic_trace_by_cut.json",
+        "label_leak_scan.json"
+      ],
+      "allowed_results": [
+        "PASS",
+        "FAIL",
+        "NOT_APPLICABLE",
+        "NOT_EXECUTED",
+        "EVIDENCE_MISSING"
+      ],
+      "case_consistency_only": false
+    },
+    {
+      "id": "PL-DX-002",
+      "title": "Evidence-based clinical localization",
+      "facet": "diagnosis",
+      "architecture_gates": [
+        "G18"
+      ],
+      "severity": "hard",
+      "applicability": "always",
+      "procedure": [
+        "define decisive-evidence cut without using model scores",
+        "evaluate relevant published process and incompatible alternatives at that cut",
+        "require explicit positive/negative factor attribution",
+        "audit co-active processes separately"
+      ],
+      "pass_condition": "At the decisive public cut the published process is localized under the frozen rule, incompatible alternatives fall for explicit factors, and co-processes are not forced into mutual exclusion.",
+      "fail_code": "HF-DX-002",
+      "required_evidence": [
+        "decisive_cut_definition.json",
+        "diagnostic_localization_result.json",
+        "alternative_factor_audit.json"
+      ],
+      "allowed_results": [
+        "PASS",
+        "FAIL",
+        "NOT_APPLICABLE",
+        "NOT_EXECUTED",
+        "EVIDENCE_MISSING"
+      ],
+      "case_consistency_only": true
+    },
+    {
+      "id": "PL-PRED-001",
+      "title": "Prospective cut-by-cut forecast",
+      "facet": "prediction",
+      "architecture_gates": [
+        "G04",
+        "G11",
+        "G18"
+      ],
+      "severity": "hard",
+      "applicability": "always",
+      "procedure": [
+        "before opening next cut emit no-action and current-policy forecast",
+        "seal forecast bytes/time",
+        "confirm use of same transition core as action rollouts",
+        "then reveal next cut"
+      ],
+      "pass_condition": "Every eligible cut has a pre-outcome sealed forecast from the shared state and transition core.",
+      "fail_code": "HF-PRED-001",
+      "required_evidence": [
+        "forecast_seals.json",
+        "forecast_by_cut.json",
+        "transition_core_trace.json"
+      ],
+      "allowed_results": [
+        "PASS",
+        "FAIL",
+        "NOT_APPLICABLE",
+        "NOT_EXECUTED",
+        "EVIDENCE_MISSING"
+      ],
+      "case_consistency_only": false
+    },
+    {
+      "id": "PL-PRED-002",
+      "title": "Realized trajectory case consistency",
+      "facet": "prediction",
+      "architecture_gates": [
+        "G08",
+        "G13",
+        "G18"
+      ],
+      "severity": "hard",
+      "applicability": "always",
+      "procedure": [
+        "apply frozen continuous/discrete support score",
+        "compare process activation, local coordinate direction and local mode transition",
+        "compare against frozen baseline",
+        "report all cuts, not only favorable ones"
+      ],
+      "pass_condition": "No realized clinically consequential state has zero/undefined support and the aggregate frozen case-consistency rule passes.",
+      "fail_code": "HF-PRED-002",
+      "required_evidence": [
+        "prediction_scoring_spec.json",
+        "prediction_score_by_cut.json",
+        "prediction_baseline_comparison.json"
+      ],
+      "allowed_results": [
+        "PASS",
+        "FAIL",
+        "NOT_APPLICABLE",
+        "NOT_EXECUTED",
+        "EVIDENCE_MISSING"
+      ],
+      "case_consistency_only": true
+    },
+    {
+      "id": "PL-ACT-001",
+      "title": "Lifecycle-distinct controlled transitions",
+      "facet": "action_counterfactual",
+      "architecture_gates": [
+        "G02",
+        "G09",
+        "G11"
+      ],
+      "severity": "hard",
+      "applicability": "always",
+      "procedure": [
+        "for each applicable action compare no-op/continue/start/hold/stop/dose/washout",
+        "permute query order",
+        "compare factual state before/after counterfactual calls"
+      ],
+      "pass_condition": "Applicable lifecycle queries have semantically distinct transitions; counterfactual query order does not mutate factual state.",
+      "fail_code": "HF-ACT-001",
+      "required_evidence": [
+        "action_lifecycle_matrix.json",
+        "counterfactual_purity_probe.json"
+      ],
+      "allowed_results": [
+        "PASS",
+        "FAIL",
+        "NOT_APPLICABLE",
+        "NOT_EXECUTED",
+        "EVIDENCE_MISSING"
+      ],
+      "case_consistency_only": false
+    },
+    {
+      "id": "PL-ACT-002",
+      "title": "Counterfactual identification honesty",
+      "facet": "action_counterfactual",
+      "architecture_gates": [
+        "G13",
+        "G17"
+      ],
+      "severity": "hard",
+      "applicability": "always",
+      "procedure": [
+        "update state with available observed action response",
+        "verify all heads consume the updated shared state",
+        "inspect every counterfactual for identification class, assumptions, scope, uncertainty",
+        "test planner exclusion/bounding of unidentifiable unique effects"
+      ],
+      "pass_condition": "Observed response updates all subsequent queries; every effect uses the exact frozen-wire status IDENTIFIED_WITHIN_SCOPE, PARTIALLY_IDENTIFIED, UNIDENTIFIABLE, or OUT_OF_SCOPE with scope and assumptions; no unique individual effect is asserted when not identified.",
+      "fail_code": "HF-ACT-002",
+      "required_evidence": [
+        "response_update_trace.json",
+        "counterfactual_claim_audit.json",
+        "planner_identifiability_probe.json"
+      ],
+      "allowed_results": [
+        "PASS",
+        "FAIL",
+        "NOT_APPLICABLE",
+        "NOT_EXECUTED",
+        "EVIDENCE_MISSING"
+      ],
+      "case_consistency_only": false
+    },
+    {
+      "id": "PL-OOD-001",
+      "title": "Dynamic epistemic residual",
+      "facet": "open_world_refinement",
+      "architecture_gates": [
+        "G12"
+      ],
+      "severity": "hard",
+      "applicability": "always",
+      "procedure": [
+        "compute event disposition denominator",
+        "add registered unmapped/conflicting/generation-misfit evidence",
+        "compare residual components and known-process confidence"
+      ],
+      "pass_condition": "Relevant residual component changes with unexplained evidence and known-process normalization cannot hide it; residual is not a fixed decorative constant.",
+      "fail_code": "HF-OOD-001",
+      "required_evidence": [
+        "event_disposition_coverage.json",
+        "epistemic_residual_probe.json"
+      ],
+      "allowed_results": [
+        "PASS",
+        "FAIL",
+        "NOT_APPLICABLE",
+        "NOT_EXECUTED",
+        "EVIDENCE_MISSING"
+      ],
+      "case_consistency_only": false
+    },
+    {
+      "id": "PL-OOD-002",
+      "title": "Closed-world forced-choice rejection",
+      "facet": "open_world_refinement",
+      "architecture_gates": [
+        "G12",
+        "G18"
+      ],
+      "severity": "hard",
+      "applicability": "always",
+      "procedure": [
+        "run fixed case-independent unknown-process perturbation with facts poorly generated by all known processes",
+        "compare known-process confidence and residual/abstention"
+      ],
+      "pass_condition": "The runtime exposes material misfit/residual and abstains or widens uncertainty instead of confidently forcing a known process.",
+      "fail_code": "HF-OOD-002",
+      "required_evidence": [
+        "unknown_process_perturbation.json",
+        "forced_choice_audit.json"
+      ],
+      "allowed_results": [
+        "PASS",
+        "FAIL",
+        "NOT_APPLICABLE",
+        "NOT_EXECUTED",
+        "EVIDENCE_MISSING"
+      ],
+      "case_consistency_only": false
+    },
+    {
+      "id": "PL-REF-001",
+      "title": "Dangerous state-collision detection",
+      "facet": "open_world_refinement",
+      "architecture_gates": [
+        "G14"
+      ],
+      "severity": "hard",
+      "applicability": "always",
+      "procedure": [
+        "run fixed same-old-state/same-new-action/opposite-response witness",
+        "invoke production collision detector and planner"
+      ],
+      "pass_condition": "The production runtime detects the collision and blocks an unsafe unique action conclusion.",
+      "fail_code": "HF-REF-001",
+      "required_evidence": [
+        "collision_witness.json",
+        "runtime_collision_detection.json"
+      ],
+      "allowed_results": [
+        "PASS",
+        "FAIL",
+        "NOT_APPLICABLE",
+        "NOT_EXECUTED",
+        "EVIDENCE_MISSING"
+      ],
+      "case_consistency_only": false
+    },
+    {
+      "id": "PL-REF-002",
+      "title": "Unobservable split abstention",
+      "facet": "open_world_refinement",
+      "architecture_gates": [
+        "G14",
+        "G17"
+      ],
+      "severity": "hard",
+      "applicability": "always",
+      "procedure": [
+        "remove every public/safe separating observation from collision witness",
+        "request subtype and action effect",
+        "inspect planner"
+      ],
+      "pass_condition": "Runtime returns typed UNIDENTIFIABLE or an honest bound and does not guess subtype, response sign, or unique best action.",
+      "fail_code": "HF-REF-002",
+      "required_evidence": [
+        "unobservable_split_probe.json",
+        "unidentifiable_output.json"
+      ],
+      "allowed_results": [
+        "PASS",
+        "FAIL",
+        "NOT_APPLICABLE",
+        "NOT_EXECUTED",
+        "EVIDENCE_MISSING"
+      ],
+      "case_consistency_only": false
+    },
+    {
+      "id": "PL-REF-003",
+      "title": "Local split, availability and migration",
+      "facet": "open_world_refinement",
+      "architecture_gates": [
+        "G15",
+        "G16"
+      ],
+      "severity": "hard",
+      "applicability": "always",
+      "procedure": [
+        "introduce registered separating check after old model/state seal",
+        "verify result has no effect before availability",
+        "refine affected stratum",
+        "migrate old states with explicit kernel and lineage"
+      ],
+      "pass_condition": "Only the affected stratum splits; posterior changes only after result availability; every old state is migrated or explicitly rejected with typed reason and lineage.",
+      "fail_code": "HF-REF-003",
+      "required_evidence": [
+        "refinement_trigger.json",
+        "new_check_availability_probe.json",
+        "migration_lineage.json"
+      ],
+      "allowed_results": [
+        "PASS",
+        "FAIL",
+        "NOT_APPLICABLE",
+        "NOT_EXECUTED",
+        "EVIDENCE_MISSING"
+      ],
+      "case_consistency_only": false
+    },
+    {
+      "id": "PL-REF-004",
+      "title": "Old-scope non-regression after refinement",
+      "facet": "open_world_refinement",
+      "architecture_gates": [
+        "G15",
+        "G16"
+      ],
+      "severity": "hard",
+      "applicability": "always",
+      "procedure": [
+        "freeze old-scope query corpus and tolerance",
+        "run before refinement",
+        "migrate",
+        "rerun every unaffected query"
+      ],
+      "pass_condition": "All unaffected old-scope queries stay within preregistered tolerance; any declared change is bound to an explicit scope/version change.",
+      "fail_code": "HF-REF-004",
+      "required_evidence": [
+        "old_scope_query_manifest.json",
+        "refinement_non_regression.json"
+      ],
+      "allowed_results": [
+        "PASS",
+        "FAIL",
+        "NOT_APPLICABLE",
+        "NOT_EXECUTED",
+        "EVIDENCE_MISSING"
+      ],
+      "case_consistency_only": false
+    },
+    {
+      "id": "PL-CASE-001",
+      "title": "No clinically consequential silent drop",
+      "facet": "case_representation",
+      "architecture_gates": [
+        "G18"
+      ],
+      "severity": "hard",
+      "applicability": "always",
+      "procedure": [
+        "classify every source fact/action/result as rankable_consumed, record_only_nonrankable, epistemic_residual, or excluded_with_reason",
+        "independent clinician/reviewer flags clinically consequential items",
+        "cross-check consumed factor/action trace"
+      ],
+      "pass_condition": "Every consequential item is consumed or explicitly increases epistemic residual; exclusions have defensible non-score-protecting rationale.",
+      "fail_code": "HF-CASE-001",
+      "required_evidence": [
+        "case_fact_disposition.json",
+        "consequential_item_review.json",
+        "consumption_crosscheck.json"
+      ],
+      "allowed_results": [
+        "PASS",
+        "FAIL",
+        "NOT_APPLICABLE",
+        "NOT_EXECUTED",
+        "EVIDENCE_MISSING"
+      ],
+      "case_consistency_only": false
+    },
+    {
+      "id": "PL-REPORT-001",
+      "title": "Facet-complete non-overclaiming report",
+      "facet": "reporting",
+      "architecture_gates": [
+        "G18"
+      ],
+      "severity": "hard",
+      "applicability": "always",
+      "procedure": [
+        "emit every gate result and evidence pointer",
+        "emit every facet independently",
+        "list all failures and forbidden claims",
+        "verify no top-1 or terminal-outcome override"
+      ],
+      "pass_condition": "Report is complete, machine-consistent, exposes failures prominently, and uses only the permitted verdict vocabulary.",
+      "fail_code": "HF-REPORT-001",
+      "required_evidence": [
+        "perfect_landing_results.json",
+        "perfect_landing_report.md",
+        "report_consistency_check.json"
+      ],
+      "allowed_results": [
+        "PASS",
+        "FAIL",
+        "NOT_APPLICABLE",
+        "NOT_EXECUTED",
+        "EVIDENCE_MISSING"
+      ],
+      "case_consistency_only": false
+    }
+  ],
+  "result_record_required_fields": [
+    "contract_id",
+    "contract_sha256",
+    "architecture_document_sha256",
+    "wire_schema_sha256",
+    "case_ledger_sha256",
+    "model_pack_sha256",
+    "runtime_source_sha256",
+    "commands",
+    "environment",
+    "gate_results",
+    "facet_results",
+    "overall_verdict",
+    "evidence_manifest_sha256",
+    "limitations"
+  ],
+  "supersedes": {
+    "contract_version": "1.0.0",
+    "reason": "identifiability enum mismatch with frozen architecture wire",
+    "preserved_contract": "PERFECT_LANDING_GATES_v1.0.0.json",
+    "preserved_seal": "PERFECT_LANDING_GATES_v1.0.0.seal.json"
+  }
+}

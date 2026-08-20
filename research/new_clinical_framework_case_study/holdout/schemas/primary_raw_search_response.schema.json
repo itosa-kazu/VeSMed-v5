@@ -1,0 +1,73 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "ncf.primary-raw-search-response.v1",
+  "title": "Content-addressed frozen-query PubMed ESearch capture",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "provider",
+    "query_id",
+    "retrieved_at",
+    "request",
+    "raw_payload_ref",
+    "retrieved_count"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "NCF-PRIMARY-RAW-SEARCH-RESPONSE-1.0.0"
+    },
+    "provider": {
+      "const": "NCBI_PUBMED_ESEARCH_JSON"
+    },
+    "query_id": {
+      "enum": ["Q1", "Q2"]
+    },
+    "retrieved_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "request": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "database",
+        "query",
+        "sort",
+        "retmax",
+        "retstart",
+        "retmode",
+        "request_url"
+      ],
+      "properties": {
+        "database": {"const": "pubmed"},
+        "query": {"type": "string", "minLength": 1},
+        "sort": {"const": "pub date"},
+        "retmax": {"const": 100},
+        "retstart": {"const": 0},
+        "retmode": {"const": "json"},
+        "request_url": {
+          "type": "string",
+          "pattern": "^https://eutils\\.ncbi\\.nlm\\.nih\\.gov/entrez/eutils/esearch\\.fcgi\\?"
+        }
+      }
+    },
+    "raw_payload_ref": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256", "bytes"],
+      "properties": {
+        "path": {
+          "type": "string",
+          "pattern": "^holdout/evidence/primary_search_raw/payloads/[^/]+\\.json$"
+        },
+        "sha256": {"$ref": "#/$defs/sha256"},
+        "bytes": {"type": "integer", "minimum": 2}
+      }
+    },
+    "retrieved_count": {"type": "integer", "minimum": 0, "maximum": 100}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  }
+}

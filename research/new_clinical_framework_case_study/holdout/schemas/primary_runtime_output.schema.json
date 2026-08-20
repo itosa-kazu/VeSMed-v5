@@ -1,0 +1,122 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "ncf.data.runtime-output.v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "execution_role", "case_blind", "input_manifest_sha256",
+    "input_bindings", "oracle_seal_sha256", "case_blind_process_priors", "compiled_event_ledger_sha256", "cut_count", "cuts", "prospective_scores",
+    "final_cut_seal_sha256", "raw_trace_contract"
+  ],
+  "properties": {
+    "schema_version": {"const": "NCF-PRIMARY-RUNTIME-OUTPUT-1.0.0"},
+    "execution_role": {"const": "evaluator"},
+    "case_blind": {"const": true},
+    "input_manifest_sha256": {"$ref": "#/$defs/hash"},
+    "input_bindings": {"type": "array", "minItems": 9, "maxItems": 9, "items": {"$ref": "#/$defs/binding"}},
+    "oracle_seal_sha256": {"$ref": "#/$defs/hash"},
+    "case_blind_process_priors": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/processPrior"}},
+    "compiled_event_ledger_sha256": {"$ref": "#/$defs/hash"},
+    "cut_count": {"type": "integer", "minimum": 1},
+    "cuts": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/cut"}},
+    "prospective_scores": {"type": "array", "items": {"$ref": "#/$defs/prospectiveScore"}},
+    "final_cut_seal_sha256": {"$ref": "#/$defs/hash"},
+    "raw_trace_contract": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["same_canonical_state_for_all_heads", "future_events_excluded_until_available", "washout_source_input_forbidden", "post_replay_recomputation_supported"],
+      "properties": {
+        "same_canonical_state_for_all_heads": {"const": true},
+        "future_events_excluded_until_available": {"const": true},
+        "washout_source_input_forbidden": {"const": true},
+        "post_replay_recomputation_supported": {"const": true}
+      }
+    }
+  },
+  "$defs": {
+    "hash": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "binding": {
+      "type": "object", "additionalProperties": false,
+      "required": ["role", "sha256", "bytes", "schema_id"],
+      "properties": {
+        "role": {"type": "string", "minLength": 1},
+        "sha256": {"$ref": "#/$defs/hash"},
+        "bytes": {"type": "integer", "minimum": 1},
+        "schema_id": {"type": "string", "minLength": 1}
+      }
+    },
+    "processPrior": {
+      "type": "object", "additionalProperties": false,
+      "required": ["process_id", "activation_prior", "prior_source"],
+      "properties": {
+        "process_id": {"type": "string", "minLength": 1},
+        "activation_prior": {"type": "number", "exclusiveMinimum": 0, "exclusiveMaximum": 1},
+        "prior_source": {"enum": ["frozen_model_pack", "frozen_model_pack_epistemic"]}
+      }
+    },
+    "cut": {
+      "type": "object", "additionalProperties": false,
+      "required": [
+        "sequence", "cut_ordinal", "parent_cut_seal_sha256", "new_event_ids",
+        "processed_event_ids", "future_registered_event_ids", "canonical_state_hash",
+        "canonical_state_bytes_sha256", "canonical_state", "diagnosis", "forecast",
+        "persistence_baseline", "plan", "consumption_trace", "factor_trace", "mode_trace",
+        "ood_trace", "action_lifecycle_trace", "head_state_hashes", "head_state_hashes_all_equal",
+        "sealed_before_next_cut_sha256"
+      ],
+      "properties": {
+        "sequence": {"type": "integer", "minimum": 0},
+        "cut_ordinal": {"type": "integer", "minimum": 0},
+        "parent_cut_seal_sha256": {"anyOf": [{"type": "null"}, {"$ref": "#/$defs/hash"}]},
+        "new_event_ids": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+        "processed_event_ids": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+        "future_registered_event_ids": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+        "canonical_state_hash": {"$ref": "#/$defs/hash"},
+        "canonical_state_bytes_sha256": {"$ref": "#/$defs/hash"},
+        "canonical_state": {"type": "object"},
+        "diagnosis": {"type": "object"},
+        "forecast": {"type": "object"},
+        "persistence_baseline": {"type": "object"},
+        "plan": {"type": "object"},
+        "consumption_trace": {"type": "object"},
+        "factor_trace": {"type": "array"},
+        "mode_trace": {"type": "array"},
+        "ood_trace": {"type": "object"},
+        "action_lifecycle_trace": {"type": "object"},
+        "head_state_hashes": {"type": "object", "additionalProperties": {"$ref": "#/$defs/hash"}},
+        "head_state_hashes_all_equal": {"const": true},
+        "sealed_before_next_cut_sha256": {"$ref": "#/$defs/hash"}
+      }
+    },
+    "prospectiveScore": {
+      "type": "object", "additionalProperties": false,
+      "required": [
+        "forecast_cut_ordinal", "realization_cut_ordinal", "forecast_cut_seal_sha256",
+        "forecast_payload_sha256", "next_canonical_state_hash", "next_cut_parent_seal_sha256",
+        "prospective_seal_verified", "model", "persistence_baseline", "score_binding_sha256"
+      ],
+      "properties": {
+        "forecast_cut_ordinal": {"type": "integer", "minimum": 0},
+        "realization_cut_ordinal": {"type": "integer", "minimum": 0},
+        "forecast_cut_seal_sha256": {"$ref": "#/$defs/hash"},
+        "forecast_payload_sha256": {"$ref": "#/$defs/hash"},
+        "next_canonical_state_hash": {"$ref": "#/$defs/hash"},
+        "next_cut_parent_seal_sha256": {"$ref": "#/$defs/hash"},
+        "prospective_seal_verified": {"const": true},
+        "model": {"$ref": "#/$defs/prospectiveScoreResult"},
+        "persistence_baseline": {"$ref": "#/$defs/prospectiveScoreResult"},
+        "score_binding_sha256": {"$ref": "#/$defs/hash"}
+      }
+    },
+    "prospectiveScoreResult": {
+      "type": "object", "additionalProperties": false,
+      "required": ["component_count", "components", "bounded_log_score", "all_components_positive_support"],
+      "properties": {
+        "component_count": {"type": "integer", "minimum": 0},
+        "components": {"type": "array", "items": {"type": "object"}},
+        "bounded_log_score": {"type": "number"},
+        "all_components_positive_support": {"type": "boolean"}
+      }
+    }
+  }
+}

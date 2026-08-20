@@ -1,0 +1,149 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "ncf.evaluator-sanitized-runtime-ledger-compiler-input.v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "inputs"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "NCF-EVALUATOR-SANITIZED-RUNTIME-LEDGER-COMPILER-INPUT-1.0.0"
+    },
+    "inputs": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "sealed_event_ledger",
+        "sealed_availability_ledger",
+        "sealed_concept_map",
+        "sanitized_id_type_unit_registry",
+        "combined_preprimary_seal"
+      ],
+      "properties": {
+        "sealed_event_ledger": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/artifactRef"
+            },
+            {
+              "properties": {
+                "data_class": {
+                  "const": "sealed_event_ledger"
+                },
+                "schema_id": {
+                  "const": "ncf.data.sealed-event-ledger.v1"
+                }
+              }
+            }
+          ]
+        },
+        "sealed_availability_ledger": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/artifactRef"
+            },
+            {
+              "properties": {
+                "data_class": {
+                  "const": "sealed_availability_ledger"
+                },
+                "schema_id": {
+                  "const": "ncf.data.sealed-availability-ledger.v1"
+                }
+              }
+            }
+          ]
+        },
+        "sealed_concept_map": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/artifactRef"
+            },
+            {
+              "properties": {
+                "data_class": {
+                  "const": "sealed_concept_map"
+                },
+                "schema_id": {
+                  "const": "ncf.data.sealed-concept-map.v1"
+                }
+              }
+            }
+          ]
+        },
+        "sanitized_id_type_unit_registry": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/artifactRef"
+            },
+            {
+              "properties": {
+                "data_class": {
+                  "const": "sanitized_id_type_unit_registry"
+                },
+                "schema_id": {
+                  "const": "ncf.data.sanitized-id-type-unit-registry.v1"
+                }
+              }
+            }
+          ]
+        },
+        "combined_preprimary_seal": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/artifactRef"
+            },
+            {
+              "properties": {
+                "data_class": {
+                  "const": "combined_preprimary_seal"
+                },
+                "schema_id": {
+                  "const": "ncf.data.combined-preprimary-seal.v1"
+                }
+              }
+            }
+          ]
+        }
+      }
+    }
+  },
+  "$defs": {
+    "artifactRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "path",
+        "sha256",
+        "bytes",
+        "data_class",
+        "schema_id"
+      ],
+      "properties": {
+        "path": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^(?![A-Za-z]:)(?![/\\\\])(?!.*(?:^|/)\\.\\.(?:/|$)).+$"
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "bytes": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "data_class": {
+          "type": "string",
+          "minLength": 1
+        },
+        "schema_id": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    }
+  }
+}
