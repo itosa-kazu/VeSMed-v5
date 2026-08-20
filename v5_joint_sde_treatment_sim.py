@@ -1037,7 +1037,11 @@ def simulate_policy(case, candidate, policy, manifolds, background_axes, start_d
             "log_prior": log_prior,
         }
 
-    corr = joint.build_corr(axis_ids, candidate, manifolds, risk_payloads)
+    # The diagnostic runtime now needs risk-adjusted background axes when it
+    # constructs the correlation matrix.  Keep treatment simulation on that
+    # same API so a filtered live counterfactual run does not fail before the
+    # first particle step.
+    corr = joint.build_corr(axis_ids, candidate, manifolds, risk_payloads, background_axes)
     haz_ids = [disease_hazard_axis(manifolds[d]) for d in candidate]
     haz_ids = [h for h in haz_ids if h in axis_ids]
     haz_idx = [axis_ids.index(h) for h in haz_ids]
