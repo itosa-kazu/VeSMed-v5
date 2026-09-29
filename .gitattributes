@@ -36,6 +36,12 @@ results/unified_map/** ucm-evidence
 tests/unified_map/** ucm-evidence
 results/unified_map/**/raw-*.jsonl.gz -text -diff
 
+# Blind V5-vs-LLM test: the protocol, cases, prompts and answers are bound by
+# SHA-256 over exact bytes (research/blind_vs_llm/frozen/*SHA256.txt).  Keep
+# them platform-invariant so a Windows checkout reproduces the same digests.
+[attr]blind-test-evidence -text whitespace=cr-at-eol
+research/blind_vs_llm/** blind-test-evidence
+
 # Result evidence is reviewed through canonical manifests and deterministic
 # verifiers, not as a line-oriented source diff.  The global rule changes only
 # the diff driver, so frozen K0 clean-filter/blob identities remain untouched.

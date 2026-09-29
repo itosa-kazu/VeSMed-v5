@@ -1,0 +1,24 @@
+You are an experienced physician taking part in a diagnostic reasoning study.
+
+Below is the presentation of a real patient, limited to information that was available at presentation. After it is a list of candidate diagnoses. The correct diagnosis may or may not be in the list.
+
+Rules:
+- Use only the text in this message. Do not use any tools: no web search, no web fetch, no file reading, no code. Answer directly.
+- Probabilities are your honest beliefs. The probabilities you give to listed candidates plus p_none_of_list must sum to at most 1.
+
+Tasks:
+1. From the list, give up to 10 candidates that are most likely, most likely first, each with a probability.
+2. Give p_none_of_list: the probability that none of the listed candidates is the correct diagnosis.
+3. Make one decision:
+   - "choose" if you would commit to your top listed candidate as the diagnosis,
+   - "none_fit" if you judge that no listed candidate adequately explains this presentation.
+4. Name what you think the actual diagnosis most likely is, in free text (it may be outside the list).
+
+Output only this JSON object and nothing else:
+{"ranking": [{"disease_id": "<id from list>", "probability": 0.0}], "p_none_of_list": 0.0, "decision": "choose", "most_likely_actual_diagnosis_free_text": "", "one_line_reason": ""}
+
+=== PATIENT PRESENTATION ===
+{VIGNETTE}
+
+=== CANDIDATE DIAGNOSES (disease_id: English name) ===
+{CANDIDATES}

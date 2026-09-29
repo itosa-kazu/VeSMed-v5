@@ -1,0 +1,216 @@
+You are an experienced physician taking part in a diagnostic reasoning study.
+
+Below is the presentation of a real patient, limited to information that was available at presentation. After it is a list of candidate diagnoses. The correct diagnosis may or may not be in the list.
+
+Rules:
+- Use only the text in this message. Do not use any tools: no web search, no web fetch, no file reading, no code. Answer directly.
+- Probabilities are your honest beliefs. The probabilities you give to listed candidates plus p_none_of_list must sum to at most 1.
+
+Tasks:
+1. From the list, give up to 10 candidates that are most likely, most likely first, each with a probability.
+2. Give p_none_of_list: the probability that none of the listed candidates is the correct diagnosis.
+3. Make one decision:
+   - "choose" if you would commit to your top listed candidate as the diagnosis,
+   - "none_fit" if you judge that no listed candidate adequately explains this presentation.
+4. Name what you think the actual diagnosis most likely is, in free text (it may be outside the list).
+
+Output only this JSON object and nothing else:
+{"ranking": [{"disease_id": "<id from list>", "probability": 0.0}], "p_none_of_list": 0.0, "decision": "choose", "most_likely_actual_diagnosis_free_text": "", "one_line_reason": ""}
+
+=== PATIENT PRESENTATION ===
+A 70-year-old woman with a history of well-controlled hypertension and no family history of hereditary kidney disease is evaluated for newly discovered renal dysfunction.
+
+History: Eleven days ago she developed fever without an obvious cause (maximum 38.7 °C), accompanied by pharyngeal discomfort, cough, low back pain, and pain on urination.
+
+Six days ago (first medical visit), her symptoms had not improved. Blood tests showed a white blood cell count of 10.53 x 10^9/L and C-reactive protein of 218.4 mg/L. She was treated with cefuzoxime and piperacillin-tazobactam plus antipyretics, without obvious improvement.
+
+Today's tests:
+- Urinalysis: protein (+); red blood cells 2,424/uL
+- 24-hour urine protein: 0.321 g
+- Serum creatinine: 293 umol/L (3.31 mg/dL)
+
+=== CANDIDATE DIAGNOSES (disease_id: English name) ===
+D-ACUTE-CHOLANGITIS: Acute cholangitis
+D-ACUTE-CHOLECYSTITIS: Acute cholecystitis
+D-ACUTE-HEPATITIS-A: Acute hepatitis A
+D-ACUTE-HEPATITIS-B: Acute hepatitis B
+D-ACUTE-HEPATITIS-E: Acute hepatitis E
+D-ACUTE-HIV: Acute HIV retroviral syndrome
+D-ACUTE-INTERMITTENT-PORPHYRIA: Acute intermittent porphyria
+D-ACUTE-KIDNEY-INJURY: Acute kidney injury
+D-ACUTE-LIVER-FAILURE: Acute liver failure
+D-ACUTE-MYOCARDITIS: Acute myocarditis
+D-ACUTE-PANCREATITIS: Acute pancreatitis
+D-ACUTE-PROSTATITIS: Acute bacterial prostatitis
+D-ACUTE-RESPIRATORY-DISTRESS-SYNDROME: ARDS
+D-ACUTE-SYMPTOMATIC-HYPERNATREMIA: Acute symptomatic hypernatremia
+D-ADENOVIRUS-INFECTION: Adenovirus infection
+D-ADRENAL-CRISIS: Adrenal crisis
+D-AIHA: Autoimmune hemolytic anemia
+D-ALCL: Anaplastic large cell lymphoma
+D-ALCOHOL-WITHDRAWAL-DELIRIUM: Alcohol withdrawal delirium
+D-ALCOHOLIC-HEPATITIS: Alcoholic hepatitis
+D-ALL: Acute lymphoblastic leukemia
+D-AML: Acute myeloid leukemia
+D-AMNIOTIC-FLUID-EMBOLISM: Amniotic fluid embolism
+D-AMOEBIC-LIVER-ABSCESS: Amoebic liver abscess
+D-ANTI-GBM-DISEASE: Anti-glomerular basement membrane disease
+D-ANTISYNTHETASE-SYNDROME: Antisynthetase syndrome
+D-APL: Acute promyelocytic leukemia
+D-APLASTIC-ANEMIA: Aplastic anemia
+D-APPENDICITIS: Acute appendicitis
+D-ASPIRATION-PNEUMONIA: Aspiration pneumonia
+D-ATRIAL-FIBRILLATION: Atrial fibrillation
+D-AUTOIMMUNE-ENCEPHALITIS: Autoimmune encephalitis
+D-BABESIOSIS: Babesiosis
+D-BACTERIAL-MENINGITIS: Bacterial meningitis
+D-BARTONELLA-ENDOCARDITIS: Bartonella infective endocarditis
+D-BEHCET-DISEASE: Behcet disease
+D-BETA-BLOCKER-TOXICITY: Beta blocker toxicity
+D-BRAIN-ABSCESS: Brain abscess
+D-BRUCELLOSIS: Brucellosis
+D-CAEBV: Chronic active Epstein-Barr virus infection
+D-CANDIDEMIA: Candidemia
+D-CAPS: Cryopyrin-associated periodic syndrome
+D-CAR-T-CRS: CAR-T cytokine release syndrome
+D-CATASTROPHIC-APS: Catastrophic antiphospholipid syndrome
+D-CATHETER-ASSOCIATED-UTI: Catheter-associated urinary tract infection
+D-CELLULITIS: Cellulitis
+D-CENTRAL-LINE-ASSOCIATED-BLOODSTREAM-INFECTION: Central line-associated bloodstream infection
+D-CHIKUNGUNYA: Chikungunya
+D-CHORIOAMNIONITIS: Chorioamnionitis
+D-CLL-TRANSFORMATION-RICHTER: Richter transformation
+D-CLOSTRIDIOIDES-DIFFICILE-SEVERE: Severe Clostridioides difficile infection
+D-CML-BLAST-CRISIS: Chronic myeloid leukemia blast crisis
+D-CMV-MONO: Cytomegalovirus mononucleosis
+D-COCCIDIOIDOMYCOSIS: Coccidioidomycosis
+D-COMPLEMENT-MEDIATED-TMA: Complement-mediated thrombotic microangiopathy
+D-COVID19-ACUTE: Acute COVID-19
+D-CRE-ENTEROBACTERALES-BACTEREMIA: Carbapenem-resistant Enterobacterales bacteremia
+D-CRYOGLOBULINEMIC-VASCULITIS: Cryoglobulinemic vasculitis
+D-CRYPTOCOCCOSIS-DISSEMINATED: Disseminated cryptococcosis
+D-CYANIDE-POISONING: Cyanide poisoning
+D-DENGUE: Dengue
+D-DERMATOMYOSITIS: Dermatomyositis
+D-DIABETIC-FOOT-INFECTION: Diabetic foot infection
+D-DIABETIC-KETOACIDOSIS: Diabetic ketoacidosis
+D-DIC: Disseminated intravascular coagulation
+D-DISSEMINATED-GONOCOCCAL-INFECTION: Disseminated gonococcal infection
+D-DIVERTICULITIS: Acute diverticulitis
+D-DLBCL: Diffuse large B-cell lymphoma
+D-DRUG-FEVER: Simple drug fever
+D-DRUG-FEVER-DRESS: Drug reaction with eosinophilia and systemic symptoms (DRESS)
+D-ECTOPIC-PREGNANCY: Ectopic pregnancy
+D-EGPA: Eosinophilic granulomatosis with polyangiitis
+D-EMPYEMA: Pleural empyema
+D-ENTEROCOCCAL-BACTEREMIA: Enterococcal bacteremia
+D-EPIDIDYMO-ORCHITIS: Epididymo-orchitis
+D-ERYSIPELAS: Erysipelas
+D-ESBL-ENTEROBACTERALES-BACTEREMIA: ESBL Enterobacterales bacteremia
+D-EVANS-SYNDROME: Evans syndrome
+D-FAMILIAL-MEDITERRANEAN-FEVER: Familial Mediterranean fever
+D-FEBRILE-NEUTROPENIA: Febrile neutropenia
+D-GCA: Giant cell arteritis
+D-GPA: Granulomatosis with polyangiitis
+D-HEAT-STROKE: Heat stroke
+D-HELLP-SYNDROME: HELLP syndrome
+D-HEPARIN-INDUCED-THROMBOCYTOPENIA: Heparin-induced thrombocytopenia
+D-HISTOPLASMOSIS-DISSEMINATED: Disseminated histoplasmosis
+D-HLH-MAS: Hemophagocytic lymphohistiocytosis / macrophage activation syndrome
+D-HODGKIN-LYMPHOMA: Hodgkin lymphoma
+D-HSV-ENCEPHALITIS: HSV encephalitis
+D-HYPEROSMOLAR-HYPERGLYCEMIC-STATE: Hyperosmolar hyperglycemic state
+D-IGA-VASCULITIS: IgA vasculitis
+D-IGG4-RELATED-DISEASE: IgG4-related disease
+D-INFECTIOUS-MONONUCLEOSIS: Infectious mononucleosis
+D-INFECTIVE-ENDOCARDITIS: Infective endocarditis
+D-INFLUENZA: Influenza
+D-INVASIVE-ASPERGILLOSIS: Invasive aspergillosis
+D-ITP: Immune thrombocytopenia
+D-IVLBCL: Intravascular large B-cell lymphoma
+D-KAWASAKI-DISEASE: Kawasaki disease
+D-LEGIONELLA-PNEUMONIA: Legionella pneumonia
+D-LEISHMANIASIS-VISCERAL: Visceral leishmaniasis
+D-LEPTOSPIROSIS: Leptospirosis
+D-LUNG-ABSCESS: Lung abscess
+D-LYME-DISEASE: Lyme disease
+D-MALARIA-FALCIPARUM: Plasmodium falciparum malaria
+D-MALIGNANT-HYPERTHERMIA: Malignant hyperthermia
+D-MEASLES: Measles
+D-MENINGOCOCCEMIA: Meningococcemia
+D-METHANOL-POISONING: Methanol poisoning
+D-MIS-A: Multisystem inflammatory syndrome in adults
+D-MIXED-CONNECTIVE-TISSUE-DISEASE: Mixed connective tissue disease
+D-MPA: Microscopic polyangiitis
+D-MYCOPLASMA-PNEUMONIA: Mycoplasma pneumonia
+D-MYXEDEMA-COMA: Myxedema coma
+D-NECROTIZING-FASCIITIS: Necrotizing fasciitis
+D-NEUROLEPTIC-MALIGNANT-SYNDROME: Neuroleptic malignant syndrome
+D-NOCARDIOSIS: Nocardiosis
+D-NONTYPHOID-SALMONELLA-BACTEREMIA: Nontyphoidal Salmonella bacteremia
+D-ORBITAL-CELLULITIS: Orbital cellulitis
+D-PAN: Polyarteritis nodosa
+D-PELVIC-INFLAMMATORY-DISEASE: Pelvic inflammatory disease
+D-PERICARDITIS: Acute pericarditis
+D-PERINEPHRIC-ABSCESS: Perinephric abscess
+D-PERIPARTUM-CARDIOMYOPATHY: Peripartum cardiomyopathy
+D-PHEOCHROMOCYTOMA-CRISIS: Pheochromocytoma crisis
+D-PJP-PNEUMONIA: Pneumocystis jirovecii pneumonia
+D-PLACENTA-PREVIA: Placenta previa
+D-PLACENTAL-ABRUPTION: Placental abruption
+D-PNEUMOCOCCAL-PNEUMONIA: Pneumococcal pneumonia
+D-POLYMYOSITIS: Polymyositis
+D-POSTPARTUM-ENDOMETRITIS: Postpartum endometritis
+D-POSTPARTUM-HEMORRHAGE-UTERINE-ATONY: Postpartum hemorrhage due to uterine atony
+D-PREECLAMPSIA-ECLAMPSIA: Preeclampsia / eclampsia
+D-PROSTHETIC-JOINT-INFECTION: Prosthetic joint infection
+D-PSEUDOMONAS-BACTEREMIA: Pseudomonas aeruginosa bacteremia
+D-PULMONARY-EMBOLISM: Pulmonary embolism
+D-PYELONEPHRITIS: Pyelonephritis
+D-PYOGENIC-LIVER-ABSCESS: Pyogenic liver abscess
+D-Q-FEVER: Q fever
+D-RA-FLARE: Rheumatoid arthritis systemic flare
+D-RELAPSING-POLYCHONDRITIS: Relapsing polychondritis
+D-RENAL-ABSCESS: Renal abscess
+D-RHEUMATIC-FEVER: Acute rheumatic fever
+D-RICKETTSIOSIS-SCRUB-TYPHUS: Scrub typhus
+D-SALICYLATE-TOXICITY: Salicylate toxicity
+D-SARCOIDOSIS: Sarcoidosis
+D-SECONDARY-SYPHILIS: Secondary syphilis
+D-SEPSIS-GN: Bacterial sepsis
+D-SEPTIC-ABORTION: Septic abortion
+D-SEPTIC-ARTHRITIS: Septic arthritis
+D-SEROTONIN-SYNDROME: Serotonin syndrome
+D-SICK-SINUS-SYNDROME: Sick sinus syndrome
+D-SICKLE-CELL-ACUTE-CHEST: Sickle cell acute chest syndrome
+D-SJOGREN-SYSTEMIC: Sjogren disease with systemic involvement
+D-SJS-TEN: Stevens-Johnson syndrome / toxic epidermal necrolysis
+D-SLE-FLARE: Systemic lupus erythematosus flare
+D-SPINAL-EPIDURAL-ABSCESS: Spinal epidural abscess
+D-SPONTANEOUS-BACTERIAL-PERITONITIS: Spontaneous bacterial peritonitis
+D-STAPH-AUREUS-BACTEREMIA: Staphylococcus aureus bacteremia
+D-STEC-HUS: Shiga toxin-associated hemolytic uremic syndrome
+D-STREP-PYOGENES-BACTEREMIA: Streptococcus pyogenes bacteremia
+D-STRONGYLOIDES-HYPERINFECTION: Strongyloides hyperinfection
+D-SYSTEMIC-SCLEROSIS-RENAL-CRISIS: Systemic sclerosis renal crisis
+D-TAKAYASU-ARTERITIS: Takayasu arteritis
+D-TB-DISSEMINATED: Disseminated tuberculosis
+D-THREATENED-PRETERM-LABOR: Threatened preterm labor
+D-THYROID-STORM: Thyroid storm
+D-TOXIC-SHOCK-SYNDROME: Toxic shock syndrome
+D-TOXOPLASMOSIS: Toxoplasmosis
+D-TRANSFUSION-REACTION-FNHTR: Febrile non-hemolytic transfusion reaction
+D-TRANSFUSION-REACTION-HEMOLYTIC: Acute hemolytic transfusion reaction
+D-TRANSPLANT-REJECTION-ACUTE: Acute transplant rejection
+D-TRAPS: TNF receptor-associated periodic syndrome
+D-TRICHINELLOSIS: Trichinellosis
+D-TTP: Thrombotic thrombocytopenic purpura
+D-TUBO-OVARIAN-ABSCESS: Tubo-ovarian abscess
+D-TYPHOID-FEVER: Typhoid fever
+D-URTICARIAL-VASCULITIS: Urticarial vasculitis
+D-UTERINE-RUPTURE: Uterine rupture
+D-VERTEBRAL-OSTEOMYELITIS: Vertebral osteomyelitis
+D-VIRAL-MENINGITIS: Viral meningitis
+D-VZV-ENCEPHALITIS: Varicella-zoster virus encephalitis
+D-WEST-NILE-NEUROINVASIVE-DISEASE: West Nile neuroinvasive disease
+D137: Adult-onset Still's disease
